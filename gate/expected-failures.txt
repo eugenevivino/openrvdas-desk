@@ -1,0 +1,6 @@
+# Known failures the gate excuses, by exact row name, one per line.
+# Adding or removing a row needs Eugene's own message. Each row names the issue
+# that will retire it. Anything not listed here blocks.
+#
+# Pending, NOT active until confirmed on the Mini under Python 3.12 and Eugene says yes:
+# django::test.django_gui.test_django_server_api.TestDjangoServerAPI.test_basic   # MultipleObjectsReturned, upstream issue to file

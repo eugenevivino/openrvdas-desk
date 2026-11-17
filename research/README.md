@@ -1,0 +1,11 @@
+# Research desk
+
+One question per file: `YYYY-MM-DD-<topic>.md`. Lead with the answer, then
+evidence. Mark each claim verified (with source) or inferred. Research informs
+decisions; it does not make them. A decision goes to `docs/DECISIONS.md`.
+
+Design docs from the project threads (claude.ai artifacts, 2026-11-17):
+- Scoreboard writer: https://claude.ai/artifact/XYUFNgc4nP67DBBS7RUviN
+- MCP server: https://claude.ai/artifact/VtfCM7KR2oRVa1BXiqnbFb
+- Competitive analysis and roadmap: https://claude.ai/artifact/H3523sKMcYXJK6bsjRfTpN
+- MetAcq gap map: https://claude.ai/artifact/QkQXV3ZZkgHrYJNQrew29B
