@@ -15,3 +15,4 @@ Plans written as research files:
 - Reanalysis pilot cruises from R2R and CCHDO: `2026-11-18-r2r-pilot-cruises.md`
 - Adoption strategy (D-ADOPT1 open): `2026-11-18-adoption-strategy.md` (source truncated)
 - MCP reference architecture (#64-#69): `2026-11-18-mcp-reference-architecture.md` (source truncated)
+- Drift detection and correction report (Eugene, Deep Research; D-REAN2): `2026-11-18-drift-detection-report.md`

@@ -46,6 +46,21 @@ Package `contrib/deepsignal/corrections/`:
 - CLI `python -m contrib.deepsignal.corrections {propose,approve,reject,rollback,list,verify}`
   with required `--by` or `--author`. `list` prints plain-English rows.
 
+## D-REAN2 additions (drift report, 2026-11-18; lead decisions)
+- New method `gain_offset` (`offset`, `gain`): corrected = (raw - offset) / gain.
+- `propose` gains fields: `standard_uncertainty` (replaces `uncertainty`;
+  accept the old name on load as an alias), optional `coverage_interval`
+  ([low, high]), `correction_state` (must be `CORRECTABLE`, else reject the
+  proposal with a plain message), `model_id` (C0 to C5), `fit_refs` and
+  `validation_refs` (lists of ids), optional `independence_score` (0 to 1).
+- Rule: `fit_refs` and `validation_refs` must not overlap. An overlap is
+  rejected at `propose`, naming the shared ids. This is the ledger's guard
+  against circular validation.
+- `CorrectionApplyTransform` also adds `<field>_corr_u` (the standard
+  uncertainty) next to `<field>_corr`.
+- Tests add: overlapping refs rejected; non-CORRECTABLE state rejected;
+  gain_offset applies correctly; `_corr_u` present.
+
 ## Failing test first
 `contrib/deepsignal/test/corrections/test_ledger.py` and `test_apply.py`. RED first.
 Cover: each method's math on known numbers, state machine (every legal and

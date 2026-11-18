@@ -169,6 +169,19 @@ section 9 of the plan.
 
 ## Process
 
+
+### D-REAN2 Drift report folded in: detect freely, correct only when identifiable (2026-11-18, PROPOSED)
+Eugene's Deep Research report (`research/2026-11-18-drift-detection-report.md`)
+is adopted into the reanalysis plan (section 10) and the #52, #54, #56 briefs:
+seven verdict states (GOOD, SUSPECT, FAULT_LIKELY, CORRECTABLE, AMBIGUOUS,
+UNCORRECTABLE, POSTHOC_REVIEW), offset and gain state model with Kalman
+filter and RTS smoother, changepoints on residuals, maintenance events as
+forced breaks, external references as noisy observations with independence
+class and gradient-inflated representativeness, an evidence dependency graph
+so fitting evidence never counts as validation, GUM or Monte Carlo
+uncertainty on every correction, and the C0 to C5 calibration model ladder.
+Paper candidate: the independence-aware calibration evidence graph (IDEAS
+#74). Report citations are leads, not verified.
 ### D-PA1 Adopt four ProjectArchitect ideas as desk rules (2026-11-18, DECIDED)
 Eugene approved "the good parts" of Druthulu/ProjectArchitect (PA3, read-only
 review of commit edcc2b0, nothing installed). Adopted as rules 19 to 22 in our

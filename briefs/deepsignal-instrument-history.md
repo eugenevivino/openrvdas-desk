@@ -61,6 +61,19 @@ Package `contrib/deepsignal/instruments/`:
 - Load-time validation (usability rule 5): one plain-English line naming the
   instrument, the setting, what it saw, what it expected, and a good example.
 
+## D-REAN2 additions (drift report, 2026-11-18; lead decisions)
+- More event types: `cleaning`, `pump_off`, `pump_on`, `valve`,
+  `power_cycle`, `swap` (with `replaces: <id>`). Unknown types stay an error.
+- Query `segment_breaks(field, start, end)`: sorted UTC times of every event
+  on an instrument feeding that field that must split a drift fit (install,
+  remove, swap, calibration, cleaning, repair, firmware, power_cycle,
+  pump_off, pump_on, valve). Drift tools take these as forced breaks.
+- Optional per-instrument `shares: [{id: <other>, what: plumbing|intake|wake|cell|clock}]`.
+  `check()` warns when a `shares` target does not exist. The evidence graph
+  uses this so two sensors on one pipe count as one evidence source.
+- Tests add: segment_breaks returns cleaning and swap times in order; a
+  `shares` reference to a missing id gives a warning.
+
 ## Failing test first
 `contrib/deepsignal/test/instruments/test_history.py`. Write it first, paste RED.
 Cover each query on boundary times (exactly at install, at remove, before

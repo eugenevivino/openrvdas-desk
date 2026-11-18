@@ -46,6 +46,33 @@ Package `contrib/deepsignal/drift_review/`:
   `drift` segments only.
 - CLI `python -m contrib.deepsignal.drift_review run --config <yaml>`.
 
+## D-REAN2 additions (drift report, 2026-11-18; lead decisions, these win over the Design list above where they differ)
+- Verdicts use the seven states in plan section 10.1
+  (`research/2026-11-18-reanalysis-program.md`): `no_drift` becomes GOOD,
+  `cannot_tell` becomes AMBIGUOUS, `drift` becomes CORRECTABLE only when the
+  abstention rule below passes, else SUSPECT; a segment overlapping a
+  `pump_off` window is UNCORRECTABLE. Define the states as string constants
+  in this package for now; a later `verdict-states` module will own them.
+- State: offset and optional gain (C0 to C4 of the model ladder, section
+  10.7). Fit each candidate on the fit split of reference points, score on
+  the held-out split (every third reference point by time, blocked, stated
+  in the report), choose the simplest model unless a richer one lowers
+  held-out RMSE by more than its own uncertainty.
+- Change points on Kalman innovations (as above), plus forced breaks passed
+  in as a list of UTC times (from the instrument history `segment_breaks`).
+- Uncertainty: report a standard uncertainty for each proposed correction by
+  Monte Carlo over the fitted parameters (stdlib `random`, fixed seed, 2000
+  draws by default) and a 95% interval.
+- Abstention: CORRECTABLE needs |correction| >= 2 x its standard uncertainty
+  AND held-out residuals improve. Otherwise SUSPECT or AMBIGUOUS, never a
+  proposal.
+- Proposals carry `fit_refs` and `validation_refs` (disjoint lists of
+  reference point ids), `model_id` (C0 to C4) and `correction_state`.
+- Tests add: gain-only fault picks C2 not C1; held-out split never used in
+  the fit (assert on ids); a forced break splits a segment with no visible
+  step; a small correction inside 2u is not proposed; pump_off window gives
+  UNCORRECTABLE.
+
 ## Failing test first
 `contrib/deepsignal/test/drift_review/test_*.py`. RED first.
 Cover: Kalman and RTS against hand-computed values on a 5-point series;

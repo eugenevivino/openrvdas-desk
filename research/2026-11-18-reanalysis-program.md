@@ -200,6 +200,11 @@ mechanical work.
 | 19 | `lookahead-drift-smoother` | Two-sided state-space smoother for slow drift, retrospective only (#54) | 12 | Astra | M4 |
 | 20 | `response-lag-correction` | Fit and undo characterized lags, output marked reconstructed (#60) | 18 | Astra | M4 |
 | 21 | `r2r-release-builder` | Versioned, archive-ready release folder (#58) | 11, 1 | Sol | M5 |
+| 22 | `verdict-states` | Shared 7-state verdict vocabulary and its mapping to QARTOD flags (section 10.1); tiny, everything else imports it | none | Luna | M1 |
+| 23 | `evidence-graph` | Dependency graph of raw channels, derived values, references and fits; answers "is this evidence independent of that fit?" and scores independence (section 10.5) | 6 | Astra | M2 |
+| 24 | `reference-adapter` | WOA23, delayed-mode Argo, OISST, SMAP/SMOS, ERA5 matchups as `ReferenceObservation` with independence class and gradient-inflated representativeness uncertainty (section 10.4). Needs network or pre-fetched files | 4, 23 | Astra | M4 |
+| 25 | `calibration-model-ladder` | Fit C0 to C5 per segment, pick the simplest that wins on held-out references (section 10.7) | 5, 12 | Astra | M3 |
+| 26 | `uncertainty-propagation` | GUM Jacobian for near-linear corrections, Monte Carlo (JCGM 101) otherwise, on every ledger entry (section 10.6) | 11 | Astra | M2 |
 
 Already briefed under D-SOII1 (do not re-brief): module 6 is
 `briefs/deepsignal-instrument-history.md`, modules 9 and 10 are
@@ -252,9 +257,124 @@ NBP1406 sample in the core repo is enough for unit tests, not for scoring.
    named tech or the PI for that cruise.
 4. **numpy.** It is not a declared core dependency. Recommended: allow numpy
    (pinned, noted in each PR) for the Astra modules; no scipy, pandas or ML
-   libraries until a module proves the need.
+   libraries until a module proves the need. The drift report names pykalman,
+   FilterPy, ruptures, ioos_qc and PyMC; the state sizes here are tiny, so we
+   write the filter ourselves and treat those as references, not dependencies.
 5. **Home.** Recommended: same `contrib/deepsignal/` umbrella, batch tools as
    small CLIs beside the transforms, so live and reanalysis share code.
 6. **Default thresholds.** The numbers in sections 1 and 2 (tolerances,
    coverage band, 3 looks, 5 passes) are proposals; Eugene may change them
    before M3, never during a scored run.
+
+## 10. Drift report additions (D-REAN2, 2026-11-18)
+
+Source: Eugene's Deep Research report,
+`research/2026-11-18-drift-detection-report.md`. Its citations are leads, not
+verified facts. Core message, which this plan adopts: detect aggressively,
+correct reluctantly. A correction needs an independent reference, a
+physically identifiable model, or several independent evidence channels;
+otherwise the answer is "flag, do not alter".
+
+### 10.1 Seven verdict states (replace the three-way verdicts)
+
+| State | Meaning | Action | QARTOD flag |
+|---|---|---|---|
+| GOOD | No material inconsistency | Publish raw and nominal calibration | 1 |
+| SUSPECT | Anomaly evidence, weak attribution | Flag, keep raw, widen uncertainty | 3 |
+| FAULT_LIKELY | Several independent diagnostics implicate the sensor | Flag, alert operator | 4 |
+| CORRECTABLE | Error model identifiable, correction uncertainty acceptable | Propose ledger entry with uncertainty | 1 on the corrected field, raw keeps its flag |
+| AMBIGUOUS | Sensor error and real ocean feature cannot be separated | Do not correct | 3 |
+| UNCORRECTABLE | A known malfunction broke the measurement (pump off, blocked cell) | Keep raw, mark unusable | 4 |
+| POSTHOC_REVIEW | Future or reference data may settle it | Queue for the post-cruise smoother | 2 (not evaluated yet) |
+
+AMBIGUOUS is the formal name of the "cannot tell" verdict (#55). Only
+CORRECTABLE may produce a ledger proposal. Live mode can emit every state
+except CORRECTABLE (live never applies corrections in v1).
+
+### 10.2 State model
+
+Measurement model per sensor i: `y_i(t) = a_i(t) + b_i(t) x(t) + g_i(z(t)) + e_i(t)`,
+offset a and gain b as slow random walks whose priors come from the
+calibration history (#52), not from hand tuning. Kalman filter live,
+Rauch-Tung-Striebel smoother post-cruise, small enough for numpy or stdlib.
+Keep primitive channels: for a TSG, conductivity and internal temperature,
+not only derived salinity, because conductivity faults are mostly gain
+(span) errors and fouling drives salinity low.
+
+### 10.3 Changepoints and forced breaks
+
+Changepoints are detected on model residuals (innovations), not on raw
+values, so a front is not a changepoint. Maintenance and metadata events
+(cleaning, pump off and on, sensor swap, calibration change, power cycle,
+valve change) are forced segment breaks taken from the instrument history,
+never left for the algorithm to discover.
+
+### 10.4 External references are noisy observations, never truth
+
+Every external product returns a `ReferenceObservation(value, uncertainty,
+space_offset, time_offset, vertical_offset, product_resolution,
+independence_class, representativeness_uncertainty)`. Representativeness
+grows with the local gradient: `s_repr^2 = s_local^2 + (dr * |grad x|)^2 +
+(dt * |dx/dt|)^2 + s_vertical^2`, so a front automatically down-weights the
+reference. No fixed "within 100 km" rules. Argo decorrelation scales are an
+upper bound for stable subsurface water, not surface calibration settings.
+
+### 10.5 Evidence dependency graph
+
+Every residual records which raw channels, references and fits produced it.
+Evidence used to fit a correction can never count as its validation (this
+generalizes guard 4 in section 3). Two sensors sharing plumbing, a wake or a
+conductivity cell are one evidence source, not two. The graph yields an
+independence score per correction; the ledger stores it.
+
+### 10.6 Uncertainty on every correction
+
+GUM: `u_c^2 = J S J^T` for near-linear corrections, with correlated inputs
+kept correlated; Monte Carlo (JCGM 101) for nonlinear models, bounded
+parameters or changepoint uncertainty. Abstain (state AMBIGUOUS) unless the
+correction exceeds its uncertainty by a set factor (proposed k = 2) and has
+independent attribution evidence.
+
+### 10.7 Calibration model ladder (C0 to C5)
+
+Named C to avoid a clash with milestones M0 to M5.
+
+| Model | Correction |
+|---|---|
+| C0 | none |
+| C1 | offset a |
+| C2 | offset and gain, `(y - a) / b` |
+| C3 | offset linear in time |
+| C4 | gain linear in time |
+| C5 | offset as a function of time, temperature, flow and similar |
+
+Chosen per segment by held-out reference residuals, predictive checks and
+physical plausibility. The simpler model wins unless the richer one
+materially improves independent validation.
+
+### 10.8 Scorecard and rollout additions
+
+- New metric, **selective risk**: as the system abstains on more cases, how
+  fast does the error of the values it did correct fall. Reported with the
+  flag and correction skills in section 1.
+- Fault bench adds gain (span) faults, fouling with recovery at a cleaning
+  event, and pump-off segments that must come back UNCORRECTABLE.
+- Rollout order per sensor family: flagging, then attribution, then shadow
+  correction (computed, not published), then reviewed correction, then
+  automated correction only for well-identified subsystems. TSG salinity
+  near rain, rivers and fronts stays reviewed.
+- ML stays a candidate generator: an anomaly score can feed the evidence
+  graph but can never trigger a correction alone.
+
+### 10.9 Paper candidates (from the report's gap list)
+
+1. **Independence-aware calibration evidence graph**: knows when a
+   correction is identifiable and when it must abstain, shown across several
+   sensor families and ships. Strongest candidate. IDEAS #74.
+2. **Public sparse-reference benchmark**: raw high-rate streams, maintenance
+   logs, swaps, bottle and reference checks, pre and post cals, injected
+   faults. The RR2204, RR2205, RR2308 pilot is a natural seed. IDEAS #75.
+3. Joint front-versus-drift inference with competing hypotheses. IDEAS #76.
+4. Cross-vessel hierarchical calibration priors from R2R and SAMOS. IDEAS #77.
+
+Novelty is the report's claim; check prior art before saying "first".
