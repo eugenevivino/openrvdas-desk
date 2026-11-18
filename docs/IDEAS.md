@@ -16,7 +16,7 @@ unverified.** Check prior art before saying "first" anywhere public.
 Sources: T-SCORE scoreboard thread, T-METACQ MetAcq thread, T-COMP
 competitive analysis thread, T-MCP MCP thread, T-AI AI methods research
 (`research/2026-11-17-ai-methods.md`), T-DESK this setup thread, EUG Eugene's
-own message, T-SOII Eugene's Oct 2026 SOII/DeepSignal leadership proposal. Design docs are linked in `research/README.md`.
+own message, T-SOII Eugene's Oct 2026 SOII/DeepSignal leadership proposal, T-REAN the reanalysis planning thread. Design docs are linked in `research/README.md`.
 
 ## Success metrics (proposed, not yet agreed)
 
@@ -127,3 +127,4 @@ suggest and show evidence, never silently rewrite data or command the ship.
 | 60 | Sensor response correction | Fit and undo known response lags (TSG plumbing delay, sensor time constants) as a reversible transform, only where the response is characterized; output marked as reconstructed (builds on #25, #38) | PROPOSED | N | T-SOII |
 | 61 | Instrument diagnostic channels | Log the health fields instruments already send but parsers drop (supply voltage, pump state, signal strength, internal temperature) and show them on the health board (#12) | PROPOSED | 2 | T-SOII |
 | 62 | AI audit trail | Every MCP/AI question, tool call and answer is logged with the data it read; AI tools stay read-only with no path to ship systems (hardens #20, #30) | PROPOSED | 3 | T-SOII |
+| 63 | Old-data reanalysis loop | Run DeepSignal modules over archived cruises in scored passes; flags and corrections as signed, reversible ledger layers; keep a pass only if it beats the last on holdout references and the fault bench; stop on no gain or noise floor. Plan `research/2026-11-18-reanalysis-program.md` (uses #52-#60) | DESIGNED | N | EUG, T-REAN |

@@ -156,6 +156,17 @@ independent reference; LLMs narrate over tools, they do not analyze raw data;
 foundation models are a secondary signal for now. See
 `research/2026-11-17-ai-methods.md`.
 
+### D-REAN1 Reanalysis of old cruise data as a scored, reversible loop (2026-11-18, PROPOSED)
+Eugene asked for a program that analyzes and recursively improves old data.
+Plan: `research/2026-11-18-reanalysis-program.md`. Each pass reads the
+untouched raw archive, writes flags and proposed corrections as reversible
+ledger layers, and is kept only if it beats the last accepted pass on
+independent holdout references and the fault bench, with a person signing off
+every value change. Stops on no gain, the reference noise floor, a spent
+holdout budget, or a pass cap. Live-mode numbers only from causal replay.
+21 Codex-sized modules over milestones M0 to M5. Open choices for Eugene in
+section 9 of the plan.
+
 ## Process
 
 ### D-PA1 Adopt four ProjectArchitect ideas as desk rules (2026-11-18, DECIDED)

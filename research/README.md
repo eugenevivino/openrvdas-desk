@@ -9,3 +9,6 @@ Design docs from the project threads (claude.ai artifacts, 2026-11-17):
 - MCP server: https://claude.ai/artifact/VtfCM7KR2oRVa1BXiqnbFb
 - Competitive analysis and roadmap: https://claude.ai/artifact/H3523sKMcYXJK6bsjRfTpN
 - MetAcq gap map: https://claude.ai/artifact/QkQXV3ZZkgHrYJNQrew29B
+
+Plans written as research files:
+- Old-data reanalysis program (D-REAN1): `2026-11-18-reanalysis-program.md`
