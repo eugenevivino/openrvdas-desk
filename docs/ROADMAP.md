@@ -1,6 +1,7 @@
 # Roadmap
 
-Ranked. Unblockers first. Each line becomes a brief when it is next. Every
+The full idea list, with status and source, is `docs/IDEAS.md`. This file
+ranks what is next. Ranked. Unblockers first. Each line becomes a brief when it is next. Every
 phase ends with something a science party, bridge, technician, or shore
 support person can use.
 

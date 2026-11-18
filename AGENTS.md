@@ -80,7 +80,7 @@ jargon once. Verified separate from inferred.
 
 ## Ending a session
 
-Rewrite `docs/STATE.md` (keep it under 60 lines), add one line to
+Add any new idea as a row in `docs/IDEAS.md`. Rewrite `docs/STATE.md` (keep it under 60 lines), add one line to
 `docs/WORKLOG.md` per finished item, add a `docs/DECISIONS.md` entry when a
 decision changed, and if the work continues, write a handoff from
 `handoffs/LEAD_BRIEF_TEMPLATE.md`. Record branch, sha, gate result
