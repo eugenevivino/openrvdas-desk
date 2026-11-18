@@ -94,4 +94,4 @@ push only deepsignal/* fork branches and desk branches; two failures of the same
 - 10:30Z USABILITY 12 on console-mvp faba8fe (vite preview of dist): no horizontal scroll at 400 px, 1366x768, 1920x1080 in Day and Night; only phone Night scrolls vertically (dimmer row). Screenshots /private/tmp/deepsignal/console-mvp-checks/. Pending: cold install timing (needs root on a clean Linux box; GitHub runner via install-clock), D-SEC0 CDS checks (after #197 acceptance), Impeccable audit (polish pass), 24 h soak (needs harness fixture + source-loss).
 - install-clock run 44258836868 hung 3 h at the installer's first prompt; cancelled 10:29Z; fix round task_e_6afd7e3d710c832fa298581752677f9c
 - #188 opt-in/proxy/redaction fix round: task_e_6afd837388d4832f9fc1616ab7382025
-Last sync 2026-11-18T14:45:13Z: fork branches pushed ok; upstream fetched ok (core dev 1a6f1edb, contrib master 3b4b76e6); desk main pushed after this line.
+Last sync 2026-11-18T15:45:19Z: fork branches pushed ok; upstream fetched ok (core dev 1a6f1edb, contrib master 3b4b76e6); desk main pushed after this line.
