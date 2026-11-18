@@ -64,3 +64,6 @@ Release blockers added 2026-11-18 (security thread, review of the security archi
 1. console/src/pages.ts defaults to ws://<host>:8766; it must default to same-origin wss://<host>/cds-ws before the CDS bind ships, or the bridge loses live data. Fix round on console-mvp.
 2. The D-SEC0 check must name BOTH nginx templates (Django and React) and the CDS --udp path (INADDR_ANY).
 3. #197 r2 and #189 r2 briefs replace the earlier versions; code merges wait for Eugene. Nov 25 is a supervised pilot beside the existing bridge display (D-SEC6).
+
+## websockets compatibility (2026-11-18)
+contrib master's 2024 CDS uses the legacy websockets.serve() handler signature and breaks on websockets 14+. The harness fixture carries a fixture-side shim (briefs/console/fixture-ws-shim.md). The clean long-term answer is a websockets<14 pin or a CDS fix, proposed upstream only after Eugene's approval (D-UPSTREAM0).
