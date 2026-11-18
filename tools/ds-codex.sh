@@ -133,17 +133,25 @@ sb=(); [[ " ${args[*]+"${args[*]}"} " == *" -s "* || " ${args[*]+"${args[*]}"} "
 cmd=("$CX" exec "${dis[@]}" "${off[@]+"${off[@]}"}" "${subcfg[@]+"${subcfg[@]}"}" -c 'approval_policy="never"' -c 'sandbox_workspace_write.writable_roots=[]' "${sb[@]+"${sb[@]}"}" "${args[@]+"${args[@]}"}")
 
 # (i) RAM gate (shared-machine rule from Kalon, 2026-11-18): refuse unless free RAM >= 4 GB and swap used <= 3.8 GB.
-# Free RAM = (free + inactive + speculative pages) x page size from vm_stat; swap used from vm.swapusage.
+# Available RAM (lead, 2026-11-18) = free + speculative + purgeable + file-backed pages, capped at physical RAM minus
+# wired minus compressor-occupied pages (inactive is NOT added: file-backed already holds the inactive file cache and
+# inactive anonymous pages are not freely reclaimable). Swap used from vm.swapusage. Every component is printed.
 # Floors can be lowered per machine by the caller (the Mini's launch gate sets DS_MIN_FREE_MB=2048 DS_MAX_SWAP_MB=2457
-# DS_REQUIRE_PRESSURE1=1); defaults are the shared-machine rule. Values must be plain integers.
-RAM_MIN_FREE_MB=${DS_MIN_FREE_MB:-4096}; SWAP_MAX_USED_MB=${DS_MAX_SWAP_MB:-3891}; REQ_P1=${DS_REQUIRE_PRESSURE1:-0}
+# ); kernel pressure level 1 (normal) is required by default (DS_REQUIRE_PRESSURE1=1). Values must be plain integers.
+RAM_MIN_FREE_MB=${DS_MIN_FREE_MB:-4096}; SWAP_MAX_USED_MB=${DS_MAX_SWAP_MB:-3891}; REQ_P1=${DS_REQUIRE_PRESSURE1:-1}
 [[ "$RAM_MIN_FREE_MB" =~ ^[0-9]+$ && "$SWAP_MAX_USED_MB" =~ ^[0-9]+$ ]] || die 2 "DS_MIN_FREE_MB and DS_MAX_SWAP_MB must be integers"
 ram_state() {
   local pg free_mb swap_mb
   pg=$(sysctl -n hw.pagesize)
-  free_mb=$(vm_stat | awk -v pg="$pg" '/^Pages (free|inactive|speculative):/ {gsub(/\./,"",$NF); n+=$NF} END {print int(n*pg/1048576)}')
+  local comp; comp=$(vm_stat | awk -v pg="$pg" -v mem="$(sysctl -n hw.memsize)" '
+    {v=$NF; gsub(/\./,"",v)}
+    /^Pages free:/ {f=v} /^Pages speculative:/ {sp=v} /^Pages purgeable:/ {pu=v} /^File-backed pages:/ {fb=v}
+    /^Pages wired down:/ {w=v} /^Pages occupied by compressor:/ {c=v}
+    END {mb=pg/1048576; sum=(f+sp+pu+fb)*mb; cap=mem/1048576-(w+c)*mb; tot=(sum<cap)?sum:cap
+         printf "%d free=%d speculative=%d purgeable=%d file_backed=%d sum=%d cap(RAM-wired-compressed)=%d", tot, f*mb, sp*mb, pu*mb, fb*mb, sum, cap}')
+  free_mb=${comp%% *}
   swap_mb=$(sysctl -n vm.swapusage | sed -E 's/.*used = ([0-9.]+)M.*/\1/'); swap_mb=${swap_mb%.*}
-  RAM_MSG="free_RAM_MB=$free_mb (min $RAM_MIN_FREE_MB) swap_used_MB=$swap_mb (max $SWAP_MAX_USED_MB) pressure_level=$(sysctl -n kern.memorystatus_vm_pressure_level)"
+  RAM_MSG="available_MB=$free_mb (min $RAM_MIN_FREE_MB) [MB: ${comp#* }] swap_used_MB=$swap_mb (max $SWAP_MAX_USED_MB) pressure_level=$(sysctl -n kern.memorystatus_vm_pressure_level)"
   [ "$free_mb" -ge "$RAM_MIN_FREE_MB" ] && [ "$swap_mb" -le "$SWAP_MAX_USED_MB" ] || return 1
   [ "$REQ_P1" != 1 ] || [ "$(sysctl -n kern.memorystatus_vm_pressure_level)" = 1 ]
 }
