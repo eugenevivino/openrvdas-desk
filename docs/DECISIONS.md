@@ -237,3 +237,16 @@ lane; `-m` applies to Mac jobs (rule 27). Unverified: cloud flags. Needs Eugene'
 environment id; first job is a small smoke test on Sol medium (Luna is not
 selectable in cloud).
 
+### D-SOII1 Build four modules from the SOII proposal (2026-11-18, DECIDED)
+
+Eugene approved building the top ideas mined from his Oct 2026 SOII/DeepSignal
+proposal. Order and briefs:
+1. #52 instrument history (`briefs/deepsignal-instrument-history.md`), Sol 6.2 high.
+2. #53 fault-injection bench (`briefs/deepsignal-fault-bench.md`), Sol 6.2 high.
+3. #56 correction ledger (`briefs/deepsignal-correction-ledger.md`), Sol 6.2 high, Astra xhigh review.
+4. #54 post-cruise drift review (`briefs/deepsignal-post-cruise-drift.md`), Astra 6.2 high, after 2 and 3.
+#55 ("cannot tell" verdict) goes to the QARTOD flags thread. Rules carried from
+the proposal: raw data immutable; tools suggest with evidence and never
+rewrite data or command ship systems; live mode never uses future data.
+Not yet launched. PRs still need Eugene.
+
