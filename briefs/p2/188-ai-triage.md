@@ -169,3 +169,13 @@ No code change needed: stop and report. Two fix rounds still red: stop and repor
 - RED receipt:
 - Acceptance tails:
 - Open questions:
+
+## Addendum 2026-11-18 (Eugene: "It might be better if it was an API based model, frankly")
+Provider is pluggable behind one OpenAI-compatible client (stdlib HTTP): the default configuration is an API
+provider with the ship's own key (never in the repo), with hard daily and monthly caps, a satellite-bandwidth
+cap and the 6k-token context pack unchanged. The local model (llama.cpp or Ollama) is the offline fallback
+when the link is down or the cap is reached, and the deterministic briefing is the last fallback. Nothing is
+sent until a key is configured: with no key the feature runs local or deterministic. Context packs are
+redacted (no credentials, no personal names) before leaving the ship and every outbound request is logged
+in the #168 timeline. This supersedes the earlier "local default, cloud off" wording; enabling the key and
+the budget is still Eugene's call (MORNING), and outputs stay advise-only.
