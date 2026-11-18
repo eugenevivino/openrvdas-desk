@@ -124,17 +124,18 @@ first draft: re-run at xhigh and compare (C2 "What a Medium result means").
 15. Author never reviews its own work. Review tier follows risk
     (OPERATING-SYSTEM section 6). Tests and the gate decide, not models.
 
-## 3. How the next Codex run will go
+## 3. Sync GitHub regularly (Eugene 2026-11-18, D-SYNC1)
 
-A concrete example, the fix for the Django bug, on a topic branch:
-1. Lead writes `briefs/fix-django-logger-config.md` from the template: goal,
-   failing test first, files in scope (`django_gui/django_server_api.py`, its
-   test file), acceptance commands, stop rule. Tier: normal code, Sol high.
-2. On the MacBook (or in Codex cloud, see `docs/BUILDERS.md`): `~/bin/codex-run` with Sol, workspace-write, fresh session,
-   one job, the brief piped in, output capped to a diff plus the test result.
-3. Lead commits, pushes the topic branch, runs `gate/remote.sh`.
-4. A fresh Astra high review reads the diff and the gate receipt.
-5. WORKLOG line with tier, time and tokens. Eugene sends any upstream PR.
+1. Push every finished Codex job and every desk change promptly: fork branch
+   `deepsignal/<module>` for code, desk `main` or a desk branch for docs. No work
+   lives only in /private/tmp or in `/mnt/project-files` patches longer than needed.
+2. At least daily, and before each new module branch: fetch upstream
+   `OceanDataTools/openrvdas` and `openrvdas_contrib` and update the fork's matching
+   branches (fetch only, never push upstream), then rebase active `deepsignal/*`
+   branches if needed. Record the shas in `docs/STATE.md`.
+3. Apply pending patches in `/mnt/project-files/openrvdas-desk-patches/` at once;
+   the lead does it, and tells the build threads.
+The build loop itself is in `docs/BUILDERS.md`.
 
 ## 4. Open items for Eugene
 

@@ -24,6 +24,12 @@ Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the Deep
 - Contrib: branches on the existing fork, PRs to openrvdas_contrib `master`,
   folder `contrib/deepsignal/` (D-ARCH3, D-ARCH4).
 
+## Sync (D-SYNC1)
+- Rule: push finished work at once; fetch upstream core and contrib into the fork
+  daily and before each new module branch; apply pending patches at once.
+- Last sync: desk pushed 2026-11-18 05:4xZ. Fork upstream fetch: NOT DONE today
+  (fork dev 1a6f1ed, contrib master 3b4b76e as of today).
+
 ## In flight
 - gate-linux (briefs/gate-linux.md): Codex job RUNNING on the MacBook since 05:33:59Z
   (gpt-6.2-sol high, 45 min cap), /private/tmp/deepsignal/gate-linux. DeepSignal has

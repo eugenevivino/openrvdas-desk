@@ -277,3 +277,9 @@ idle for 30 minutes under 2 to 9 Kalon jobs. Now DeepSignal always gets one slot
 one job at a time, queue order: Linux gate, QARTOD flags build, then the Mac-lane
 briefs. Overloaded MacBook (memory pressure or swap): use the Mini for that slot.
 
+### D-SYNC1 Sync GitHub regularly (2026-11-18, DECIDED)
+Eugene: sync GitHub regularly. Rules in `docs/CODEX.md` section 3: push finished
+work promptly, fetch upstream core and contrib into the fork daily and before each
+new module branch (never push upstream), rebase active branches, apply pending patches
+at once.
+
