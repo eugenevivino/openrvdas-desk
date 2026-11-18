@@ -470,3 +470,6 @@ Nothing of Kalon's is changed.
 
 ### D-UNITS1 Ship whole modules as one unit (2026-11-18, Eugene)
 Standing rule, effective now. One job per module unit (2 to 3 slices), prerequisites proven first, one review pass of at most 2 rounds on the whole diff (P1 blocks, rest become tickets), one mark, one gate, one merge. Pure R100 moves skip model review. Core logic, security and math keep full review. No new small-piece branches or tasks; in-flight pieces finish as they are; existing small pieces fold into whole units. Reporting is modules landed and modules finished. Full text in AGENTS.md and docs/OPERATING-SYSTEM.md. Applies to DeepSignal only; nothing of Kalon's is touched.
+
+### D-INTEG1 Fork integration branch is the D-REVIEW1 merge target (2026-11-18, coordinator under D-NIGHT1)
+On a PASS from the Astra ultra review, a non-critical module merges with one merge commit into the fork-only branch `deepsignal/integration`, created 2026-11-18 from fork dev 1a6f1edb. Never fork dev or master, never OceanDataTools (D-UPSTREAM0). Critical items (core behavior, security or auth, the gate, ship or instrument writes) never auto-merge. Note: module branches are built on contrib master 3b4b76e, which shares base cc7b9e8 with fork dev; the first module merge therefore also brings contrib master's 24 commits (78 files) since that base into the integration branch.

@@ -207,6 +207,7 @@ How DeepSignal plugs into the rest of the OceanDataTools stack. Detail: `docs/EC
 | Reference check | Flags IDEAS numbers and briefs missing from this file | DONE | done | `tools/reference-check.py` |
 | Public sample data catalog | Real-format sample files for tests (data stays on the shared mount, not in git) | DONE | done | `docs/SAMPLE-DATA.md` |
 | ds-codex launcher | RAM-gated Mac launcher, separate Codex home, pinned sub-agents | DONE (desk 2c228e2, not yet on main) | done | D-SEP1, D-SUB1, `docs/CODEX.md` |
+| Fork integration branch (D-INTEG1) | Merge target for non-critical modules that pass Astra ultra review (D-REVIEW1); one merge commit per module; never fork dev or master | CREATED 2026-11-18 from fork dev 1a6f1edb | done | fork:deepsignal/integration |
 
 ## 11. Ship systems, sonars, link health and instrument configuration (D-SHIP1, D-NOC1)
 
