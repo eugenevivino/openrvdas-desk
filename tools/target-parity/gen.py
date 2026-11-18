@@ -126,6 +126,8 @@ C = [
   'Gap', 'none', 'none', '-', 0, 0.5, 'DS', 2, 2, 3),
  ('C42', 'Site-wide message banner', ['cx:PAGES_settings'],
   'Gap', 'none', 'Console core (trivial)', 'Building', 1, 1, 'DS', 2, 2, 2),
+ ('C43', 'EEZ mode made easy: automatic detection from position against offline EEZ polygons, pre-alerts, per-instrument log, quarantine or stop from the clearance record, override with reason, audit for the cruise report', ['cx:PAGES_settings'],
+  'Partial', '`GeofenceTransform` switches the whole cruise mode on entering and leaving one GML boundary; needs geopandas and shapely; buffer in degrees; no pre-alert, position-loss rule, override or audit. CORIOLIX itself is a manual on/off toggle', 'EEZ mode (#137)', 'Briefed', 1, 1, 'DS', 5, 4, 4),
 ]
 
 M = [

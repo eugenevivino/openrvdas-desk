@@ -5,7 +5,7 @@ everything, so nothing raised in a thread is lost. Add a row the day an idea
 comes up. Never delete a row: mark it DROPPED with a reason.
 
 
-**Numbering: the build lead owns IDEAS numbers (next free: 137). Other threads do not
+**Numbering: the build lead owns IDEAS numbers (next free: 138). Other threads do not
 assign numbers. Write ideas as unnumbered drafts in your patch notes and ask the build
 lead for a range, to avoid collisions (three-way collision on 2026-11-18).**
 Status: PROPOSED (idea only), DESIGNED (design doc exists), BUILDING (brief
@@ -245,3 +245,9 @@ something great." Design and source evidence: `docs/ECOSYSTEM.md`; scorecard row
 | 134 | Grafana quality pack | QC flags, freshness and health into InfluxDB as fields and tags; Grafana dashboards generated from the cruise definition with the ODT compass and attitude panels, flag colors and alert rules. Brief `briefs/p2/134-grafana-quality.md` | 4/3/4 | DESIGNED | 2 | Eugene, E6 |
 | 135 | Archive and compression | Closed raw logs compressed losslessly (zstd when the `zstd` tool exists, else xz), with sha256 manifest, round-trip verify, originals kept by default; prioritized shore bundles for OpenVDM ship-to-shore. NetCDF4/CF export comes from ERDDAP (#104); offline NetCDF and Parquet are phase 2b. Brief `briefs/p2/135-archive-compress.md` | 3/4/5 | DESIGNED | 2 | Eugene, E7-E9 |
 | 136 | QA tool adapters | Surface verdicts of ODT nav-qa-processing, sbe-qa-processing and winch-data-processing (run as OpenVDM post hooks) in the console and Sealog; #109 cast view should read winch wire logs from it rather than re-derive RVSS rules | 3/4/3 | PROPOSED | backlog (tools are "under heavy development") | E10 |
+
+## EEZ mode (2026-11-18, parity thread; number 137)
+
+| # | Idea | One line | Value | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| 137 | EEZ mode made easy | Position checked against offline Marine Regions EEZ polygons (pure Python, no geopandas), pre-alerts at distance and ETA, per-instrument log, quarantine or stop driven by the cruise clearance record, fail-safe on position loss, one-tap override with reason and expiry, append-only audit with a cruise-report table, console banner and Sealog events. Feeds `eez_inside` to #116. Brief `briefs/p2/137-eez-mode.md`. Eugene 2026-11-18: "an EEZ mode, which OpenRVDAS kind of already has just not that easy" | 5/4/4 | DESIGNED | 2 | Eugene, C27, C43 |

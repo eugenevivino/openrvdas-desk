@@ -16,9 +16,9 @@ hand-edit the tables below.
 
 | Scope | Rows | Core today | Core + built DeepSignal today | With briefed and planned work | With this doc's drafts |
 |---|---|---|---|---|---|
-| CORIOLIX | 42 | 38% | 38% | 70% | 98% |
+| CORIOLIX | 43 | 38% | 38% | 71% | 98% |
 | MetAcq | 44 | 52% | 55% | 75% | 98% |
-| Combined | 86 | 45% | 47% | 73% | 98% |
+| Combined | 87 | 45% | 47% | 73% | 98% |
 | Ecosystem (OceanDataTools) | 10 | 40% | 40% | 90% | 100% |
 
 - **Today** means code that runs now: OpenRVDAS core plus DeepSignal modules
@@ -30,9 +30,9 @@ hand-edit the tables below.
   value ranking in section 4 is where importance shows up.
 - Measurable goal proposed: **"most of CORIOLIX" = at least 80% of CORIOLIX
   rows fully covered (score 1), and every gap valued 12 or more closed.**
-  Fully covered today: 6 of 42 (14%). With work planned before this scorecard:
-  23 of 42 (55%). With #104-#124 (now numbered and briefed, phase 2): 40 of 42
-  (95%). Re-scored 2026-11-18 07:45Z after finding that fork `dev` already has
+  Fully covered today: 6 of 43 (14%). With briefed and planned work (including
+  #104-#137): 24 of 43 (56%) scored fully, 41 of 43 (95%) once every draft in
+  section 7 lands. C43 (easy EEZ mode, #137) added 2026-11-18 08:30Z. Re-scored 2026-11-18 07:45Z after finding that fork `dev` already has
   round-robin polling, per-file log headers and CDS HTTP routes.
 
 What this says plainly: OpenRVDAS core already owns acquisition, parsing,
@@ -80,7 +80,7 @@ PROPOSED), **none**.
 
 ## 3. The matrix
 
-### 3a. CORIOLIX (42 rows)
+### 3a. CORIOLIX (43 rows)
 
 | # | Capability | Source | OpenRVDAS core today | DeepSignal | Today | Planned | +Drafts | Home |
 |---|---|---|---|---|---|---|---|---|
@@ -126,6 +126,7 @@ PROPOSED), **none**.
 | C40 | Playback of recorded data for development | [RVTEC 2025](https://www.unols.org/sites/default/files/2025-12/202511rvtec_romsos_chris_openrvdas_coriolix_2.pdf) | Have: `LogfileReader`, `simulate_*.py` | - | 1 | 1 | 1 | core |
 | C41 | UNOLS planning integration (MFP, MOMS) as metadata source of truth | [RVTEC 2025](https://www.unols.org/sites/default/files/2025-12/202511rvtec_romsos_chris_openrvdas_coriolix_2.pdf), [RVTEC 2022](https://www.unols.org/sites/default/files/202211rvt_apXXIV.pdf) | Gap: none | none | 0 | 0 | 0.5 | DS |
 | C42 | Site-wide message banner | [PAGES_settings](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/PAGES_settings.md) | Gap: none | Console core (trivial) (Building) | 0 | 1 | 1 | DS |
+| C43 | EEZ mode made easy: automatic detection from position against offline EEZ polygons, pre-alerts, per-instrument log, quarantine or stop from the clearance record, override with reason, audit for the cruise report | [PAGES_settings](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/PAGES_settings.md) | Partial: `GeofenceTransform` switches the whole cruise mode on entering and leaving one GML boundary; needs geopandas and shapely; buffer in degrees; no pre-alert, position-loss rule, override or audit. CORIOLIX itself is a manual on/off toggle | EEZ mode (#137) (Briefed) | 0.5 | 1 | 1 | DS |
 
 ### 3b. MetAcq (43 rows)
 
@@ -238,68 +239,69 @@ yet. Scores are judgement; argue with them in this file.
 | 9 | C24 | Alerts: threshold (2 parameters), proximity (stations, ports), temporal (cal due, warranty), global, subscriptions | 5 | 4 | 4 | 13 | yes | DS |
 | 10 | C3 | Sensor/parameter status board, color per parameter, grouped by class | 5 | 3 | 5 | 13 | yes | DS |
 | 11 | C34 | End-of-cruise R2R package (raw plus metadata) | 4 | 4 | 5 | 13 | yes | DS |
-| 12 | C6 | One-minute bins with statistics (mean, circular mean, std, min, max, median, count, spot; QC-filtered; composite flag) | 3 | 5 | 5 | 13 | yes | DS |
-| 13 | M10 | Calibration chain, 45 named methods (polynomial, thermistor, RTD, SBE T/C, Eppley, SBE43, optode) | 5 | 5 | 3 | 13 | yes | DS |
-| 14 | M11 | Sensor metadata per module (make, model, serial, cal date, lab, location) | 5 | 4 | 4 | 13 | yes | DS |
-| 15 | C23 | Flowthrough valve schedule (open/closed content and durations) tied to the data | 4 | 5 | 3 | 12 | NO: draft below | DS |
-| 16 | C9 | ERDDAP server (subset, format translation, OGC) | 2 | 5 | 5 | 12 | NO: draft below | DS |
-| 17 | C26 | Ship-to-shore replication: data under 1 s, metadata both ways, shore mirror with same UI | 3 | 4 | 5 | 12 | yes | DS |
-| 18 | C7 | Download UI: high-res, binned, binned+stats, native raw; by date, parameter, resolution; CSV, TSV, JSON, GeoJSON, MAT, netCDF, OPeNDAP; zip plus metadata file | 2 | 5 | 5 | 12 | yes | DS |
-| 19 | E2 | DeepSignal quality flags, freshness and products in the OpenVDM package and Data Dashboard (qualityTests, stats) | 4 | 4 | 4 | 12 | yes | DS |
-| 20 | E4 | Sealog events from data-system alerts, QC changes, flow state and instrument init results | 4 | 5 | 3 | 12 | yes | DS |
-| 21 | E7 | Lossless compressed archive of closed raw logs (zstd or xz) with checksum manifest, byte-reproducible | 3 | 4 | 5 | 12 | yes | DS |
-| 22 | M23 | .COR/.UNC $WICOR/$WIUNC files with quality digits | 4 | 4 | 4 | 12 | yes | DS |
-| 23 | C33 | SAMOS daily file (1-min subset) sent from shore | 3 | 4 | 4 | 11 | NO: draft below | DS |
-| 24 | M26 | SAMOS daily exchange file | 3 | 4 | 4 | 11 | NO: draft below | DS |
-| 25 | M39 | Winch screen: wire out, speed, tension, CTD depth, altimeter | 5 | 4 | 2 | 11 | NO: draft below | DS |
-| 26 | M8 | GPS failover (write one GPS, fail over to next) | 4 | 4 | 3 | 11 | NO: draft below | core |
-| 27 | C18 | Primary-parameter rules: which sensor is primary per parameter, by model and location | 4 | 4 | 3 | 11 | partly | core |
-| 28 | C27 | Data release policy: privacy level, restricted content, EEZ mode | 3 | 4 | 4 | 11 | NO: draft below | DS |
-| 29 | C8 | REST API for data and metadata | 2 | 4 | 5 | 11 | yes | DS |
-| 30 | E5 | Every Sealog event carries the quality state of the sensors at that moment (aux data) | 3 | 5 | 3 | 11 | yes | DS |
-| 31 | E6 | Grafana dashboards for QC flags, freshness and system health, provisioned from the cruise definition | 4 | 3 | 4 | 11 | yes | DS |
-| 32 | M36 | Strip charts with history scroll and per-plot scale | 4 | 4 | 3 | 11 | yes | DS |
-| 33 | M42 | Status bar: scans per second, current file, silent sensors (CHK MOD) | 5 | 2 | 4 | 11 | yes | DS |
-| 34 | C21 | CTD package configuration and CTD plot page | 4 | 4 | 2 | 10 | NO: draft below | DS |
-| 35 | M16 | Waypoint ETA, EDA, time to go, bearing; off-course warning | 3 | 4 | 3 | 10 | NO: draft below | DS |
-| 36 | M40 | GPS and waypoint screen (ETA, TTG, bearing) | 3 | 4 | 3 | 10 | NO: draft below | DS |
-| 37 | C25 | Accounts and roles (public, scientist, technician, admin); ship and shore share accounts | 3 | 3 | 4 | 10 | NO: draft below | DS |
-| 38 | C29 | GUI logger configuration and one-button deploy (writes OpenRVDAS config, updates alerts, ERDDAP, restarts) | 5 | 2 | 3 | 10 | NO: draft below | DS |
-| 39 | C30 | Sensor onboarding workflow (create sensor, parameters with CF names and limits, cal files, network logger, data logger) | 5 | 2 | 3 | 10 | partly | DS |
-| 40 | C32 | Standard vocabularies (CF names, SeaVoX L22/L35/EL1/EL2, R2R device types, ICES ship codes, UN/LOCODE) | 2 | 4 | 4 | 10 | partly | DS |
-| 41 | E10 | Verdicts from OceanDataTools QA tools (nav QA, CTD QA, winch wire logs) shown in the console and Sealog | 3 | 4 | 3 | 10 | partly | DS |
-| 42 | E8 | Science exports in NetCDF4/CF with chunked compression (Parquet if cheap) | 2 | 4 | 4 | 10 | partly | DS |
-| 43 | M13 | Dew point, wet bulb, sea-level pressure | 3 | 4 | 3 | 10 | NO: draft below | core |
-| 44 | M14 | Salinity, sigma-t, sound velocity | 3 | 4 | 3 | 10 | NO: draft below | core |
-| 45 | M34 | Email products: SAMOS zip, OPSUM hourly, PCO2, SHIPTRACK, NOAA hourly ship weather | 3 | 3 | 4 | 10 | NO: draft below | DS |
-| 46 | M43 | Web snapshots (PNG every 10 s) for shore and slow links | 2 | 3 | 5 | 10 | partly | DS |
-| 47 | C2 | Custom and combination plots (any range, up to 4 parameters, saved per user) | 3 | 4 | 3 | 10 | yes | DS |
-| 48 | E3 | One cruise and lowering identity across OpenRVDAS, OpenVDM, Sealog and DeepSignal | 4 | 3 | 3 | 10 | yes | DS |
-| 49 | E9 | Compressed, prioritized ship-to-shore transfer over satellite | 2 | 3 | 5 | 10 | yes | DS |
-| 50 | C12 | Route tools: draw route, distance, time at chosen speed | 2 | 4 | 3 | 9 | NO: draft below | DS |
-| 51 | C14 | Cruise list and metadata (dates, ports, participants); schedule import | 2 | 3 | 4 | 9 | NO: draft below | DS |
-| 52 | C35 | Documents catalog (manuals, calibration certificates) | 4 | 2 | 3 | 9 | partly | DS |
-| 53 | C36 | Vessel metadata: dimensions, codes, survey monuments and benchmarks | 3 | 3 | 3 | 9 | partly | DS |
-| 54 | C4 | System (host) health page | 4 | 1 | 4 | 9 | NO: draft below | DS |
-| 55 | C37 | Public and remote-participant view | 1 | 4 | 4 | 9 | yes | DS |
-| 56 | M29 | $WICOR UDP broadcast every second | 4 | 3 | 2 | 9 | yes | DS |
-| 57 | M37 | Tabulated big numbers plus position | 3 | 3 | 3 | 9 | yes | DS |
-| 58 | M41 | Diagnostic screen: raw strings per port, INOP per value | 5 | 1 | 3 | 9 | yes | DS |
-| 59 | M44 | Sensor initialization over the wire: startup and setup commands, reply checks, re-init after power loss or reconnect, audit log of what was sent | 5 | 3 | 1 | 9 | yes | DS |
-| 60 | C19 | Post-processing source assignment (which GPS feeds salinity, by location) | 3 | 3 | 2 | 8 | NO: draft below | core |
-| 61 | M24 | Configuration copied next to each day of data | 2 | 3 | 3 | 8 | yes | core |
-| 62 | C41 | UNOLS planning integration (MFP, MOMS) as metadata source of truth | 2 | 2 | 3 | 7 | NO: draft below | DS |
-| 63 | M15 | Antenna lever-arm correction of position | 2 | 3 | 2 | 7 | NO: draft below | core |
-| 64 | M31 | Sound velocity to multibeam (per-target format) | 3 | 3 | 1 | 7 | NO: draft below | core |
-| 65 | M7 | Device definitions for the MetSpecs sensor list (RM Young, Vaisala, Eppley, SBE45/43, QSR, LCI90) | 4 | 2 | 1 | 7 | NO: draft below | core |
-| 66 | M33 | Winch data to signboards | 4 | 2 | 1 | 7 | yes | DS |
-| 67 | C28 | Retention settings (raw files, backup, database) | 3 | 1 | 2 | 6 | NO: draft below | core |
-| 68 | M28 | Emulation mode with "emulated" flag | 2 | 2 | 2 | 6 | NO: draft below | core |
-| 69 | M3 | ADAM/DGH analog-to-RS485 modules (ASCII protocol) | 3 | 2 | 1 | 6 | NO: draft below | core |
-| 70 | C22 | Sensor groups (parent and child sensors shown together) | 2 | 2 | 2 | 6 | yes | DS |
-| 71 | C42 | Site-wide message banner | 2 | 2 | 2 | 6 | yes | DS |
-| 72 | M38 | MetBig: huge met values for the bridge, night-safe | 3 | 2 | 1 | 6 | yes | DS |
-| 73 | M4 | NI DAQ / USB analog input | 1 | 1 | 0 | 2 | NO: draft below | core |
+| 12 | C43 | EEZ mode made easy: automatic detection from position against offline EEZ polygons, pre-alerts, per-instrument log, quarantine or stop from the clearance record, override with reason, audit for the cruise report | 5 | 4 | 4 | 13 | yes | DS |
+| 13 | C6 | One-minute bins with statistics (mean, circular mean, std, min, max, median, count, spot; QC-filtered; composite flag) | 3 | 5 | 5 | 13 | yes | DS |
+| 14 | M10 | Calibration chain, 45 named methods (polynomial, thermistor, RTD, SBE T/C, Eppley, SBE43, optode) | 5 | 5 | 3 | 13 | yes | DS |
+| 15 | M11 | Sensor metadata per module (make, model, serial, cal date, lab, location) | 5 | 4 | 4 | 13 | yes | DS |
+| 16 | C23 | Flowthrough valve schedule (open/closed content and durations) tied to the data | 4 | 5 | 3 | 12 | NO: draft below | DS |
+| 17 | C9 | ERDDAP server (subset, format translation, OGC) | 2 | 5 | 5 | 12 | NO: draft below | DS |
+| 18 | C26 | Ship-to-shore replication: data under 1 s, metadata both ways, shore mirror with same UI | 3 | 4 | 5 | 12 | yes | DS |
+| 19 | C7 | Download UI: high-res, binned, binned+stats, native raw; by date, parameter, resolution; CSV, TSV, JSON, GeoJSON, MAT, netCDF, OPeNDAP; zip plus metadata file | 2 | 5 | 5 | 12 | yes | DS |
+| 20 | E2 | DeepSignal quality flags, freshness and products in the OpenVDM package and Data Dashboard (qualityTests, stats) | 4 | 4 | 4 | 12 | yes | DS |
+| 21 | E4 | Sealog events from data-system alerts, QC changes, flow state and instrument init results | 4 | 5 | 3 | 12 | yes | DS |
+| 22 | E7 | Lossless compressed archive of closed raw logs (zstd or xz) with checksum manifest, byte-reproducible | 3 | 4 | 5 | 12 | yes | DS |
+| 23 | M23 | .COR/.UNC $WICOR/$WIUNC files with quality digits | 4 | 4 | 4 | 12 | yes | DS |
+| 24 | C33 | SAMOS daily file (1-min subset) sent from shore | 3 | 4 | 4 | 11 | NO: draft below | DS |
+| 25 | M26 | SAMOS daily exchange file | 3 | 4 | 4 | 11 | NO: draft below | DS |
+| 26 | M39 | Winch screen: wire out, speed, tension, CTD depth, altimeter | 5 | 4 | 2 | 11 | NO: draft below | DS |
+| 27 | M8 | GPS failover (write one GPS, fail over to next) | 4 | 4 | 3 | 11 | NO: draft below | core |
+| 28 | C18 | Primary-parameter rules: which sensor is primary per parameter, by model and location | 4 | 4 | 3 | 11 | partly | core |
+| 29 | C27 | Data release policy: privacy level, restricted content, EEZ mode | 3 | 4 | 4 | 11 | NO: draft below | DS |
+| 30 | C8 | REST API for data and metadata | 2 | 4 | 5 | 11 | yes | DS |
+| 31 | E5 | Every Sealog event carries the quality state of the sensors at that moment (aux data) | 3 | 5 | 3 | 11 | yes | DS |
+| 32 | E6 | Grafana dashboards for QC flags, freshness and system health, provisioned from the cruise definition | 4 | 3 | 4 | 11 | yes | DS |
+| 33 | M36 | Strip charts with history scroll and per-plot scale | 4 | 4 | 3 | 11 | yes | DS |
+| 34 | M42 | Status bar: scans per second, current file, silent sensors (CHK MOD) | 5 | 2 | 4 | 11 | yes | DS |
+| 35 | C21 | CTD package configuration and CTD plot page | 4 | 4 | 2 | 10 | NO: draft below | DS |
+| 36 | M16 | Waypoint ETA, EDA, time to go, bearing; off-course warning | 3 | 4 | 3 | 10 | NO: draft below | DS |
+| 37 | M40 | GPS and waypoint screen (ETA, TTG, bearing) | 3 | 4 | 3 | 10 | NO: draft below | DS |
+| 38 | C25 | Accounts and roles (public, scientist, technician, admin); ship and shore share accounts | 3 | 3 | 4 | 10 | NO: draft below | DS |
+| 39 | C29 | GUI logger configuration and one-button deploy (writes OpenRVDAS config, updates alerts, ERDDAP, restarts) | 5 | 2 | 3 | 10 | NO: draft below | DS |
+| 40 | C30 | Sensor onboarding workflow (create sensor, parameters with CF names and limits, cal files, network logger, data logger) | 5 | 2 | 3 | 10 | partly | DS |
+| 41 | C32 | Standard vocabularies (CF names, SeaVoX L22/L35/EL1/EL2, R2R device types, ICES ship codes, UN/LOCODE) | 2 | 4 | 4 | 10 | partly | DS |
+| 42 | E10 | Verdicts from OceanDataTools QA tools (nav QA, CTD QA, winch wire logs) shown in the console and Sealog | 3 | 4 | 3 | 10 | partly | DS |
+| 43 | E8 | Science exports in NetCDF4/CF with chunked compression (Parquet if cheap) | 2 | 4 | 4 | 10 | partly | DS |
+| 44 | M13 | Dew point, wet bulb, sea-level pressure | 3 | 4 | 3 | 10 | NO: draft below | core |
+| 45 | M14 | Salinity, sigma-t, sound velocity | 3 | 4 | 3 | 10 | NO: draft below | core |
+| 46 | M34 | Email products: SAMOS zip, OPSUM hourly, PCO2, SHIPTRACK, NOAA hourly ship weather | 3 | 3 | 4 | 10 | NO: draft below | DS |
+| 47 | M43 | Web snapshots (PNG every 10 s) for shore and slow links | 2 | 3 | 5 | 10 | partly | DS |
+| 48 | C2 | Custom and combination plots (any range, up to 4 parameters, saved per user) | 3 | 4 | 3 | 10 | yes | DS |
+| 49 | E3 | One cruise and lowering identity across OpenRVDAS, OpenVDM, Sealog and DeepSignal | 4 | 3 | 3 | 10 | yes | DS |
+| 50 | E9 | Compressed, prioritized ship-to-shore transfer over satellite | 2 | 3 | 5 | 10 | yes | DS |
+| 51 | C12 | Route tools: draw route, distance, time at chosen speed | 2 | 4 | 3 | 9 | NO: draft below | DS |
+| 52 | C14 | Cruise list and metadata (dates, ports, participants); schedule import | 2 | 3 | 4 | 9 | NO: draft below | DS |
+| 53 | C35 | Documents catalog (manuals, calibration certificates) | 4 | 2 | 3 | 9 | partly | DS |
+| 54 | C36 | Vessel metadata: dimensions, codes, survey monuments and benchmarks | 3 | 3 | 3 | 9 | partly | DS |
+| 55 | C4 | System (host) health page | 4 | 1 | 4 | 9 | NO: draft below | DS |
+| 56 | C37 | Public and remote-participant view | 1 | 4 | 4 | 9 | yes | DS |
+| 57 | M29 | $WICOR UDP broadcast every second | 4 | 3 | 2 | 9 | yes | DS |
+| 58 | M37 | Tabulated big numbers plus position | 3 | 3 | 3 | 9 | yes | DS |
+| 59 | M41 | Diagnostic screen: raw strings per port, INOP per value | 5 | 1 | 3 | 9 | yes | DS |
+| 60 | M44 | Sensor initialization over the wire: startup and setup commands, reply checks, re-init after power loss or reconnect, audit log of what was sent | 5 | 3 | 1 | 9 | yes | DS |
+| 61 | C19 | Post-processing source assignment (which GPS feeds salinity, by location) | 3 | 3 | 2 | 8 | NO: draft below | core |
+| 62 | M24 | Configuration copied next to each day of data | 2 | 3 | 3 | 8 | yes | core |
+| 63 | C41 | UNOLS planning integration (MFP, MOMS) as metadata source of truth | 2 | 2 | 3 | 7 | NO: draft below | DS |
+| 64 | M15 | Antenna lever-arm correction of position | 2 | 3 | 2 | 7 | NO: draft below | core |
+| 65 | M31 | Sound velocity to multibeam (per-target format) | 3 | 3 | 1 | 7 | NO: draft below | core |
+| 66 | M7 | Device definitions for the MetSpecs sensor list (RM Young, Vaisala, Eppley, SBE45/43, QSR, LCI90) | 4 | 2 | 1 | 7 | NO: draft below | core |
+| 67 | M33 | Winch data to signboards | 4 | 2 | 1 | 7 | yes | DS |
+| 68 | C28 | Retention settings (raw files, backup, database) | 3 | 1 | 2 | 6 | NO: draft below | core |
+| 69 | M28 | Emulation mode with "emulated" flag | 2 | 2 | 2 | 6 | NO: draft below | core |
+| 70 | M3 | ADAM/DGH analog-to-RS485 modules (ASCII protocol) | 3 | 2 | 1 | 6 | NO: draft below | core |
+| 71 | C22 | Sensor groups (parent and child sensors shown together) | 2 | 2 | 2 | 6 | yes | DS |
+| 72 | C42 | Site-wide message banner | 2 | 2 | 2 | 6 | yes | DS |
+| 73 | M38 | MetBig: huge met values for the bridge, night-safe | 3 | 2 | 1 | 6 | yes | DS |
+| 74 | M4 | NI DAQ / USB analog input | 1 | 1 | 0 | 2 | NO: draft below | core |
 
 ### Top 5 gaps (merged across duplicate CORIOLIX and MetAcq rows)
 

@@ -33,6 +33,7 @@ Written 2026-11-18 by the parity thread, ranked by value from docs/TARGET-PARITY
 | 27 | #135 | [Lossless archive compression and shore bundles](135-archive-compress.md), prompt `briefs/cloud/p2-archive-compress.md` | `deepsignal/p2-archive-compress` | `3b4b76e` contrib tree | cloud | py | 7 | none | no (live-system check by the lead, see docs/ECOSYSTEM.md) |
 | 28 | #134 | [Grafana quality pack](134-grafana-quality.md), prompt `briefs/cloud/p2-grafana-quality.md` | `deepsignal/p2-grafana-quality` | `3b4b76e` contrib tree | cloud | py | 7 | QARTOD flags | no (live-system check by the lead, see docs/ECOSYSTEM.md) |
 | 29 | #132 | [Cruise context from OpenVDM and Sealog](132-cruise-context.md), prompt `briefs/cloud/p2-cruise-context.md` | `deepsignal/p2-cruise-context` | `3b4b76e` contrib tree | cloud | py | 7 | #120 format | no (live-system check by the lead, see docs/ECOSYSTEM.md) |
+| 30 | #137 | [EEZ mode: automatic boundary detection, per-instrument policy, audit](137-eez-mode.md), prompt `briefs/cloud/p2-eez-mode.md` | `deepsignal/p2-eez-mode` | `3b4b76e` contrib tree | cloud | py | 8 | none; feeds #116, #133, console banner | no (recorded-track check by the lead; Marine Regions license check before any EEZ data is committed) |
 
 ## Not briefed, and why
 

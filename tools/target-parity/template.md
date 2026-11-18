@@ -25,9 +25,9 @@ hand-edit the tables below.
   value ranking in section 4 is where importance shows up.
 - Measurable goal proposed: **"most of CORIOLIX" = at least 80% of CORIOLIX
   rows fully covered (score 1), and every gap valued 12 or more closed.**
-  Fully covered today: 6 of 42 (14%). With work planned before this scorecard:
-  23 of 42 (55%). With #104-#124 (now numbered and briefed, phase 2): 40 of 42
-  (95%). Re-scored 2026-11-18 07:45Z after finding that fork `dev` already has
+  Fully covered today: 6 of 43 (14%). With briefed and planned work (including
+  #104-#137): 24 of 43 (56%) scored fully, 41 of 43 (95%) once every draft in
+  section 7 lands. C43 (easy EEZ mode, #137) added 2026-11-18 08:30Z. Re-scored 2026-11-18 07:45Z after finding that fork `dev` already has
   round-robin polling, per-file log headers and CDS HTTP routes.
 
 What this says plainly: OpenRVDAS core already owns acquisition, parsing,
@@ -75,7 +75,7 @@ PROPOSED), **none**.
 
 ## 3. The matrix
 
-### 3a. CORIOLIX (42 rows)
+### 3a. CORIOLIX (43 rows)
 
 {CTABLE}
 

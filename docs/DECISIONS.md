@@ -407,3 +407,6 @@ Astra at ultra (read-only) reviews non-critical changes and PRs; when it recomme
 
 ### D-ONBOARD1 onboard-wizard parked after two failed acceptances (2026-11-18, logged by build lead)
 Failed acceptance twice (attempt 1, fix round 1). No more cloud retries. Re-brief as a Mac Sol high job after the console MVP chain, with the failing tests attached; not on the MVP critical path.
+
+### D-137A eez-mode decisions (2026-11-18, logged by build lead)
+Unknown position applies the strictest action within 24 nm; with no last fix every logger gets its uncleared action; docs state the tradeoff. v1 has no download code; EEZ data is never committed until the Marine Regions license is verified. Treated as CRITICAL under D-REVIEW1 (changes logger behavior): no auto-merge.
