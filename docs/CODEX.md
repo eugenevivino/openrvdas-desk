@@ -90,8 +90,11 @@ first draft: re-run at xhigh and compare (C2 "What a Medium result means").
    is the default lane for standard, well-specified code modules, in parallel, to
    keep load off the Macs. Astra work (math, reviews, root causes) and anything
    needing Sol high or more runs on a Mac via codex-run with `-m` (rule 27).
-   Every brief names its lane. Kalon's cap is 3 bounded jobs across both Macs; ours
-   on a Mac: one at a time, none on the Mini during a Kalon gate (8 GB M1).
+   Every brief names its lane. Kalon's cap is 3 bounded jobs across both Macs.
+   DeepSignal always gets ONE Codex slot on the MacBook, whatever Kalon is running
+   (Eugene 2026-11-18, "unblock it"), one DeepSignal job at a time in queue order.
+   If the MacBook is clearly overloaded (critical memory pressure, swap near
+   full), that slot moves to the Mini; never on the Mini during a Kalon gate.
 9. Check real load before launch, counting real Codex processes only. A
    `pgrep codex` count can hit Kalon git commands with `codex/` in a branch
    name (it did on 2026-11-18). Use `pgrep -x codex` and the launch log.
