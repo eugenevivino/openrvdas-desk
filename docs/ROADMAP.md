@@ -110,15 +110,20 @@ non-console cloud or Mac jobs start until the console path is unblocked.
    (only the known `test_basic` Django RED, excused by name).
 5. A usability pass on the checklist (`docs/USABILITY.md`) with the night RED mode one tap away on every page.
 
-**Dated plan (Pacific dates; each step ends with something usable):**
+**Dated plan v2 (parallel cloud build, Eugene 2026-11-18 "I want it FAST"; Pacific dates, estimates):**
+Cloud runs 6 to 8 Sol-medium tasks at once on disjoint files, each on its own fork branch (briefs in
+`briefs/console/`, prompts in `briefs/cloud/`). The Mac is for Astra reviews, Playwright and RAM-safe work only.
 | Date | Milestone | Done when |
 |---|---|---|
-| Wed 11-19 | Console core builds, MVP scope frozen with the dashboard thread | modules 1 to 4 briefed or built, "added functionality" list approved by Eugene |
-| Fri 11-21 | Console runs on the sample config | test 1 passes on the Mini; health page and a QARTOD flag column visible |
-| Tue 11-25 | All pages and red night mode | usability checklist walked; independent Astra review of the console (ultra) |
-| Fri 11-28 | 24-hour soak starts (must start by 11-29 to finish) | soak harness records memory every minute |
-| Mon 12-01 | Soak and source-loss results | tests 2 and 3 pass or a fix round is queued |
-| Tue 12-02 | MVP candidate | Linux gate GREEN on the sha; Eugene reviews; nothing goes upstream (D-ARCH6) |
+| Tue 11-18 night | Wave 0 submitted | test harness pieces (logger fixture, soak runner, source-loss test) and core v2 running in cloud |
+| Wed 11-19 | Wave 1 submitted and landing | charts, health, bridge, auto pages, stale banner, kiosk and Night, install.sh and self-test, each on its branch |
+| Thu 11-20 | Integration branch `deepsignal/console-mvp` | all pieces merged on the fork, vitest green on Linux Node 22, Astra review (ultra) running |
+| Fri 11-21 | Test 1 and the gate | console runs on the sample config; Linux gate GREEN on the sha; usability checklist walked |
+| Sat 11-22 | 24-hour soak starts | harness records memory every minute |
+| Mon 11-24 | Soak and source-loss results | tests 2 and 3 pass or a fix round is queued |
+| Tue 11-25 | MVP candidate (one week earlier than Dec 2) | Eugene reviews; nothing goes upstream (D-ARCH6) |
+Risks that can move dates: core v2 landing late (everything branches from it), the cloud env needing Node 22,
+the Linux gate fix round (r3) and its review, Mac RAM pressure for the reviews, and the soak needing a quiet Mac or the Mini.
 
 **Dependencies in build order:** console core, Health page, QARTOD flags on the console (branch
 `deepsignal/qartod-flags`, built, needs independent review), instrument history lookup on the console (#52,
