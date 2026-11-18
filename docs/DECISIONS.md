@@ -441,3 +441,6 @@ SUPERSEDED by D-AI188a: API model is primary and on by default (caps $2/day and 
 
 ### D-AI188a #188 API-first provider, local as offline fallback (2026-11-18, Eugene)
 Eugene: an API-based model may be better. Provider is pluggable (OpenAI-compatible); default configuration uses the ship's own API key with daily and monthly caps and redacted context packs; local model and deterministic briefing are fallbacks. No key means nothing leaves the ship. Supersedes the "local default, cloud off" line in D-AI188 for the default configuration; enabling the key and budget remains Eugene's. Advise-only. A fix round on the running cloud task follows acceptance.
+
+### D-SEC0 CDS exposure noted for the console MVP (2026-11-18, logged by build lead)
+Upstream CachedDataServer binds all interfaces on 8766 with unauthenticated publish (also via nginx /cds-ws). Console MVP install brief (briefs/console/install.md) must bind CDS to localhost and proxy read-only; full lockdown belongs to the security block #189-#198. Console stays LAN-only until then.
