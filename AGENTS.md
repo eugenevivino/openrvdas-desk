@@ -38,6 +38,12 @@ Python 3.11 or newer; the team standard is Homebrew Python 3.12.
 - Django tests need `python manage.py test test.django_gui`; plain pytest
   cannot create their database. Settings come from the `.dist` templates.
 
+## Codex
+
+Codex jobs follow `docs/CODEX.md`: launch through `~/bin/codex-run`, right-size
+the model, one bounded task per fresh session, tight briefs, one job at a time
+on the Mini and none during a Kalon gate.
+
 ## How work flows
 
 1. Lead turns an ask into a brief (`briefs/TEMPLATE.md`): goal, failing test

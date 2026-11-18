@@ -7,7 +7,7 @@ stop and ask the lead.
 - Decision: D-<id> this implements
 - Risk tier: low | medium | high (OPERATING-SYSTEM section 6)
 - Base: fork `dev` at <sha>, branch `<area>/<slug>`
-- Model: <cheapest likely to succeed>
+- Model and effort: <tier from docs/CODEX.md section 2>, fresh session, under 40 turns
 - Upstream home: core | openrvdas_contrib | separate package | fork only
 
 ## Goal
@@ -35,6 +35,14 @@ Dependents of the changed code (callers, configs, docs) to check.
 ## Trust boundaries and data integrity
 What input is untrusted here. How stale, missing, and bad values are shown.
 What must never change (timestamps, field names, existing output bytes).
+
+## Non-goals and banned
+No refactors, renames, formatting, or default changes. No loosened, skipped or
+deleted tests, no swallowed errors, no sleeps for ordering (docs/CODEX.md rule 13).
+
+## Report format
+Diff summary, test names, before and after test output, anything uncertain,
+verified claims separate from inferred. Keep it under the line cap set here: <N> lines.
 
 ## Stop rule
 No code change needed: stop and report. Two fix rounds still red: stop and

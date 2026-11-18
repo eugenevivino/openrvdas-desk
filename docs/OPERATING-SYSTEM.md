@@ -143,6 +143,8 @@ questions, and what not to redo. The next session starts from that file and
 
 ## 9. Cost and models
 
+Full Codex rules, ported from Kalon with sources: `docs/CODEX.md`. Summary:
+
 - Cheapest model with a good chance: small models for mechanical edits and
   reading; a mid model for normal code; the strongest model for high-risk
   review, decision-desk rulings, and hard root causes.
