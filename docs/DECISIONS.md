@@ -260,3 +260,9 @@ Django fix stays on its fork branch and is also on hold for the upstream
 developer's reply (issue filed by Eugene). The vector wind module is done and
 parked on the fork.
 
+### D-TEAM8 DeepSignal always has one Codex slot on the MacBook (2026-11-18, DECIDED)
+Eugene: "So unblock it." The one-job-only-if-Kalon-leaves-room wait left the gate job
+idle for 30 minutes under 2 to 9 Kalon jobs. Now DeepSignal always gets one slot,
+one job at a time, queue order: Linux gate, QARTOD flags build, then the Mac-lane
+briefs. Overloaded MacBook (memory pressure or swap): use the Mini for that slot.
+
