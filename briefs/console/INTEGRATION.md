@@ -37,7 +37,7 @@ python3 -m pytest contrib/deepsignal/test/ -v -m "lead_run or not lead_run"
 That covers:
 - `test_console_live.py`: value, SUSPECT while LIVE, AGING to STALE, Night red pixel scan, no light first frame.
 - `test_bridge_browser.py`: Bridge in Night red with no G or B > 0.15 R, and no vertical scroll at 1366x768.
-- `test_source_loss_browser.py`: kill mwx1, the tile shows STALE within 10 s, then LIVE after the restart.
+- `test_source_loss_browser.py`: kill mwx1, the tile shows STALE within 10 s, then LIVE after the logger is back (D-RECOVER1: restart is an operator action or supervisord on the 2024 contrib-base core; current core restarts it itself).
 - Harness: `test_fixture.py`, `test_source_loss.py`, `test_soak.py` (smoke).
 - Install: `test_install.py`.
 
