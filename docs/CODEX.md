@@ -135,10 +135,7 @@ A concrete example, the fix for the Django bug, on a topic branch:
 
 ## 4. Open items for Eugene
 
-- Confirm `~/bin/codex-run` and `~/bin/codex-model-audit.sh` exist on the
-  MacBook and the Mini (not verified; those machines are Kalon's setup).
-- Confirm Sol and Luna are available on our plan, and whether `codex-run`
-  needs `KALON_ALLOW_ASTRA=1` for the Astra review tier.
+- `~/bin/codex-run` exists and is identical on both Macs (verified 2026-11-18).
 
 ## 5. Retrievers and the ledger (rules 19 and 21)
 
