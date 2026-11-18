@@ -40,3 +40,5 @@ push only deepsignal/* fork branches and desk branches; two failures of the same
 - Mini: ~/.codex-deepsignal does not exist there (only Kalon's ~/.codex); not logged in. mini-finish.sh not run.
 - install-clock Actions result pending (review note: actions/checkout@v6 unpinned).
 - #79, #54: held for Mac Astra builds when the lead says.
+- #130 instrument-init: task_e_6afd56a1d0a0832fa7f14f0a38c28e1c (deepsignal/p2-instrument-init, high risk, nothing merged)
+Last sync 2026-11-18T07:44:42Z: fork branches pushed ok; upstream fetched ok (core dev 1a6f1edb, contrib master 3b4b76e6); desk main pushed after this line.
