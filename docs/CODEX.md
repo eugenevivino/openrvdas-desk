@@ -181,3 +181,11 @@ Legacy Codex Cloud environment `deepsignal` on `eugenevivino/openrvdas` (created
 picker, from inside a clone of the fork, under `CODEX_HOME=$HOME/.codex-deepsignal`. Cloud is always
 Sol medium. Prompts must carry the full brief inline (cloud cannot see this repo): see
 `briefs/cloud/`. RAM rule (shared with Kalon, 2026-11-18): at most one DeepSignal Codex job per Mac; hold a launch when free RAM is under 4 GB or swap used is over 3.8 GB (ds-codex refuses with exit 11); big clones get `gc.auto=0` and `maintenance.auto=false` (an auto repack once pushed swap to 22 GB); the Mini may be used, one heavy job, 4 GB floor, own folder, tell the build lead first; move work that can go to cloud off the Macs, never signal Kalon processes.
+
+## 8. Shared-machine agreement with Kalon (2026-11-18, agreed by both)
+`/private/tmp/deepsignal` is ours and Kalon never touches it; we never touch `/private/tmp/kalon`. Kalon scratch repos
+now have `gc.auto=0` and `maintenance.auto=false`, and Kalon's codex-run disables sub-agents (fail closed). MacBook:
+free RAM at least 4 GB and swap under 3.8 GB. Mini: free RAM at least 2 GB and swap under 2.4 GB (`DS_MIN_FREE_MB=2048`,
+`DS_MAX_SWAP_MB=2457`, pressure level 1). One heavy job per project per machine, re-check right before launch,
+Kalon yields first on conflict.
+
