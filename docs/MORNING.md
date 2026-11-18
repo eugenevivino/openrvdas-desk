@@ -1,5 +1,8 @@
 # Morning queue for Eugene (newest first)
 
+- CRITICAL security package, offline first: signed audit (#32), local identity, trust zones (#115, #151, #155). Needs your review before anything is enabled.
+- #164 CalibrationTransform must NOT be enabled on any live config until you approve.
+
 - #137 eez-mode (critical: controls logging): lead check with a real Marine Regions file and a recorded track. EEZ data never committed until the Marine Regions license is verified.
 - FYI no action: live checks of #131 against OpenVDM 2.17 sample data and #133 against a Sealog demo server come after merge.
 

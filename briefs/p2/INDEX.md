@@ -43,6 +43,15 @@ Written 2026-11-18 by the parity thread, ranked by value from docs/TARGET-PARITY
 | 37 | #158 | [Seismic shot and source QC, listen-only](158-seismic-shot-qc.md), prompt `briefs/cloud/p2-seismic-shot-qc.md` | `deepsignal/p2-seismic-shot-qc` | `3b4b76e` contrib tree | cloud | py | 5 | none; uses core ParseTransform for the ship's shot log | no |
 | 38 | #145 | [ADCP health and cross-checks, listen-only](145-adcp-health.md), prompt `briefs/cloud/p2-adcp-health.md` | `deepsignal/p2-adcp-health` | `3b4b76e` contrib tree | cloud | py | 5 | none to build; reads #139 field names in use | no |
 | 39 | #147 | [Sound-speed profile manager](147-sv-manager.md), prompt `briefs/mac/p2-sv-manager.md` | `deepsignal/p2-sv-manager` | `3b4b76e` contrib tree | mac | py | 5 | none to build; optional #112 (XBT) and #140 fields | no |
+| 40 | #162 | [Console chain view v0 (MVP stretch)](162-console-chain.md), prompt `briefs/cloud/p2-console-chain.md` | `deepsignal/p2-console-chain` | `deepsignal/console-contract` | cloud | node | 9 | see brief | no |
+| 41 | #162 | [Stream health engine](162-stream-health.md), prompt `briefs/cloud/p2-stream-health.md` | `deepsignal/p2-stream-health` | `3b4b76e` contrib tree | cloud | py | 9 | see brief | no |
+| 42 | #164 | [Calibration and units registry](164-cal-units-registry.md), prompt `briefs/cloud/p2-cal-units-registry.md` | `deepsignal/p2-cal-units-registry` | `3b4b76e` contrib tree | cloud | py | 9 | see brief | no; #164 transform enabled on live configs only after Eugene |
+| 43 | #165 | [Time health](165-time-health.md), prompt `briefs/cloud/p2-time-health.md` | `deepsignal/p2-time-health` | `3b4b76e` contrib tree | cloud | py | 9 | see brief | no |
+| 44 | #163 | [Config provenance](163-config-provenance.md), prompt `briefs/cloud/p2-config-provenance.md` | `deepsignal/p2-config-provenance` | `3b4b76e` contrib tree | cloud | py | 9 | see brief | no |
+| 45 | #168 | [Unified event timeline](168-event-timeline.md), prompt `briefs/cloud/p2-event-timeline.md` | `deepsignal/p2-event-timeline` | `3b4b76e` contrib tree | cloud | py | 9 | see brief | no |
+| 46 | #167 | [Alarm-linked runbooks](167-runbooks.md), prompt `briefs/cloud/p2-runbooks.md` | `deepsignal/p2-runbooks` | `3b4b76e` contrib tree | cloud | py | 9 | see brief | no |
+| 47 | #166 | [Continuous archive readiness](166-archive-readiness.md), prompt `briefs/cloud/p2-archive-readiness.md` | `deepsignal/p2-archive-readiness` | `3b4b76e` contrib tree | cloud | py | 9 | see brief | no |
+| 48 | #169 | [Science trust view](169-console-trust.md), prompt `briefs/cloud/p2-console-trust.md` | `deepsignal/p2-console-trust` | `deepsignal/console-contract` | cloud | node | 9 | see brief | no |
 
 ## Not briefed, and why
 

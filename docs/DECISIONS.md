@@ -421,3 +421,6 @@ Every DeepSignal cross-check fuses at least two independent sources, weights eac
 
 ### D-ONBOARD1a onboard-wizard un-parked (2026-11-18, logged by build lead)
 Its second "failure" was the paho-mqtt NameError on the Mac (contrib mqtt_reader reads mqtt.* at class definition), not a real defect. Acceptance now uses a stub at /private/tmp/deepsignal/shims/paho/ (nothing installed). Ten modules re-queued for acceptance with the stub. The real Linux gate installs real dependencies, so stubbed passes are provisional until the gate runs them.
+
+### D-POSITION1 DeepSignal is the vessel's operational truth layer (2026-11-18, Eugene approved the pain-points recommendations)
+Interoperate with UHDAS, SIS and SCS, do not replace them. Freshness and staleness already in the MVP, nothing moves; console chain v0 (#162) is an MVP stretch that joins console-mvp only if green by Fri 11-21. Phase 2 order after the MVP: truth-layer core (#162, #164, #165, #163, #168, #167, #166, #169), then ecosystem (#133, #131, #134, #132), then setup assist, then parity. Seismic #158 and #159 held from merge-priority until interviews (evidence rated insufficient); #158 may finish but is not prioritized.

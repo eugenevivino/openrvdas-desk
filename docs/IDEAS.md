@@ -5,7 +5,7 @@ everything, so nothing raised in a thread is lost. Add a row the day an idea
 comes up. Never delete a row: mark it DROPPED with a reason.
 
 
-**Numbering: the build lead owns IDEAS numbers (next free: 174; 161 taken by fusion (ship thread); 162-173 reserved for the sonar-science thread). Other threads do not
+**Numbering: the build lead owns IDEAS numbers (next free: 182; 161 fusion, 162-169 operational truth layer, 170-181 reserved for the sonar-science thread); 162-173 reserved for the sonar-science thread). Other threads do not
 assign numbers. Write ideas as unnumbered drafts in your patch notes and ask the build
 lead for a range, to avoid collisions (three-way collision on 2026-11-18).**
 Status: PROPOSED (idea only), DESIGNED (design doc exists), BUILDING (brief
@@ -285,3 +285,18 @@ control, engine and winch settings are never changed by DeepSignal, automaticall
 | 159 | Streamer and bird QC | Bird depth, wing and heading from the streamer controller output (vendor documents needed), GeoEel and other digital streamers through SEG-D or SEG-Y file headers and traces: dead and noisy channels, depth and feather | 3/5/2 | PROPOSED | 3 | Eugene, T-SHIP |
 | 160 | Protected-species and mitigation view | Read-only PSO page: gun state, ramp-up timer, shutdowns, distance to EEZ edge (#137), transmit timeline (#144); PSO events to Sealog (#133); never powers guns down | 4/4/3 | PROPOSED | 3 | Eugene, T-SHIP |
 | 161 | Sound-speed fusion and inferred error | Weight casts, probe, TSG, nearby Argo floats, WOA climatology and RTOFS or HYCOM forecasts by quality, age and distance; use multibeam outer-beam depth bias as evidence of a wrong profile; prepares the climatology and model files #147 uses (ashore or when bandwidth allows) | 4/5/3 | PROPOSED | 3 | Eugene (D-FUSE1), T-SHIP |
+
+## Operational truth layer (2026-11-18, parity thread; numbers 162-169, from docs/PAIN-POINTS-MAP.md)
+
+Eugene approved acting on the pain-points map recommendations (2026-11-18 08:46Z).
+
+| # | Idea | One line | Value | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| 162 | Stream health chain | Per-stream stages (sensor, endpoint, arriving, parsed, time, calibration, derived, store) with root cause, affected outputs, transition alerts and timeout nulls; console chain view v0 ships as MVP stretch. Briefs `briefs/p2/162-stream-health.md`, `briefs/p2/162-console-chain.md` | 5/4/4 | DESIGNED | 2 | PAIN-POINTS |
+| 163 | Config provenance | Versioned cruise and device configs with semantic diffs in ship words, required notes for high-risk changes, baseline drift. Brief `briefs/p2/163-config-provenance.md` | 5/3/4 | DESIGNED | 2 | PAIN-POINTS |
+| 164 | Calibration and units registry | Authoritative coefficients and units with effective dates, certificates, two-person verify, affected outputs and unit-suspicion warnings (extends #7). Brief `briefs/p2/164-cal-units-registry.md` | 5/5/3 | DESIGNED | 2 | PAIN-POINTS |
+| 165 | Time health | Host chrony or timesyncd state, per-stream timestamp source and confidence, latency, backward steps, inter-stream skew. Brief `briefs/p2/165-time-health.md` | 5/5/3 | DESIGNED | 2 | PAIN-POINTS |
+| 166 | Continuous archive readiness | Live expected-versus-present datasets, coverage, gaps, checksums, metadata and transfer status, so nothing is found missing at cruise end. Brief `briefs/p2/166-archive-readiness.md` | 3/4/5 | DESIGNED | 2 | PAIN-POINTS |
+| 167 | Alarm-linked runbooks | Per-stream vessel runbooks (wiring, endpoint, power, spares, causes by stage, escalation) opened from alarms, with recorded fixes. Brief `briefs/p2/167-runbooks.md` | 5/2/2 | DESIGNED | 2 | PAIN-POINTS |
+| 168 | Unified event timeline | One timeline of config changes, transitions, init, EEZ, overrides, fixes, Sealog events and notes; "what changed before this" query and daily digest. Brief `briefs/p2/168-event-timeline.md` | 4/5/4 | DESIGNED | 2 | PAIN-POINTS |
+| 169 | Science trust view | Read-only console page: per variable freshness, QC, calibration, source, units, chain root and a plain verdict; never "looks good" without a QC flag. Brief `briefs/p2/169-console-trust.md` | 2/5/4 | DESIGNED | 2 | PAIN-POINTS |
