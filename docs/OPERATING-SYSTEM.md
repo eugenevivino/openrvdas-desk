@@ -111,6 +111,9 @@ Locking test for the gate itself: `python3 -I gate/tests/test_gate.py`.
 
 ## 6. Review by risk
 
+Every review, at any tier, also answers the usability checklist in
+`docs/USABILITY.md` for anything a tech sees or edits (rule 26).
+
 | Tier | What | Review |
 |---|---|---|
 | Low | Docs, tests only, desk files, an isolated new module with no callers yet | One review by a stronger model than the author |

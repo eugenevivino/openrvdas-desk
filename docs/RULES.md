@@ -65,6 +65,9 @@ Changes to this file need Eugene's own message.
     DASRecord, logger YAML, CachedDataServer), is pure Python, and adds no
     dependency beyond OpenRVDAS requirements unless Eugene approves. No PR before
     its tests pass in a real Linux run on Python 3.12 (`gate/gate-linux`).
+26. Everything user-facing is exceptional and easy for a ship tech who is not a
+    software expert. A module is not done until it passes the checklist in
+    `docs/USABILITY.md`, and every PR review includes it.
 
 ## Talking to Eugene
 

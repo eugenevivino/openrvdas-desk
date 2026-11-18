@@ -26,6 +26,9 @@ section, and the list of other modules it depends on (default: none).
 Which OpenRVDAS interfaces it implements, dependencies added (default: none),
 and the Linux test command that must pass before any PR (rule 25).
 
+## Usability (anything a tech sees or edits)
+Answer each line of `docs/USABILITY.md` in the result, or mark N/A with a reason.
+
 ## Acceptance (exact commands)
 ```
 pytest <test file>

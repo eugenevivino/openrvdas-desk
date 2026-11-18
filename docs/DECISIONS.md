@@ -189,3 +189,13 @@ cheapest first (Linux gate, PROPOSED to Eugene, see `briefs/gate-linux.md`):
 2. Linux container (Docker or Colima) on the Mini. Real, local, offline, but the
    Mini is an 8 GB M1 shared with Kalon (rule 17), so it queues behind Kalon.
 3. Codex cloud environment. Fast check only: no receipt we control.
+
+### D-UX1 User-facing must be exceptional for non-expert techs (2026-11-18, DECIDED)
+Eugene: user-facing has to be exceptional and extremely usable, even by techs
+who are not cyber prodigies. Rule 26 and `docs/USABILITY.md` turn that into 14
+checkable lines (sample config, 5-minute enable guide, safe defaults, validated
+config with plain messages, no stack traces as the main message, stale and
+missing shown honestly, night-safe screens, no hidden actions, 15-minute
+enable test). Every review answers it; a FAIL blocks. Applies to the scoreboard,
+the console, the MCP server's replies, error messages and docs alike.
+
