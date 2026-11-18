@@ -34,7 +34,7 @@ Updated 2026-11-17 by the setup thread.
 - Create the desk repo (public or private).
 - Yes for the Mini setup in mini/SETUP.md.
 - First scoreboard make, model, protocol; stale threshold.
-- OK to contact upstream and OSU (drafts first).
+- OK to contact upstream (drafts first).
 
 ## Next bounded task
 - Mini setup, then `gate/remote.sh` on fork `dev` head.

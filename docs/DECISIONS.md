@@ -85,7 +85,7 @@ appendices before the $WICOR writer.
 
 ## Cruise Console (CORIOLIX-class layer)
 
-### D-CONSOLE1 Build an open Cruise Console over OpenRVDAS, after asking OSU (2026-11-17, PROPOSED)
+### D-CONSOLE1 Build an open Cruise Console over OpenRVDAS (2026-11-17, PROPOSED)
 CORIOLIX already uses OpenRVDAS for acquisition; its value is the layer on
 top (sensor registry, event log, QC flags, binned downloads, alerts,
 ship-to-shore sync), with no public license found. Plan: three phases
