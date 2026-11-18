@@ -163,6 +163,7 @@ M = [
  ('M41', 'Diagnostic screen: raw strings per port, INOP per value', ['MA'], 'Partial', 'Django logger stderr view', 'Console health (#12)', 'Building', 1, 1, 'DS', 5, 1, 3),
  ('M42', 'Status bar: scans per second, current file, silent sensors (CHK MOD)', ['MA'], 'Partial', 'logger status, no per-sensor silence list', 'Console health (#12)', 'Building', 1, 1, 'DS', 5, 2, 4),
  ('M43', 'Web snapshots (PNG every 10 s) for shore and slow links', ['MA'], 'Gap', 'none', 'Shore view (#14), link profiles (#19)', 'Idea', 0.5, 1, 'DS', 2, 3, 5),
+ ('M44', 'Sensor initialization over the wire: startup and setup commands, reply checks, re-init after power loss or reconnect, audit log of what was sent', ['MA'], 'Partial', '`PolledSerialReader` `start_cmd` (sent once at open, reply not checked, not resent after a power cycle), `stop_cmd`, `pre_read_cmd`, `__PAUSE__`; serial only. MetAcq 2.15 documents only per-module poll commands (CMD, CMD2, CMD3 in the .ACQ file); init is silent in its manual', 'Instrument init profiles (#130)', 'Briefed', 1, 1, 'DS', 5, 3, 1),
 ]
 
 

@@ -17,8 +17,8 @@ hand-edit the tables below.
 | Scope | Rows | Core today | Core + built DeepSignal today | With briefed and planned work | With this doc's drafts |
 |---|---|---|---|---|---|
 | CORIOLIX | 42 | 38% | 38% | 70% | 98% |
-| MetAcq | 43 | 52% | 55% | 74% | 98% |
-| Combined | 85 | 45% | 46% | 72% | 98% |
+| MetAcq | 44 | 52% | 55% | 75% | 98% |
+| Combined | 86 | 45% | 47% | 73% | 98% |
 
 - **Today** means code that runs now: OpenRVDAS core plus DeepSignal modules
   that are built and tested (only vector wind, #4).
@@ -173,6 +173,7 @@ PROPOSED), **none**.
 | M41 | Diagnostic screen: raw strings per port, INOP per value | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Partial: Django logger stderr view | Console health (#12) (Building) | 0.5 | 1 | 1 | DS |
 | M42 | Status bar: scans per second, current file, silent sensors (CHK MOD) | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Partial: logger status, no per-sensor silence list | Console health (#12) (Building) | 0.5 | 1 | 1 | DS |
 | M43 | Web snapshots (PNG every 10 s) for shore and slow links | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Gap: none | Shore view (#14), link profiles (#19) (Idea) | 0 | 0.5 | 1 | DS |
+| M44 | Sensor initialization over the wire: startup and setup commands, reply checks, re-init after power loss or reconnect, audit log of what was sent | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Partial: `PolledSerialReader` `start_cmd` (sent once at open, reply not checked, not resent after a power cycle), `stop_cmd`, `pre_read_cmd`, `__PAUSE__`; serial only. MetAcq 2.15 documents only per-module poll commands (CMD, CMD2, CMD3 in the .ACQ file); init is silent in its manual | Instrument init profiles (#130) (Briefed) | 0.5 | 1 | 1 | DS |
 
 ### 3c. Already planned (IDEAS.md and briefs)
 
@@ -256,20 +257,21 @@ yet. Scores are judgement; argue with them in this file.
 | 47 | M29 | $WICOR UDP broadcast every second | 4 | 3 | 2 | 9 | yes | DS |
 | 48 | M37 | Tabulated big numbers plus position | 3 | 3 | 3 | 9 | yes | DS |
 | 49 | M41 | Diagnostic screen: raw strings per port, INOP per value | 5 | 1 | 3 | 9 | yes | DS |
-| 50 | C19 | Post-processing source assignment (which GPS feeds salinity, by location) | 3 | 3 | 2 | 8 | NO: draft below | core |
-| 51 | M24 | Configuration copied next to each day of data | 2 | 3 | 3 | 8 | yes | core |
-| 52 | C41 | UNOLS planning integration (MFP, MOMS) as metadata source of truth | 2 | 2 | 3 | 7 | NO: draft below | DS |
-| 53 | M15 | Antenna lever-arm correction of position | 2 | 3 | 2 | 7 | NO: draft below | core |
-| 54 | M31 | Sound velocity to multibeam (per-target format) | 3 | 3 | 1 | 7 | NO: draft below | core |
-| 55 | M7 | Device definitions for the MetSpecs sensor list (RM Young, Vaisala, Eppley, SBE45/43, QSR, LCI90) | 4 | 2 | 1 | 7 | NO: draft below | core |
-| 56 | M33 | Winch data to signboards | 4 | 2 | 1 | 7 | yes | DS |
-| 57 | C28 | Retention settings (raw files, backup, database) | 3 | 1 | 2 | 6 | NO: draft below | core |
-| 58 | M28 | Emulation mode with "emulated" flag | 2 | 2 | 2 | 6 | NO: draft below | core |
-| 59 | M3 | ADAM/DGH analog-to-RS485 modules (ASCII protocol) | 3 | 2 | 1 | 6 | NO: draft below | core |
-| 60 | C22 | Sensor groups (parent and child sensors shown together) | 2 | 2 | 2 | 6 | yes | DS |
-| 61 | C42 | Site-wide message banner | 2 | 2 | 2 | 6 | yes | DS |
-| 62 | M38 | MetBig: huge met values for the bridge, night-safe | 3 | 2 | 1 | 6 | yes | DS |
-| 63 | M4 | NI DAQ / USB analog input | 1 | 1 | 0 | 2 | NO: draft below | core |
+| 50 | M44 | Sensor initialization over the wire: startup and setup commands, reply checks, re-init after power loss or reconnect, audit log of what was sent | 5 | 3 | 1 | 9 | yes | DS |
+| 51 | C19 | Post-processing source assignment (which GPS feeds salinity, by location) | 3 | 3 | 2 | 8 | NO: draft below | core |
+| 52 | M24 | Configuration copied next to each day of data | 2 | 3 | 3 | 8 | yes | core |
+| 53 | C41 | UNOLS planning integration (MFP, MOMS) as metadata source of truth | 2 | 2 | 3 | 7 | NO: draft below | DS |
+| 54 | M15 | Antenna lever-arm correction of position | 2 | 3 | 2 | 7 | NO: draft below | core |
+| 55 | M31 | Sound velocity to multibeam (per-target format) | 3 | 3 | 1 | 7 | NO: draft below | core |
+| 56 | M7 | Device definitions for the MetSpecs sensor list (RM Young, Vaisala, Eppley, SBE45/43, QSR, LCI90) | 4 | 2 | 1 | 7 | NO: draft below | core |
+| 57 | M33 | Winch data to signboards | 4 | 2 | 1 | 7 | yes | DS |
+| 58 | C28 | Retention settings (raw files, backup, database) | 3 | 1 | 2 | 6 | NO: draft below | core |
+| 59 | M28 | Emulation mode with "emulated" flag | 2 | 2 | 2 | 6 | NO: draft below | core |
+| 60 | M3 | ADAM/DGH analog-to-RS485 modules (ASCII protocol) | 3 | 2 | 1 | 6 | NO: draft below | core |
+| 61 | C22 | Sensor groups (parent and child sensors shown together) | 2 | 2 | 2 | 6 | yes | DS |
+| 62 | C42 | Site-wide message banner | 2 | 2 | 2 | 6 | yes | DS |
+| 63 | M38 | MetBig: huge met values for the bridge, night-safe | 3 | 2 | 1 | 6 | yes | DS |
+| 64 | M4 | NI DAQ / USB analog input | 1 | 1 | 0 | 2 | NO: draft below | core |
 
 ### Top 5 gaps (merged across duplicate CORIOLIX and MetAcq rows)
 
@@ -412,7 +414,7 @@ transforms, plus the servers. The plan has three layers:
 | Component | Kind | No-YAML setup | Auto-detect | Notes |
 |---|---|---|---|---|
 | SerialReader | reader | guided (#114, #126) | yes: port and baud scan (#125) | never writes to the port |
-| PolledSerialReader | reader | form (#128); ADAM recipe (#121) | partial: reported as "silent, may need polling" | polling commands come from the device type |
+| PolledSerialReader | reader | form (#128); ADAM recipe (#121); init profiles (#130) | partial: reported as "silent, may need polling" | polling and init commands come from a reviewed profile, never from probing |
 | UDPReader | reader | guided (#114, #126) | yes: passive listen on local ports (#125) | |
 | TCPReader | reader | form (#128) | named target only (#125) | no network scanning, by design |
 | NetworkReader, SocketReader | reader | form (#128) | named target only | older network readers |

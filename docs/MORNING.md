@@ -1,5 +1,7 @@
 # Morning queue for Eugene (newest first)
 
+- #130 instrument-init: after merge, needs a real-hardware check with a tech present (it writes to instruments). Not run before then.
+
 - #115 roles: pick the login layer (Django accounts, FastAPI JWT, or a reverse proxy). The role engine is built without login; #105 REST binds to localhost until you choose.
 - #120 cruise metadata: do you have access to MFP or MOMS exports? v1 ships without that import.
 - NCEI KAOU archive blocks robots: a person must download a real SAMOS file by hand if you want byte-exact tests (optional).

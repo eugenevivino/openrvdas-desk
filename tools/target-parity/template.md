@@ -257,7 +257,7 @@ transforms, plus the servers. The plan has three layers:
 | Component | Kind | No-YAML setup | Auto-detect | Notes |
 |---|---|---|---|---|
 | SerialReader | reader | guided (#114, #126) | yes: port and baud scan (#125) | never writes to the port |
-| PolledSerialReader | reader | form (#128); ADAM recipe (#121) | partial: reported as "silent, may need polling" | polling commands come from the device type |
+| PolledSerialReader | reader | form (#128); ADAM recipe (#121); init profiles (#130) | partial: reported as "silent, may need polling" | polling and init commands come from a reviewed profile, never from probing |
 | UDPReader | reader | guided (#114, #126) | yes: passive listen on local ports (#125) | |
 | TCPReader | reader | form (#128) | named target only (#125) | no network scanning, by design |
 | NetworkReader, SocketReader | reader | form (#128) | named target only | older network readers |

@@ -27,6 +27,7 @@ Written 2026-11-18 by the parity thread, ranked by value from docs/TARGET-PARITY
 | 21 | #128 | [Component catalog: every reader, writer and transform as a form](128-component-catalog.md), prompt `briefs/cloud/p2-component-catalog.md` | `deepsignal/p2-component-catalog` | `3b4b76e` contrib tree | cloud | py | 5 | none; #114 wizard, #126 generator, console forms and the MCP gateway (#64) all read its output | no |
 | 22 | #126 | [Cruise config generator from the instrument inventory](126-config-from-inventory.md), prompt `briefs/cloud/p2-config-from-inventory.md` | `deepsignal/p2-config-from-inventory` | `3b4b76e` contrib tree | cloud | py | 5 | reads #52 instrument history YAML by path and device types from contrib/devices; no code imports | no |
 | 23 | #127 | [Cruise config linter](127-config-lint.md), prompt `briefs/cloud/p2-config-lint.md` | `deepsignal/p2-config-lint` | `3b4b76e` contrib tree | cloud | py | 5 | none; complements core `validate_config` (schema) with ship-sense checks | no |
+| 24 | #130 | [Instrument init profiles (sensor setup over the wire)](130-instrument-init.md), prompt `briefs/cloud/p2-instrument-init.md` | `deepsignal/p2-instrument-init` | `3b4b76e` contrib tree | cloud | py | 6 | none; #121 and #114 produce profiles | no (hardware check with a tech present, after merge) |
 
 ## Not briefed, and why
 

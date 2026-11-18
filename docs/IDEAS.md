@@ -5,7 +5,7 @@ everything, so nothing raised in a thread is lost. Add a row the day an idea
 comes up. Never delete a row: mark it DROPPED with a reason.
 
 
-**Numbering: the build lead owns IDEAS numbers (next free: 130). Other threads do not
+**Numbering: the build lead owns IDEAS numbers (next free: 131). Other threads do not
 assign numbers. Write ideas as unnumbered drafts in your patch notes and ask the build
 lead for a range, to avoid collisions (three-way collision on 2026-11-18).**
 Status: PROPOSED (idea only), DESIGNED (design doc exists), BUILDING (brief
@@ -230,4 +230,5 @@ OpenRVDAS input and output, not just serial. Coverage table: `docs/TARGET-PARITY
 | 127 | Cruise config linter | Ship-sense checks beyond schema validation: shared ports, loggers missing from modes, nothing feeding the cache, no logfile in log modes. Brief `briefs/p2/127-config-lint.md` | 5/1/2 | DESIGNED | 2 | T-PARITY |
 | 128 | Component catalog | Introspect every reader, writer and transform into JSON Schema forms with plain labels, availability of optional dependencies and kwarg checks, so nothing in OpenRVDAS needs hand-written YAML. Brief `briefs/p2/128-component-catalog.md` | 5/2/3 | DESIGNED | 2 | T-PARITY, EUG |
 | 129 | Derived-product suggester | When the fields for true wind, vector averages, salinity, dew point or QC ranges are present, propose the transform (#106, #112, #4, #8) with a preview, for a tech to accept | 4/4/2 | PROPOSED | 3 | T-PARITY |
+| 130 | Instrument init profiles | Per-instrument, reviewed command profiles sent over the wire: startup and setup (mode, rate, units), optional instrument clock set, reply checks with timeouts and retries, re-init after silence or reconnect, and an append-only log of every byte sent and every reply. Only commands listed in a profile are ever sent; no probing. Extends core `start_cmd`, which sends once at open, never checks a reply and is not resent after a power cycle. Wizard (#114) and device pack (#121) supply profiles. Brief `briefs/p2/130-instrument-init.md`. Eugene 2026-11-18: "sensor initiation stuff over the wire. We need to do that too." | 5/3/1 | DESIGNED | 2 | Eugene, T-PARITY M44 |
 
