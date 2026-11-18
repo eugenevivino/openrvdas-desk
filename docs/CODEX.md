@@ -174,3 +174,12 @@ login, workspace, cloud environments or config.
 - Sol and Astra (gpt-6.2-*, gpt-6.1-sol, gpt-6-*): low, medium, high, xhigh, max, **ultra** (top). Luna stops at max.
 - Defaults: gpt-6.2-sol and gpt-6.2-astra low, gpt-6-luna medium. A bad value is refused at job start, per model.
 - Eugene's rule (2026-11-18): when a decision needs elevated judgment, consult Astra at `ultra`, read-only, one job at a time.
+
+## 7. Cloud environment (live 2026-11-18)
+Legacy Codex Cloud environment `deepsignal` on `eugenevivino/openrvdas` (created by Eugene; the
+32-hex id is in team memory, not in this public repo). Use `--env deepsignal` or the id from the
+picker, from inside a clone of the fork, under `CODEX_HOME=$HOME/.codex-deepsignal`. Cloud is always
+Sol medium. Prompts must carry the full brief inline (cloud cannot see this repo): see
+`briefs/cloud/`. RAM rule: at most one DeepSignal Codex job per Mac, check memory pressure before
+every Mac launch and hold if it is high, move work that can go to cloud off the Macs, never signal Kalon processes.
+
