@@ -41,15 +41,21 @@ well-specified code modules, in parallel, one brief per task. Astra work (math,
 reviews) and anything needing Sol high stays on a Mac (rule 8). Every brief
 names its lane. Nobody types code either way.
 
-## Exact cloud invocation (DRAFT, flags unverified)
+## Exact cloud invocation (flags verified from `codex cloud exec --help`, 2026-11-18)
 
-Verified: subcommands exec, status, list, apply, diff. Unverified: flags. Before
-the first job run `codex cloud exec --help` (a plain Codex call, not codex-run)
-and fix this block. Cloud's model is fixed (Sol medium), so a cloud brief says
-"lane: cloud" and there is no `-m` to set (rule 27).
+Usage: `codex cloud exec [OPTIONS] --env <ENV_ID> [QUERY]`. Options: `--branch <BRANCH>`
+(git branch to run on, defaults to the current branch), `--attempts <N>` (best-of-N,
+default 1), `-c key=value`, `--enable` and `--disable <FEATURE>`. There is no `-m`:
+cloud's model is fixed (Sol medium), so a cloud brief says "lane: cloud" (rule 27).
+Environment: published as `deepsignal`, both repos, public internet off, package
+managers on, an install script. The ENV_ID is Eugene's to give; keep it in
+`docs/STATE.md`, not in prompts.
 
 ```
-codex cloud exec --env <environment id from Eugene> "$(cat /private/tmp/deepsignal/<module>/brief.md)"
+codex cloud exec --env <ENV_ID> --branch deepsignal/<module> --attempts 1 "$(cat /private/tmp/deepsignal/<module>/brief.md)"
+```
+```
+codex cloud
 ```
 ```
 codex cloud status <task id>
@@ -60,6 +66,9 @@ codex cloud diff <task id> > /private/tmp/deepsignal/<module>/patches/<task id>.
 ```
 codex cloud apply <task id>
 ```
+`codex cloud` with no arguments opens the task browser. The branch must already exist
+on the fork (they do, at 3b4b76e). Unverified: what `status`, `diff` and `apply` take
+and print; check each with `--help` on first use.
 Then the lead pushes the result as `deepsignal/<module>` on the fork, runs the Linux
 gate on the sha, and routes an Astra 6.2 review. First job on a new environment is a
 small Luna smoke test (a one-line change and its test), recorded in the ledger.
