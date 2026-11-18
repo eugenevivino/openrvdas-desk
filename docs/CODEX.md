@@ -146,3 +146,19 @@ The build loop itself is in `docs/BUILDERS.md`.
 - Typical retriever jobs here: a gate `results.tsv` or junit file, a pytest log, a
   device definition, a long research note, "where is X called".
 
+## 5. Separate Codex home for DeepSignal (Eugene 2026-11-18, D-SEP1)
+
+DeepSignal and Kalon/l2audio are utterly separate. DeepSignal never uses Kalon's Codex
+login, workspace, cloud environments or config.
+- DeepSignal's home is `~/.codex-deepsignal` (own login, own config, own cloud env list).
+  Every DeepSignal `codex` and `codex cloud` command runs with `CODEX_HOME=$HOME/.codex-deepsignal`.
+- Cloud: `CODEX_HOME=$HOME/.codex-deepsignal codex cloud exec --env <ENV_ID> ...`. The env id
+  must come from that home's picker. The l2audio and SoftwareDACSystem envs are never used.
+- Mac jobs: use a DeepSignal-owned wrapper `~/bin/ds-codex` (not Kalon's file): sets that
+  CODEX_HOME, refuses to run without `-m`, refuses any cwd outside `/private/tmp/deepsignal/`,
+  then calls `~/bin/codex-run`. Kalon's script is never edited. Wrapper is a DRAFT until the
+  check of whether codex-run honors an inherited CODEX_HOME is back (UNVERIFIED).
+- If codex-run hardcodes `~/.codex`, ds-codex calls `codex exec` directly with the same
+  guards (model, scratch, sandbox) and no prune.
+- Never copy Kalon's auth files. Copy only non-secret config keys by hand.
+

@@ -291,3 +291,10 @@ This conflicts with D-ARCH3 (modules in `contrib/deepsignal/`, PRs to contrib `m
 No change of course. Both can hold: keep building module-by-module on the fork, and decide
 the packaging and upstream shape before Eugene says the set is ready (D-ARCH6).
 Research: `research/2026-11-18-adoption-strategy.md`. Eugene decides.
+
+### D-SEP1 DeepSignal and Kalon are fully separate, including Codex home (2026-11-18, DECIDED)
+Eugene: "I want these two projects utterly separated." DeepSignal uses its own Codex home
+`~/.codex-deepsignal` and its own workspace and cloud environments, via a DeepSignal-owned
+wrapper `~/bin/ds-codex`. Kalon's workspace, `~/.codex` and `~/bin/codex-run` are not edited
+or relied on for identity. See `docs/CODEX.md` section 5. This replaces the earlier plan to
+use the l2audio-listed environments.

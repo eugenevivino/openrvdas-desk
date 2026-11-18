@@ -13,6 +13,10 @@ Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the Deep
   always Sol medium; Astra and Sol-high work on a Mac (rule 8). Mac jobs pass `-m`
   (rule 27) and use only /private/tmp/deepsignal/ (rule 28).
 
+- SEPARATION (D-SEP1): DeepSignal uses its own Codex home `~/.codex-deepsignal` and
+  workspace, never Kalon's. Cloud env for deepsignal not yet visible to the old login;
+  Eugene is logging in to the new home. Cloud #52 waits on that. Env id in team memory.
+
 ## Code
 - Django fix PR: fork branch `django-gui/shared-config-names` ad10eb1 (on dev 1a6f1ed).
   Django 48 OK, pytest 631 passed, flake8 clean on changed lines. Gate NOT RUN.
