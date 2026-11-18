@@ -3,3 +3,5 @@ date	brief	tool	model	effort	wall_s	tok_in	tok_out	tok_cached	note
 2026-11-18	gate-linux	codex	gpt-6.2-sol	high	480	1039295	17432	975104	codex-run, workspace-write, writable_roots=[]; MacBook; 28 tests OK; flake8 not run (not installed)
 2026-11-18	deepsignal-qartod-flags	codex	gpt-6.2-sol	high	800	1492984	26240	1415168	codex-run, MacBook, front_check brief; fork deepsignal/qartod-flags 2724f07a; 19 tests OK; flake8 7.5.0 clean
 2026-11-18	gate-linux-r2	codex	gpt-6.2-sol	high	449	837206	13909	779008	ds-codex, ~/.codex-deepsignal home, MacBook; 43 tests OK; flake8 adds 0 (30 pre-existing E501 in other files)
+2026-11-18	deepsignal-correction-ledger	codex	gpt-6.2-sol	high	1020	2239890	35039	2109696	ds-codex, ~/.codex-deepsignal, MacBook, session 01a1ed59; fork deepsignal/correction-ledger 99c01919; 25 tests OK; flake8 clean
+2026-11-18	deepsignal-correction-ledger (sub-agent)	codex	gpt-6.2-astra	xhigh		1056883	7241	991872	NOT AUTHORIZED: sub-agent 01a1ed60 spawned by the author job via multi_agent; self-review, not independent; ds-codex now disables multi_agent (2ad92c6)
