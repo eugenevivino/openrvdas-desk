@@ -5,7 +5,7 @@
 | auto-pages | `deepsignal/console-mod-auto-pages` | `deepsignal/console-contract` | 2 | node | 1 |
 | bridge | `deepsignal/console-mod-bridge` | `deepsignal/console-contract` | 3 | node | 1 |
 | charts | `deepsignal/console-mod-chart` | `deepsignal/console-contract` | 2 | node | 1 |
-| core-v2 | `deepsignal/console-core-v2` | `deepsignal/console-core` | 3 | node | 2 (after Mac v2 push) |
+| core-v2 | `deepsignal/console-core-v2` | `deepsignal/console-core` @82ec7ca | 3 | node | 1 (Mac v2 pushed 82ec7ca) |
 | fixture | `deepsignal/console-harness-fixture` | `deepsignal/console-contract` | 2 | python | 1 |
 | health | `deepsignal/console-mod-health` | `deepsignal/console-contract` | 2 | node | 1 |
 | install | `deepsignal/console-install` | `deepsignal/console-contract` | 2 | node | 1 |

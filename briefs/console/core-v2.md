@@ -1,6 +1,7 @@
 # Brief: console-core-v2 (implement the contract)
 
 - Decision: D-CONSOLE1, MVP #1 (Eugene 2026-11-18, target 2026-11-25). Risk tier: medium (read-only display)
+- Base state (2026-11-18 07:26Z): deepsignal/console-core is at 82ec7ca. It already has the v2 freshness model (T from page `period` or learned; a provisional 1 s period until two samples), QARTOD quality badges, two night palettes with default dim 0.8, the "Research system monitoring" label, a night-safe boot and error path, and the empty-backfill retry. 26 Vitest tests and the live browser test pass. Reuse that code: move it behind the contract types (store.ts, context.ts, modules/number). Do not rewrite working logic. Existing tests must stay green (adapt imports only).
 - First step: `git merge --no-edit origin/deepsignal/console-contract`. It only adds files, so there should be no conflicts.
 - Upstream home: openrvdas_contrib, `contrib/deepsignal/console/`
 

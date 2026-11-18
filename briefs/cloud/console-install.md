@@ -38,6 +38,7 @@ A tech installs the console on a ship server with one command, then opens one pa
   - Pass/fail rows (word + shape): connected to the cache (URL), number of fields, number of loggers in `status:logger_status`, cruise mode, newest record age, and whether the page files loaded (with any problems).
   - Night palette check: shows the current tokens.
   - A "Copy report" button that copies plain text (falls back to selecting the text).
+- D-SETUP1 (desk DECISIONS): first light in 10 minutes or less with 3 or fewer actions. The docs show exactly 3: run install.sh, open http://<server>/console/, read the self-test page. Time a cold run of the script (it must finish in under 2 minutes on a normal ship server) and report it.
 - Docs `docs/install.md`: Turn it on in 5 minutes, how to see it working, how to turn it off, and what it does NOT do (it does not change OpenRVDAS, loggers or supervisord).
 
 ## Tests first
