@@ -76,3 +76,11 @@ small Luna smoke test (a one-line change and its test), recorded in the ledger.
 Needs Eugene once (account settings): connect `eugenevivino/openrvdas` in Codex
 cloud; environment with Python 3.12, dependencies installed in its setup script,
 agent internet off after setup; then send the environment id.
+
+## Math-heavy work goes to Astra on a Mac, never cloud (Eugene 2026-11-18)
+Anything with real math (uncertainty, drift, dependency or lag estimation, filtering, geometry,
+formula libraries) is built and reviewed by `gpt-6.2-astra` at `high` (or `ultra` for decisions) on the
+MacBook or the Mini, with `KALON_ALLOW_ASTRA=1`. Cloud is Sol medium and is for plain code, adapters,
+pages, writers and harnesses. The Mini is a second Mac lane (Eugene 2026-11-18): one heavy job, 4 GB free-RAM
+floor, own scratch folder `/private/tmp/deepsignal/`, never `/private/tmp/kalon`.
+
