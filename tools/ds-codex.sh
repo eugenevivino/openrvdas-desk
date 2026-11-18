@@ -46,7 +46,8 @@ in_scratch "$PWD" || die 9 "cwd $(pwd -P) is not under $SCRATCH/"
 for d in "${cds[@]+"${cds[@]}"}"; do in_scratch "$d" || die 9 "-C $d is not under $SCRATCH/"; done
 
 # (e) Safety: no full access, no bypass, no widening of writable paths, no profiles, no connectors.
-GUARD_FEATURES=(apps plugins remote_plugin plugin_sharing enable_mcp_apps codex_apps_mcp_2026_07_28 browser_use browser_use_external browser_use_full_cdp_access computer_use in_app_browser)
+# Multi-agent switches are off too: on 2026-11-18 a gpt-6.2-sol job spawned a gpt-6.2-astra xhigh sub-agent (bypassing the Astra opt-in).
+GUARD_FEATURES=(apps plugins remote_plugin plugin_sharing enable_mcp_apps codex_apps_mcp_2026_07_28 browser_use browser_use_external browser_use_full_cdp_access computer_use in_app_browser multi_agent multi_agent_v2 multi_agent_v2_dynamic_tools multi_agent_mode enable_fanout runtime_agent_instances)
 check_cfg() {
   local v="$1" k f g; k="${v%%=*}"; k="${k// /}"
   case "$k" in
