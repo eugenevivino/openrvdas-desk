@@ -43,6 +43,12 @@ The agent submits a **frozen plan**: canonical JSON (RFC 8785 JCS) of exactly wh
 commit, per kind schema. The service computes `plan_digest = "sha384:" + hex(SHA-384(JCS bytes))`
 and stores the plan. From then on the plan is immutable; any change is a new request.
 
+Every frozen plan carries a required `base_revision`: the SHA-384 digest of the live config
+(or device profile) the plan was drafted against. The service rejects a plan without it. At
+commit, the executor compares `base_revision` with the live digest inside the same lock as the
+write and refuses on mismatch (stale base, MCP review E19); the person re-proposes against the
+new base.
+
 The console renders the impact statement **from the stored plan only**, never from agent text:
 
 | Kind | Rendered fields |
@@ -80,14 +86,17 @@ Payload (JCS-canonical before signing):
   "nonce": "base64url 32 random bytes, minted with the request",
   "idempotency_key": "client-supplied, 16-128 chars [A-Za-z0-9_-]",
   "irreversible": true,
-  "device": {"device_id": "ctd-01", "serial": "SBE-1234", "profile_digest": "sha384:...",
+  "device": {"device_id": "ctd-01", "serial": "SBE-1234", "port": "/dev/ttyS3 or host:port",
+             "profile_digest": "sha384:...",
              "bytes_digest": "sha384:...",
              "triggers": [{"event": "on_connect", "max_sends": 1, "window_s": 600}]},
   "issued_at": 1763460005,
   "expires_at": 1763460125
 }
 ```
-- `device` is required for `instrument.init` and absent otherwise (F2).
+- `device` is required for `instrument.init` and absent otherwise (F2). `device.port` (serial path or
+  host:port) binds where the device is as well as what it is; the executor refuses if the
+  configured port for `device_id` differs.
 - `expires_at = issued_at + 120`. Time from the host clock; issuance refused when time health is
   STALE (receipt says why).
 - Signature: ECDSA P-384 with SHA-384 through platform OpenSSL (FIPS profile, section 6.3). Public
@@ -134,7 +143,7 @@ Retries and guessing:
 
 Self-approval refused (approver = proposer, service identity, kiosk); bearer-token request to
 `/approvals/` refused by nginx snippet test; tampered payload, wrong vessel, expired, reused,
-mismatched digest each refused; guess limit voids request; idempotent retry returns recorded
+mismatched digest each refused; stale `base_revision` refused at commit; wrong `device.port` refused; guess limit voids request; idempotent retry returns recorded
 outcome without a second execution; two-person kinds need two distinct humans; `instrument.init`
 receipt without `device` refused; impact page renders exact bytes from stored plan even when the
 agent description lies; clock STALE refuses issuance.
