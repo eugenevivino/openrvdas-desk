@@ -401,3 +401,6 @@ No pushes, PRs, issues or comments to any OceanDataTools repo, by anyone, for an
 
 ### D-BATCH7 Ecosystem and compression decisions (2026-11-18, logged by build lead)
 #135 v1 is lossless-only: zstd via CLI, falling back to xz; offline NetCDF and Parquet deferred (ERDDAP #104 serves netCDF). #132 extends the #120 cruise-meta format, no second metadata model. #109 reads winch-data-processing outputs for SWL and RVSS logic, not re-derived (see docs/ECOSYSTEM.md).
+
+### D-REVIEW1 Astra ultra auto-approval of non-critical changes (2026-11-18, DECIDED by Eugene)
+Astra at ultra (read-only) reviews non-critical changes and PRs; when it recommends approval, merge on the fork or desk without waiting for Eugene. Fork and desk only, never OceanDataTools (D-UPSTREAM0). CRITICAL, queued in MORNING.md and never auto-merged: anything touching OpenRVDAS core behavior, writes to instruments or ship systems (#130 instrument-init), security or auth code (#115, MCP remote/security (e)(f)), the gate itself, or anything Astra flags as risky. Every auto-approval is logged here with the reviewer verdict, branch and head SHA.
