@@ -42,6 +42,7 @@ Written 2026-11-18 by the parity thread, ranked by value from docs/TARGET-PARITY
 | 36 | #157 | [Serial device servers, vendor-neutral (Moxa, Pepperl+Fuchs first)](157-device-servers.md), prompt `briefs/cloud/p2-device-servers.md` | `deepsignal/p2-device-servers` | `3b4b76e` contrib tree | cloud | py | 5 | none; #156 link health folds its fields into link verdicts | no |
 | 37 | #158 | [Seismic shot and source QC, listen-only](158-seismic-shot-qc.md), prompt `briefs/cloud/p2-seismic-shot-qc.md` | `deepsignal/p2-seismic-shot-qc` | `3b4b76e` contrib tree | cloud | py | 5 | none; uses core ParseTransform for the ship's shot log | no |
 | 38 | #145 | [ADCP health and cross-checks, listen-only](145-adcp-health.md), prompt `briefs/cloud/p2-adcp-health.md` | `deepsignal/p2-adcp-health` | `3b4b76e` contrib tree | cloud | py | 5 | none to build; reads #139 field names in use | no |
+| 39 | #147 | [Sound-speed profile manager](147-sv-manager.md), prompt `briefs/mac/p2-sv-manager.md` | `deepsignal/p2-sv-manager` | `3b4b76e` contrib tree | mac | py | 5 | none to build; optional #112 (XBT) and #140 fields | no |
 
 ## Not briefed, and why
 

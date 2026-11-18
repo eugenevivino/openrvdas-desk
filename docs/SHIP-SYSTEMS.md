@@ -6,9 +6,10 @@ Written 2026-11-18 by the ship-systems thread for Eugene's two asks:
    through some kind of pathway."
 2. "Help configure instruments, perhaps even dynamically. Intelligently, even if it means ssh'ing in."
 
-IDEAS #138 to #160. Decisions D-SHIP1 and D-NOC1. Briefs: `briefs/p2/138-iec450-bridge.md`,
+IDEAS #138 to #161. Decisions D-SHIP1, D-NOC1 and D-FUSE1. Briefs: `briefs/p2/138-iec450-bridge.md`,
 `briefs/p2/139-kongsberg-tap.md`, `briefs/p2/140-sv-consistency.md`, `briefs/p2/141-depth-consensus.md`,
-`briefs/p2/156-link-health.md`, `briefs/p2/157-device-servers.md`, `briefs/p2/158-seismic-shot-qc.md`, `briefs/p2/145-adcp-health.md`.
+`briefs/p2/156-link-health.md`, `briefs/p2/157-device-servers.md`, `briefs/p2/158-seismic-shot-qc.md`, `briefs/p2/145-adcp-health.md`,
+`briefs/p2/147-sv-manager.md`.
 
 **Evidence level.** Interface facts below come from vendor documentation and fleet practice as known to the
 lead; each row marks what is verified in the OpenRVDAS source (V) versus a lead to confirm on a real ship (L).
@@ -169,7 +170,7 @@ module misbehaves. Rank orders passive work by value per effort, then by how man
 | 5 | #142 | Time and motion alignment monitor | P | 5/5/2 | M | low | none | PROPOSED |
 | 6 | #146 | Motion and position system status (POS MV Groups, Seapath) | P | 5/4/2 | M | low | #142 | PROPOSED |
 | 7 | #143 | Sonar health board | P | 5/3/3 | S | low | none | PROPOSED |
-| 8 | #147 | SVP cast tracker | P | 4/4/2 | S | low | none | PROPOSED |
+| 8 | #147 | Sound-speed profile manager (section 14) | P, exports files | 5/5/3 | M | medium | #161 | BRIEFED |
 | 9 | #145 | ADCP health and cross-checks (UHDAS, PD0; section 13) | P | 4/5/2 | M | low | #144 | BRIEFED |
 | 10 | #151 | OT network safety kit | P | 5/1/4 | S | none (docs and lint) | every row | PROPOSED |
 | 11 | #144 | Acoustic transmit awareness | P | 3/4/1 | M | low | none | PROPOSED |
@@ -358,7 +359,8 @@ answer "is it the device or the cable".
 Eugene: "integrate VERY well with Moxas and Pepperl+Fuchs devices." Nearly every serial instrument on a
 UNOLS ship reaches the DAS through a Moxa NPort or a Pepperl+Fuchs Comtrol DeviceMaster, so this is where
 most "no data" problems actually live. Eugene added "and other similar devices": Digi, Lantronix, Perle,
-B&B and Advantech, Brainboxes, Sena. Brief: `briefs/p2/157-device-servers.md`, `briefs/p2/158-seismic-shot-qc.md`, `briefs/p2/145-adcp-health.md`.
+B&B and Advantech, Brainboxes, Sena. Brief: `briefs/p2/157-device-servers.md`, `briefs/p2/158-seismic-shot-qc.md`, `briefs/p2/145-adcp-health.md`,
+`briefs/p2/147-sv-manager.md`.
 
 **Vendor-neutral by design.** One driver interface (identify, read ports, say what it can read) and one
 port-status shape for every vendor. v1 drivers: Moxa, Pepperl+Fuchs, and a generic SNMP driver (MIB-II plus
@@ -400,7 +402,8 @@ v3 is the next step.
 
 Eugene: "would be nice to handle seismic (digibird, geoeel, hotshot), etc." Same rule as sonars: **listen
 only**. Gun controllers fire air guns and streamer controllers steer birds; nothing from DeepSignal ever goes
-to them. Brief: `briefs/p2/158-seismic-shot-qc.md`, `briefs/p2/145-adcp-health.md`.
+to them. Brief: `briefs/p2/158-seismic-shot-qc.md`, `briefs/p2/145-adcp-health.md`,
+`briefs/p2/147-sv-manager.md`.
 
 | System | What it emits | Public format? | DeepSignal use | Row |
 |---|---|---|---|---|
@@ -447,3 +450,33 @@ Eugene: "We should also loop ADCP into this." Listen-only, like every sonar. Bri
 
 **The PD0 layout is a data table**, not code, so a wrong offset is a one-line fix. Its first real check is
 a capture on the pilot ship. Synchronization (K-Sync or UHDAS triggers) is read, never set.
+## 14. Sound speed, managed end to end (#140, #147, #161; D-FUSE1)
+
+Eugene: "handle sound-speed", and as a standing principle, "use all available good data within reason to
+improve our outcomes" (D-FUSE1). Sound speed is the best place to start, because a wrong profile bends every
+outer beam and no single source is reliable on its own.
+
+**Three pieces:**
+
+| Row | What | Status |
+|---|---|---|
+| #140 | Live consistency: probe vs TSG vs SV the sonar applied vs profile surface; names the odd one out | BRIEFED (cloud) |
+| #147 | Profile manager: ingest every cast (CTD `.cnv`, XBT `.EDF`, SVP and MVP, CSV), clean, fill the surface from the probe, extend to 12000 m on climatology, track age, distance and quality, advise a new cast with reasons, export SIS `.asvp`, CSV, and template formats (Qinsy, Hypack from a saved sample) | BRIEFED (Mac, Astra high) |
+| #161 | Fusion and inferred error: Argo floats nearby, WOA climatology, RTOFS or HYCOM forecasts prepared ashore or when bandwidth allows, each weighted by quality, age and distance; multibeam outer-beam depth bias (the "smile" or "frown" across the swath) as evidence the profile is wrong | PROPOSED (needs beam-level data beyond #139's summaries, and math review) |
+
+**Flow on watch:** cast taken, file lands in the drop folder, #147 cleans and extends it, the tech reviews and
+exports, the operator loads it in SIS. #140 watches the surface between casts; #147 advises the next cast on
+age, distance, surface drift or water deeper than the cast.
+
+**Write boundary:** v2 prepares the file and offers one-click export into a folder. Loading it into the
+multibeam stays the operator's action. A direct push would be a tier A write (#154) and needs Eugene's
+sign-off first.
+
+**Push-back on scope:** UHDAS needs no profile export. Ocean Surveyor phased-array velocities depend only on
+sound speed at the transducer, which #145 already checks. The Qinsy and Hypack formats are not public, so they
+come in as templates saved from a known-good file, not guessed.
+
+**D-FUSE1 across ship systems:** every cross-check in this document fuses at least two independent
+sources, weights them by quality and age, names the odd one out, and records which sources it used. Heading
+(#145, gyro, GNSS, ADCP), depth (#141, multibeam, single-beam, ADCP bottom track, grid), position (#142,
+sonar, nav, lever arms), shot position (#158), and sound speed here.

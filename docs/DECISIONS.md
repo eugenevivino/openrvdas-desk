@@ -415,3 +415,6 @@ DeepSignal interfaces with sonars, motion systems, the bridge and engineering by
 
 ### D-NOC1 Network monitoring: link health in DeepSignal, NOC tool for the network (2026-11-18, DECIDED by Eugene: "Yes to your recommendation")
 DeepSignal builds per-instrument link health (#156) on what OpenRVDAS already publishes (logger status, stderr fields, cache timestamps) and adds only reachability, rate, error counts, one verdict per link, a read-only health endpoint and a NOC alert webhook. Topology, SNMP and discovery stay in an existing open-source NOC tool (Uptime Kuma, Zabbix or LibreNMS). No Intermapper clone. Probes never touch data ports.
+
+### D-FUSE1 Use all available good data, within reason (2026-11-18, DECIDED by Eugene: "We should use all available good data within reason to improve our outcomes.")
+Every DeepSignal cross-check fuses at least two independent sources, weights each by quality and age, names the odd one out, and records which sources it used. External data (Argo, climatology, ocean models) is fetched ashore or when bandwidth allows, never required for a module to work. Applied first to sound speed (#140, #147, #161) and to heading, depth, position and shot position in `docs/SHIP-SYSTEMS.md`.
