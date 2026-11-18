@@ -460,3 +460,10 @@ reclaimable pages, kernel pressure level 1, swap used not growing versus a readi
 absolute stop at 5.5 GB swap used. Reason: macOS keeps swap allocated while RAM is healthy (16:18Z: 12.9 GB available,
 pressure 1, swap 4.7 GB), so the 3.8 GB swap ceiling stalled all acceptance for hours. Codex jobs (ds-codex) keep the
 shared 3.8 GB swap ceiling unchanged. Nothing of Kalon's is changed. Eugene may veto (MORNING).
+
+## D-RAM2 (Eugene, 2026-11-18 16:41Z): health-based memory gate for all DeepSignal jobs
+Replaces the fixed 3.8 GB swap ceiling and supersedes D-ACCEPT-RAM. One gate for acceptance runs and Codex jobs
+(ds-codex, desk tools/ds-codex): start only when macOS memory pressure is normal (level 1), available RAM including
+reclaimable is at least 3 GB, swap has not grown more than 0.5 GB over 5 minutes, and swap used is under the 8 GB hard
+stop. One heavy DeepSignal job at a time; pause new starts on warn or critical pressure; Kalon still yields first.
+Nothing of Kalon's is changed.
