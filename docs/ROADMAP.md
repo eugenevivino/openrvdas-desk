@@ -10,8 +10,8 @@ support person can use.
 2. Mini setup and first green gate receipt on fork `dev` (mini/SETUP.md).
 3. Confirm the Django `test_basic` failure on `dev` under 3.12. If real,
    draft an upstream issue with a failing test (Eugene sends).
-4. Ask upstream the three placement questions in one message: scoreboard
-   writer, vector wind averaging, MCP server: core, contrib, or separate?
+4. Tell upstream about the overlay (D-ARCH1) and ask which pieces they would
+   want in core later. Draft only; Eugene sends.
 
 ## Phase 1: the overlay package, first modules (D-ARCH1)
 
@@ -81,8 +81,6 @@ anywhere public.
 
 ## Bold bets (kept, not scheduled)
 
-- Drift detection against independent references across instruments.
-- Change-point segmentation of a cruise into stations and transits.
-- AI narrator for shore support: "what changed on the ship in the last 6 h".
-- Replay lab: any recorded cruise replayed through new transforms with a diff
-  report, used as the high-risk review check.
+- Fleet view: the same overlay on several ships, compared side by side on
+  shore (sensor health and calibration across the fleet).
+- Open sensor-fingerprint library shared between ships and institutions.
