@@ -51,3 +51,4 @@ Plans written as research files:
 ## Still to land (reports that exist only in chat or as artifacts; owners asked to drop the text on the shared mount)
 
 sample data (catalog at `../docs/SAMPLE-DATA.md`) (`/mnt/project-files/sample-data`, manifest only, large files stay on the mount), sonar science (#170-#181).
+- [2026-11-18-mcp-design-review.md](2026-11-18-mcp-design-review.md): independent security and effectiveness review of the MCP design (Astra ultra, read-only)
