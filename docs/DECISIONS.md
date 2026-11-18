@@ -392,3 +392,6 @@ Choice: checks V1 to V9 (design/console-VISUAL-GATE.md) plus a lead and Astra 6.
 
 ### D-MCP2 MCP as DeepSignal modules over one setup engine (2026-11-18, PROPOSED, subject to D-ADOPT1)
 11 high-level tools over one shared setup engine; `apply` is the only write path; read-only by default; DeepSignal modules, not a separate `openrvdas-mcp` package. Supersedes D-MCP1.
+
+### D-121A #121 device-pack manual downloads (2026-11-18, DECIDED overnight by build lead under D-NIGHT1, non-critical)
+Option (a): download only publicly hosted manufacturer manuals, listed first in a manifest with URL, size and SHA-256, into /private/tmp/deepsignal/p2-device-pack/manuals/. Codex then runs offline on them. Manuals are never committed to the repo (cite formats and page numbers only). Inbound read-only fetches, no logins, no robots-blocked sites. Reversible; Eugene can veto in the morning.
