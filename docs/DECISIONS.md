@@ -373,8 +373,7 @@ on everything else. A morning summary is kept in `docs/STATE.md`.
 
 ### D-CONSOLE2 Night mode: configurable, one click, red by default (2026-11-18, FINAL, answered by Eugene)
 Final: configurable per screen, one-click Night button, red default at dim 0.8, console.yaml night_palette sets the station default. Core 82ec7ca already works this way. No rebuild.
-Eugene's night-mode card is unanswered overnight. Default stays red (bridge safe, preserves night vision). Eugene can
-change the default in the morning; it is one token in the lighting config. Low-contrast warnings in red at dim 0.8 (11)
+Eugene answered: configurable, default red (bridge safe, preserves night vision); the station default is the one token `night_palette` in console.yaml. Low-contrast warnings in red at dim 0.8 (11)
 are accepted until the onboard luminance test decides.
 
 ### D-SOAK1 Where the 24-hour soak runs (2026-11-18, DECIDED by the build lead under D-NIGHT1)
