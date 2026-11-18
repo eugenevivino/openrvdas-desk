@@ -147,5 +147,4 @@ A concrete example, the fix for the Django bug, on a topic branch:
   first, read by offset and limit, answer by the 20th tool call with what it has.
 - Typical retriever jobs here: a gate `results.tsv` or junit file, a pytest log, a
   device definition, a long research note, "where is X called".
-- Every job, retriever or builder, gets a row in `docs/COST-LEDGER.tsv`.
 
