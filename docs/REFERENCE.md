@@ -222,7 +222,7 @@ only. Full design, ranked table, security and risk tables: `docs/SHIP-SYSTEMS.md
 | #142 Time and motion alignment | Motion lag, sonar clock offset, sonar vs nav position | PROPOSED | v2 | `docs/SHIP-SYSTEMS.md` |
 | #143 Sonar health board | Ping rate, swath, file-growth heartbeat, runtime changes as events | PROPOSED | v2 | same |
 | #144 Acoustic transmit awareness | Who pings when; overlap detection; never controls a synchronizer | PROPOSED | later | same |
-| #145 ADCP health | UHDAS or VmDAS outputs: cadence, bottom track, heading agreement | PROPOSED | later | same |
+| #145 ADCP health and cross-checks | UHDAS and PD0, listen-only: cadence, self-test, heading vs gyro and GNSS (frozen heading), SV vs TSG, bottom track vs multibeam, ping overlap | BRIEFED | v2 | `briefs/p2/145-adcp-health.md` |
 | #146 Motion and position status | POS MV Group status and Seapath quality, data port only | PROPOSED | v2 | same |
 | #147 SVP cast tracker | Cast age and distance; recommends a new cast | PROPOSED | v2 | same |
 | #148 Guarded Modbus adapter | Read codes 1 to 4 only, register catalog | PROPOSED | later | same |

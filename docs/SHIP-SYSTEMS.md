@@ -8,7 +8,7 @@ Written 2026-11-18 by the ship-systems thread for Eugene's two asks:
 
 IDEAS #138 to #160. Decisions D-SHIP1 and D-NOC1. Briefs: `briefs/p2/138-iec450-bridge.md`,
 `briefs/p2/139-kongsberg-tap.md`, `briefs/p2/140-sv-consistency.md`, `briefs/p2/141-depth-consensus.md`,
-`briefs/p2/156-link-health.md`, `briefs/p2/157-device-servers.md`, `briefs/p2/158-seismic-shot-qc.md`.
+`briefs/p2/156-link-health.md`, `briefs/p2/157-device-servers.md`, `briefs/p2/158-seismic-shot-qc.md`, `briefs/p2/145-adcp-health.md`.
 
 **Evidence level.** Interface facts below come from vendor documentation and fleet practice as known to the
 lead; each row marks what is verified in the OpenRVDAS source (V) versus a lead to confirm on a real ship (L).
@@ -170,7 +170,7 @@ module misbehaves. Rank orders passive work by value per effort, then by how man
 | 6 | #146 | Motion and position system status (POS MV Groups, Seapath) | P | 5/4/2 | M | low | #142 | PROPOSED |
 | 7 | #143 | Sonar health board | P | 5/3/3 | S | low | none | PROPOSED |
 | 8 | #147 | SVP cast tracker | P | 4/4/2 | S | low | none | PROPOSED |
-| 9 | #145 | ADCP health (UHDAS, VmDAS, PD0) | P | 4/4/2 | M | low | none | PROPOSED |
+| 9 | #145 | ADCP health and cross-checks (UHDAS, PD0; section 13) | P | 4/5/2 | M | low | #144 | BRIEFED |
 | 10 | #151 | OT network safety kit | P | 5/1/4 | S | none (docs and lint) | every row | PROPOSED |
 | 11 | #144 | Acoustic transmit awareness | P | 3/4/1 | M | low | none | PROPOSED |
 | 12 | #148 | Guarded Modbus engineering adapter | P | 3/1/3 | S | medium (OT network) | #43 #98 #99 | PROPOSED |
@@ -358,7 +358,7 @@ answer "is it the device or the cable".
 Eugene: "integrate VERY well with Moxas and Pepperl+Fuchs devices." Nearly every serial instrument on a
 UNOLS ship reaches the DAS through a Moxa NPort or a Pepperl+Fuchs Comtrol DeviceMaster, so this is where
 most "no data" problems actually live. Eugene added "and other similar devices": Digi, Lantronix, Perle,
-B&B and Advantech, Brainboxes, Sena. Brief: `briefs/p2/157-device-servers.md`, `briefs/p2/158-seismic-shot-qc.md`.
+B&B and Advantech, Brainboxes, Sena. Brief: `briefs/p2/157-device-servers.md`, `briefs/p2/158-seismic-shot-qc.md`, `briefs/p2/145-adcp-health.md`.
 
 **Vendor-neutral by design.** One driver interface (identify, read ports, say what it can read) and one
 port-status shape for every vendor. v1 drivers: Moxa, Pepperl+Fuchs, and a generic SNMP driver (MIB-II plus
@@ -400,7 +400,7 @@ v3 is the next step.
 
 Eugene: "would be nice to handle seismic (digibird, geoeel, hotshot), etc." Same rule as sonars: **listen
 only**. Gun controllers fire air guns and streamer controllers steer birds; nothing from DeepSignal ever goes
-to them. Brief: `briefs/p2/158-seismic-shot-qc.md`.
+to them. Brief: `briefs/p2/158-seismic-shot-qc.md`, `briefs/p2/145-adcp-health.md`.
 
 | System | What it emits | Public format? | DeepSignal use | Row |
 |---|---|---|---|---|
@@ -423,3 +423,27 @@ events to Sealog (#133). It never powers guns down itself; the PSO calls the shu
 **Needs vendor documents:** HotShot, GunLink and Sercel shot-log formats; DigiCOURSE controller output; GeoEel
 live status. Until a ship provides a capture, #158 ships with a labelled template device file and works on
 any shot log a tech maps with core `ParseTransform`, so no vendor document blocks it.
+
+## 13. ADCP in depth (#145)
+
+Eugene: "We should also loop ADCP into this." Listen-only, like every sonar. Brief: `briefs/p2/145-adcp-health.md`.
+
+| Source | What it gives | Public format? | Notes |
+|---|---|---|---|
+| UHDAS speed log `$PUHAW` | Ship-relative current and heading | Yes in practice (core device type `ADCP_OS75` parses it) | Already reaches OpenRVDAS on many ships |
+| Raw PD0 ensembles (Ocean Surveyor, Workhorse, Pinnacle) | Time, heading, pitch, roll, sound speed, self-test word, bottom track | Yes: Teledyne RDI output format manuals are public | Only from a receive-only copy (serial split or a re-broadcast the ADCP operator sets up); never the ADCP command line |
+| UHDAS status pages and daily email | Processing health, heading correction statistics | No formal spec | Later, after asking the UHDAS team (nothing sent without Eugene) |
+| VmDAS files (ENR, ENS, ENX, STA, LTA) | Same ensembles, recorded | Teledyne documents | File heartbeat in #143 |
+
+**Cross-checks (all in #145):**
+
+| Check | Why it matters | Default limit |
+|---|---|---|
+| ADCP heading vs gyro and GNSS heading, and "frozen heading" | A heading error turns straight into a cross-track current error; a dead heading feed is the classic UHDAS failure | 1 degree; frozen if unchanged 60 s while the gyro turns |
+| ADCP sound speed vs TSG and probe | Wrong sound speed scales every velocity | 2 m/s (a fixed EC setting shows as a steady offset) |
+| Bottom-track depth vs multibeam nadir | Catches bad beams, wrong transducer depth, wrong beam angle | 3 percent |
+| Ensemble timing vs multibeam and EK80 pings | Interference shows as noisy bins; tells the tech to check K-Sync | count of overlaps, advice only |
+| Self-test word and ensemble cadence | Hardware faults and dropped ensembles | any nonzero bit; interval over 1.5 times normal |
+
+**The PD0 layout is a data table**, not code, so a wrong offset is a one-line fix. Its first real check is
+a capture on the pilot ship. Synchronization (K-Sync or UHDAS triggers) is read, never set.
