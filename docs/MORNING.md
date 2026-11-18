@@ -1,6 +1,7 @@
 # Morning queue for Eugene (newest first)
 
 - #137 eez-mode (critical: controls logging): lead check with a real Marine Regions file and a recorded track. EEZ data never committed until the Marine Regions license is verified.
+- #139 Kongsberg tap (ship-systems, 2026-11-18): the Mac builder needs to read two public format documents (Kongsberg KMALL spec via github.com/kjerram/kmall, and EM datagram formats doc 160692). Same class as D-121A: one yes covers both. Until then #139 is held; #138, #140, #141 and #156 run in the cloud now (they only need #139's field names, fixed in the briefs). Design: docs/SHIP-SYSTEMS.md.
 
 - Cloud env setup script fix (one edit, explains why cloud node tasks cannot run vitest or tsc): change the last line to `cd contrib/deepsignal/console && npm ci` with no `|| true`, so it fails loudly. Diagnostic showed node_modules is empty at task time (setup likely ran before the task branch checkout, or on the default branch with no console/package.json). Until fixed, console modules are built in the cloud and accepted on the Mac; core-v2 runs on the Mac.
 

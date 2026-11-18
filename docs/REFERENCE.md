@@ -1,7 +1,7 @@
 # DeepSignal reference: every feature and its status
 
 **This is the canonical feature list for DeepSignal.** If a feature is not here, it is not tracked.
-Updated 2026-11-18 08:00Z (ecosystem section 07:55Z). Keep-current rule: AGENTS.md "Reference doc" (any change to a feature's
+Updated 2026-11-18 08:45Z (ship systems section 11). Keep-current rule: AGENTS.md "Reference doc" (any change to a feature's
 status updates this file in the same commit). Check: `python3 tools/reference-check.py`.
 
 Other desk files go deeper: `docs/IDEAS.md` (every idea, one row each), `docs/ROADMAP.md` (ranking and
@@ -202,7 +202,36 @@ How DeepSignal plugs into the rest of the OceanDataTools stack. Detail: `docs/EC
 | Reference check | Flags IDEAS numbers and briefs missing from this file | DONE | done | `tools/reference-check.py` |
 | ds-codex launcher | RAM-gated Mac launcher, separate Codex home, pinned sub-agents | DONE (desk 2c228e2, not yet on main) | done | D-SEP1, D-SUB1, `docs/CODEX.md` |
 
-## 11. Novel and backlog ideas
+## 11. Ship systems, sonars, link health and instrument configuration (D-SHIP1, D-NOC1)
+
+Passive first: DeepSignal listens to sonars, motion systems, the bridge and engineering, and never changes
+their settings. Instrument configuration is propose, approve, apply, verify, roll back, for science sensors
+only. Full design, ranked table, security and risk tables: `docs/SHIP-SYSTEMS.md`.
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| #139 Kongsberg datagram tap | Read-only KMALL and `.all` summaries: nadir depth, ping rate, swath, valid beams, SV applied, clock offset, runtime changes | BRIEFED (mac lane, needs two public format documents) | v2 | `briefs/p2/139-kongsberg-tap.md` |
+| #140 Sound velocity consistency | Probe vs TSG vs sonar-applied vs cast SV; names the odd one out | BRIEFED | v2 | `briefs/p2/140-sv-consistency.md` |
+| #138 IEC 61162-450 bridge reader | Clean NMEA plus source id from bridge multicast, receive only | BRIEFED | v2 | `briefs/p2/138-iec450-bridge.md` |
+| #141 Depth consensus | Multibeam nadir vs single-beam vs grid; lost bottom and step flags | BRIEFED | v2 | `briefs/p2/141-depth-consensus.md` |
+| #156 Link health with NOC integration | One verdict per instrument link on top of OpenRVDAS logger status, stderr and cache timestamps; `/health` for Uptime Kuma, Zabbix or LibreNMS; their alerts in via webhook | BRIEFED | v2 | `briefs/p2/156-link-health.md` |
+| #142 Time and motion alignment | Motion lag, sonar clock offset, sonar vs nav position | PROPOSED | v2 | `docs/SHIP-SYSTEMS.md` |
+| #143 Sonar health board | Ping rate, swath, file-growth heartbeat, runtime changes as events | PROPOSED | v2 | same |
+| #144 Acoustic transmit awareness | Who pings when; overlap detection; never controls a synchronizer | PROPOSED | later | same |
+| #145 ADCP health | UHDAS or VmDAS outputs: cadence, bottom track, heading agreement | PROPOSED | later | same |
+| #146 Motion and position status | POS MV Group status and Seapath quality, data port only | PROPOSED | v2 | same |
+| #147 SVP cast tracker | Cast age and distance; recommends a new cast | PROPOSED | v2 | same |
+| #148 Guarded Modbus adapter | Read codes 1 to 4 only, register catalog | PROPOSED | later | same |
+| #149 NMEA 2000 via read-only gateway | PGN decode | PROPOSED (backlog) | later | same |
+| #150 ECDIS route import | RTZ or RTE/WPL into #108 | PROPOSED | later | same |
+| #151 OT network safety kit | Placement checklist, connection register, receive-only tests, lint rule | PROPOSED | v2 | same |
+| #152 Instrument config reader | Tier R snapshots into #52 history | PROPOSED | later | same |
+| #153 Config advisor | Explainable change proposals, advice only | PROPOSED | later | same |
+| #154 Approved change apply with rollback | Tier A, science sensors only, on the #130 engine and #65 approvals | PROPOSED | later | same |
+| #155 Scoped SSH access kit | Forced-command keys or short-lived certificates, full logging | PROPOSED | later | same |
+| Sonar, bridge, DP, motion control, engine, winch writes | Never built (D-SHIP1) | BANNED | never | same |
+
+## 12. Novel and backlog ideas
 
 Everything else in `docs/IDEAS.md` that is not yet in a table above. Status from IDEAS. Promote a row into a
 table above when it gets a design, brief or branch.

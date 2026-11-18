@@ -251,3 +251,32 @@ something great." Design and source evidence: `docs/ECOSYSTEM.md`; scorecard row
 | # | Idea | One line | Value | Status | Phase | Source |
 |---|---|---|---|---|---|---|
 | 137 | EEZ mode made easy | Position checked against offline Marine Regions EEZ polygons (pure Python, no geopandas), pre-alerts at distance and ETA, per-instrument log, quarantine or stop driven by the cruise clearance record, fail-safe on position loss, one-tap override with reason and expiry, append-only audit with a cruise-report table, console banner and Sealog events. Feeds `eez_inside` to #116. Brief `briefs/p2/137-eez-mode.md`. Eugene 2026-11-18: "an EEZ mode, which OpenRVDAS kind of already has just not that easy" | 5/4/4 | DESIGNED | 2 | Eugene, C27, C43 |
+
+## Sonars, ship systems and instrument configuration (2026-11-18, ship-systems thread; numbers 138-156)
+
+Eugene: interface with "other sonars and systems ... passive through reading their data, or actively", and
+"help configure instruments, perhaps even dynamically ... even if it means ssh'ing in". Design, ranked table,
+security and risk tables: `docs/SHIP-SYSTEMS.md`. Decision D-SHIP1: passive first; sonar, bridge, DP, motion
+control, engine and winch settings are never changed by DeepSignal, automatically or on approval.
+
+| # | Idea | One line | Value | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| 138 | IEC 61162-450 bridge reader | Transform for 450 multicast datagrams from core `UDPReader`: strip `UdPbC` header, verify tag block, keep source id and bridge time as fields, drop non-sentence datagrams; receive only. Brief `briefs/p2/138-iec450-bridge.md` | 4/3/2 | DESIGNED | 2 | Eugene, T-SHIP |
+| 139 | Kongsberg datagram tap | Read-only parser for KMALL (SIS 5) and `.all` (SIS 4) datagrams arriving as raw UDP bytes: per-type rates, PU clock vs host, nadir depth, swath width, valid-beam fraction, SV at transducer as applied, runtime-parameter hash. Summaries only, no bathymetry. Brief `briefs/p2/139-kongsberg-tap.md` | 5/5/3 | DESIGNED | 2 | Eugene, T-SHIP |
+| 140 | Sound velocity consistency monitor | Probe SV vs TSG-derived SV vs sonar-applied SV vs last cast surface SV; persistent mismatch alarm with a plain explanation. Brief `briefs/p2/140-sv-consistency.md` | 5/5/3 | DESIGNED | 2 | Eugene, T-SHIP |
+| 141 | Depth consensus | Multibeam nadir vs single-beam (after transducer depth and draft) vs optional grid; disagreement and bottom-lock-loss flags. Brief `briefs/p2/141-depth-consensus.md` | 5/4/3 | DESIGNED | 2 | Eugene, T-SHIP |
+| 142 | Time and motion alignment monitor | Lag between the motion feed and the attitude the sonar recorded (cross-correlation), sonar and motion clock offset vs NTP, sonar position vs nav after lever arms (#113); pairs with #31 and #38 | 5/5/2 | PROPOSED | 2 | T-SHIP |
+| 143 | Sonar health board | Ping rate, swath and valid-beam trends, file-growth heartbeat for `.kmall`, `.all`, `.raw`, SEG-Y, runtime-parameter changes as events (#133) | 5/3/3 | PROPOSED | 2 | T-SHIP |
+| 144 | Acoustic transmit awareness | Ping-time timeline of multibeam, echosounders, ADCP and SBP; overlap and interference detection; read-only awareness of a synchronizer, never control | 3/4/1 | PROPOSED | 3 | T-SHIP |
+| 145 | ADCP health | UHDAS or VmDAS outputs (and PD0 when visible): ensemble cadence, bottom-track percent good, ADCP heading vs gyro and motion system, built-in test words | 4/4/2 | PROPOSED | 3 | T-SHIP |
+| 146 | Motion and position system status | POS MV Group messages on the data port (RMS errors, GNSS status, general status and faults, heave) and Seapath quality; never the control port | 5/4/2 | PROPOSED | 2 | T-SHIP |
+| 147 | SVP cast tracker | Ingest cast files read-only (CTD `.cnv`, XBT `.EDF`, `.asvp`); cast age and distance; recommend a new cast when surface SV moves | 4/4/2 | PROPOSED | 2 | T-SHIP |
+| 148 | Guarded Modbus engineering adapter | Function codes 1 to 4 only, enforced and tested; register-map catalog with units and scaling for engine, power and tanks; feeds #43, #98 to #100 | 3/1/3 | PROPOSED | 3 | T-SHIP |
+| 149 | NMEA 2000 through a read-only gateway | Decode PGNs from a receive-only CAN gateway into DAS records | 2/2/1 | PROPOSED | backlog | T-SHIP |
+| 150 | ECDIS route import | Read RTZ files or `RTE`/`WPL` sentences as the active route for #108 | 3/2/2 | PROPOSED | 3 | T-SHIP |
+| 151 | OT network safety kit | Placement checklist (61162-460 gateway, diode, mirror port), connection register shown in the console, receive-only socket tests, config lint rule for writers aimed at OT subnets (#127) | 5/1/4 | PROPOSED | 2 | T-SHIP |
+| 152 | Instrument config reader | Tier R: read config and status by #130 query commands, vendor read APIs or allowlisted SSH (#155); hashed snapshots into #52 history; diff since last cruise | 5/2/2 | PROPOSED | 3 | Eugene, T-SHIP |
+| 153 | Config advisor | Tier R: explainable findings with a proposed change (rate, units, sentence set, clock drift, lever arm vs #113, cal coefficients vs #52, wrong SV source from #140); advice only | 5/3/2 | PROPOSED | 3 | Eugene, T-SHIP |
+| 154 | Approved change apply with rollback | Tier A, science-sensor allowlist only: dry-run diff, backup, single-change named approval with expiry, apply through #130, verify on the live stream, auto and one-click rollback, byte log; shares the #65 approval service and MCP apply flow (D-MCP2) | 4/2/1 | PROPOSED | 3 | Eugene, T-SHIP |
+| 155 | Scoped SSH access kit | Per-host keys or short-lived OpenSSH certificates, `restrict` plus `from=` plus forced-command allowlist wrapper, no root, no passwords, separate apply key, full command logging into #62 | 4/1/2 | PROPOSED | 3 | Eugene, T-SHIP |
+| 156 | Link health with NOC integration | One verdict per instrument link (reachability by opt-in ping or management-port probe, freshness and rate from the cache, errors from logger stderr), reusing OpenRVDAS logger status, stderr fields and cache timestamps; read-only `/health` and `/metrics` for Uptime Kuma, Zabbix or LibreNMS to poll, and a token-guarded webhook that brings their alerts in. Not an Intermapper clone. Brief `briefs/p2/156-link-health.md` | 5/2/4 | DESIGNED | 2 | Eugene, T-SHIP |
