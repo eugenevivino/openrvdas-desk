@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Exit codes: 0 GREEN, 1 RED, 2 REFUSED. The receipt directory must be new.
+# The same job runs fork code and writes the receipts. A hostile fork could
+# forge them, so this gate is suitable only for our own fork.
 set -euo pipefail
 
 if [[ $# -ne 3 ]]; then
@@ -64,16 +66,20 @@ trap finish EXIT
 [[ $(uname -s) == Linux ]] || refuse 'Linux runner required'
 version=$(python3 -I -c 'import sys; print(sys.version.split()[0]);
 sys.exit(sys.version_info[:2] != (3, 12))') || refuse 'Python 3.12 required'
+ID= VERSION_ID=
+source /etc/os-release || refuse 'cannot read /etc/os-release'
+printf 'sha=%s\nhost=%s\npython=%s\nID=%s\nVERSION_ID=%s\n' \
+  "$sha" "$host" "$version" "$ID" "$VERSION_ID" > "$rec/meta.txt"
+[[ "$ID" == ubuntu && "$VERSION_ID" == 22.04 ]] || refuse 'Ubuntu 22.04 required'
 [[ -n "$fork" ]] || refuse 'fork checkout unavailable'
 fork=$(cd -- "$fork" && pwd) || refuse 'cannot enter fork checkout'
 verify_checkout
 [[ -r "$expected" ]] || refuse 'expected-failures.txt is unavailable'
-printf 'sha=%s\nhost=%s\npython=%s\n' "$sha" "$host" "$version" > "$rec/meta.txt"
 
 base=$(git -C "$fork" merge-base "$sha" refs/remotes/origin/dev) \
   || refuse 'no merge base with origin/dev'
 git -C "$fork" diff --name-only -z --diff-filter=AMR "$base" "$sha" -- '*.py' \
-  > "$rec/changed.paths" || refuse 'cannot list changed Python files'
+  > "$rec/changed.txt" || refuse 'cannot list changed Python files'
 
 cd -- "$fork"
 for file in database/settings.py database/influxdb/settings.py django_gui/settings.py; do
@@ -88,8 +94,11 @@ unset GITHUB_ENV GITHUB_OUTPUT GITHUB_PATH GITHUB_STATE GITHUB_STEP_SUMMARY
 python3 -m venv "$rec/venv" > "$rec/venv.log" 2>&1 \
   || refuse 'virtual environment setup failed (see venv.log)'
 python=$rec/venv/bin/python
-"$python" -m pip install -e '.[dev,mqtt]' flake8 pytest-timeout \
+# Pins from the Mini's ~/OpenRVDAS-Work/venv-3.12 on 2026-11-18.
+"$python" -m pip install -e '.[dev,mqtt]' flake8==7.5.0 pytest-timeout==2.4.0 \
   > "$rec/pip.log" 2>&1 || refuse 'dependency install failed (see pip.log)'
+"$python" -m pip freeze > "$rec/pip-freeze.txt" 2>> "$rec/pip.log" \
+  || refuse 'could not record pip freeze (see pip.log)'
 
 status=0
 "$python" -m pytest test/ --ignore=test/django_gui -q -p no:cacheprovider \
@@ -119,6 +128,6 @@ while IFS= read -r -d '' file; do
   else
     refuse "flake8 did not complete for $file (see flake8.log)"
   fi
-done < "$rec/changed.paths"
+done < "$rec/changed.txt"
 verify_checkout
 printf 'flake8::__COMPLETE__\tPASS\n__END__\tPASS\n' >> "$results"
