@@ -370,7 +370,7 @@ onboarding wizard, vocabularies.
 
 ## 7. Draft ideas from this scorecard
 
-Unnumbered, per the IDEAS numbering rule. The build lead assigns numbers.
+Unnumbered, per the IDEAS numbering rule. Numbers assigned 2026-11-18: P-ERDDAP=#104, P-REST=#105, P-BEST=#106, P-MAP=#107, P-ROUTE=#108, P-CAST=#109, P-FLOW=#110, P-SAMOS=#111, P-METLIB=#112, P-GEOM=#113, P-WIZARD=#114, P-ROLES=#115, P-RELEASE=#116, P-VOCAB=#117, P-DOCS=#118, P-HOST=#119, P-CRUISE=#120, P-DEVPACK=#121, P-CORESMALL=#122, P-SNAP=#123, P-INSTALL=#124.
 Also listed in IDEAS.md under "Drafts from the parity scorecard".
 
 | Draft | Idea | Closes | Home |
