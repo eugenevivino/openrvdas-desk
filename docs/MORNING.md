@@ -1,6 +1,6 @@
 # Morning queue for Eugene (newest first)
 
-- #188 AI watch assistant: enabling cloud AI and its budget is your call (off by default, local model only). Also a lead check with a real local model, and #69 should measure latency.
+- #188 AI watch assistant: pick the API provider and put the key in the ship environment (never in git). A lead check against the real API runs outside the sandbox. Defaults: $2/day, $30/month caps; you can change them.
 
 - CRITICAL security package, offline first: signed audit (#32), local identity, trust zones (#115, #151, #155). Needs your review before anything is enabled.
 - #164 CalibrationTransform must NOT be enabled on any live config until you approve.

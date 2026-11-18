@@ -1,4 +1,4 @@
-# Brief: p2-ai-triage (AI watch assistant: event-triggered triage, local first, advise only)
+# Brief: p2-ai-triage (AI watch assistant: event-triggered triage, API model first, advise only)
 
 - Decision: IDEAS #188, from Eugene's 2026-11-18 asks (config assist, sensor init, ecosystem and compression); build per D-NIGHT1
 - Risk tier: high
@@ -16,8 +16,11 @@ When something goes wrong, the tech gets a short, evidence-linked briefing in se
 - the matching runbook steps and past fixes
 - the exact checks to do next
 
-It costs almost nothing, because AI runs only on events, on a small model on the ship server, and works
-with no internet. It only advises. Eugene, 2026-11-18: "have either local or off-prem AI analyze the data
+It stays cheap because AI runs only on events, with caching and a per-ship spending cap. It uses an
+API-based model (provider-pluggable, through the MCP gateway over the ship's VPN). It degrades gracefully
+offline, and it only advises. Eugene: "It might be better if it was an API based model, frankly." and
+"starlink is exceptional though" (2026-11-18): design for connectivity as the normal case, with offline
+as the exception path. Eugene, 2026-11-18: "have either local or off-prem AI analyze the data
 regularly ... and help the techs fix the issue."
 
 ## Background facts (do not re-derive)
@@ -36,8 +39,11 @@ regularly ... and help the techs fix the issue."
   - Tier 1 is the deterministic checks, which already run continuously at no AI cost: QARTOD flags,
     #162, #165, #79 and #10. They are inputs here.
   - Tier 2 is this module. It is never a continuous stream.
-- llama.cpp `llama-server` and Ollama both serve an OpenAI-compatible `POST /v1/chat/completions`. Use
-  only that HTTP shape through stdlib `urllib`, behind an injectable client. No SDK and no new dependency.
+- Provider-pluggable through one small interface. The first adapter speaks the widely used
+  OpenAI-compatible `POST /v1/chat/completions` shape. A second adapter speaks the Anthropic Messages API
+  shape (`POST /v1/messages`). Both use stdlib `urllib` behind an injectable client, with no SDK and no new
+  dependency.
+- The optional local fallback (llama.cpp `llama-server` or Ollama) uses the same OpenAI-compatible shape.
   Tests use a fake client; no network.
 - Desk research: `research/2026-11-18-mcp-reference-architecture.md` (typed read-only tools, audit, query
   budgets, local baselines such as Qwen3.5-9B to qualify by #69) and `research/2026-11-17-ai-methods.md`.
@@ -64,19 +70,25 @@ characters / 4):
 
 Every item carries a ref id. No raw data streams, and no credentials or tokens, ever go into the pack.
 
-**Model adapters** (`models.py`): `LocalModel(url, model)` and `CloudModel(url, model, token_env)`, the same
-interface.
-- Local is the default. Cloud is used only when `cloud.enabled`, the link is up (#156 link health field if
-  present), today's cloud budget has room, and either the local answer failed schema validation twice or
-  a tech asked for "second opinion".
-- Cloud calls go through the MCP gateway when configured. Otherwise they go to a plain
-  OpenAI-compatible URL the ship sets.
-- Budgets in `ai_triage.yaml`:
-  - `local.max_calls_per_hour` (default 30)
-  - `local.timeout_s` (default 120)
-  - `cloud.max_tokens_per_day` (default 200000)
-  - `cloud.max_usd_per_month` (default 20, using prices the ship enters)
-  - Every spend is metered. Over budget, it falls back to tier 1 output and says so.
+**Model adapters** (`models.py`): `ApiModel(provider, url, model, key_env)` is the **primary path**, and
+`LocalModel(url, model)` is optional. Both share one interface.
+- **Cloud on by default.** When MCP is configured, calls go through the MCP gateway (#64) over the VPN.
+  Otherwise they go to the provider URL the ship sets. The key comes from an environment variable only
+  and is never logged or put in a pack.
+- **Spending cap per ship** in `ai_triage.yaml`:
+  - `api.max_usd_per_day` (default 2)
+  - `api.max_usd_per_month` (default 30)
+  - `api.max_tokens_per_call` (default 8000 in, 1000 out)
+  - prices per million tokens entered by the ship
+  - Every call is metered before and after. A call that would cross a cap is not sent; the tech gets the
+    runbook fallback marked "budget reached".
+- **Offline** (#156 link-health field says down, or the call fails to connect): the request goes into a
+  disk queue (`queue.jsonl`, at most 50 entries, oldest dropped with a note). The tech gets the
+  deterministic runbook briefing at once, marked "AI pending". When the link returns, queued items still
+  relevant (the problem is still open) are sent within the caps, and the answer replaces the pending
+  mark. If `local.enabled` (default false) and a local model answers, that answer is used meanwhile,
+  labeled "local model".
+- Retries: one retry on a timeout or 5xx, then fallback. Timeouts default to 60 s.
 
 **Output contract** (`schema.py`): JSON only. The fields are:
 - `summary` (2 sentences at most)
@@ -107,8 +119,11 @@ labeled "no AI used".
 alert detail and the trust view. The setup engine and MCP call `briefing(stream) -> dict`, pure over a
 given snapshot.
 
-**Privacy**: ship config decides whether cloud is allowed at all (default false). With the #116 release
-policy, held-back fields and EEZ hold-back fields are removed from any pack sent to the cloud.
+**Privacy and redaction** (`redact.py`, applied to every pack before it leaves the ship): no raw data
+series, only the compact pack. It strips anything that looks like a credential, token, password,
+private key, email address or phone number. It removes the #116 held-back fields, and while `eez_inside`
+it removes EEZ hold-back fields and rounds positions as #116 does. A ship can turn the API path off
+(`api.enabled: false`) for a cruise with stricter terms. It is on by default.
 
 ## Failing test first
 `contrib/deepsignal/test/ai_triage/test_triage.py`, with a fake model client:
@@ -118,9 +133,13 @@ policy, held-back fields and EEZ hold-back fields are removed from any pack sent
 - A hallucinated ref is dropped.
 - A write action becomes a proposal and is never executed.
 - An invalid JSON answer is retried, then falls back.
-- The budget stops cloud calls and meters spend.
-- Cloud is used only when enabled, the link is up and the budget allows it.
-- Release-policy fields are stripped from cloud packs.
+- The daily and monthly caps stop calls before sending, and spend is metered.
+- Offline queues the request, gives the runbook fallback at once, sends it on reconnect only if still
+  open, and caps the queue at 50.
+- The optional local model is used only when enabled.
+- Redaction strips secrets, emails, held-back fields and EEZ hold-back fields, and rounds positions.
+- `api.enabled: false` sends nothing.
+- Both provider adapters build the right request shape.
 - The fallback briefing is correct and labeled.
 - Timeline entries are written.
 - An outcome is recorded.
@@ -129,13 +148,14 @@ policy, held-back fields and EEZ hold-back fields are removed from any pack sent
 ## Module contract
 Docs `contrib/deepsignal/docs/ai_triage.md`. It covers:
 - the two tiers, drawn as a small text diagram
-- how to run a local model on the ship server (llama.cpp or Ollama, CPU-only works for event-driven use;
-  expect tens of seconds per briefing on a 9B quantized model and say it is an estimate until #69
-  measures it)
-- the budget settings
+- the API setup (provider, key in an environment variable, VPN or MCP path)
+- the spending caps, with a worked cost example: say 40 briefings a day at about 7k tokens each, using
+  prices the ship enters, marked as an example only
+- what happens offline
+- the optional local model
 - "advise only" in bold
 
-A lead-run check against a real local model happens outside the sandbox.
+A lead-run check against a real API model happens outside the sandbox.
 
 ## Acceptance (exact commands, from repo root, Linux, no browser)
 ```
@@ -169,13 +189,3 @@ No code change needed: stop and report. Two fix rounds still red: stop and repor
 - RED receipt:
 - Acceptance tails:
 - Open questions:
-
-## Addendum 2026-11-18 (Eugene: "It might be better if it was an API based model, frankly")
-Provider is pluggable behind one OpenAI-compatible client (stdlib HTTP): the default configuration is an API
-provider with the ship's own key (never in the repo), with hard daily and monthly caps, a satellite-bandwidth
-cap and the 6k-token context pack unchanged. The local model (llama.cpp or Ollama) is the offline fallback
-when the link is down or the cap is reached, and the deterministic briefing is the last fallback. Nothing is
-sent until a key is configured: with no key the feature runs local or deterministic. Context packs are
-redacted (no credentials, no personal names) before leaving the ship and every outbound request is logged
-in the #168 timeline. This supersedes the earlier "local default, cloud off" wording; enabling the key and
-the budget is still Eugene's call (MORNING), and outputs stay advise-only.

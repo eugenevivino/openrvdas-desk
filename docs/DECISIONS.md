@@ -437,7 +437,7 @@ writers, because the contrib base tree's writers differ from current core. Share
 
 
 ### D-AI188 #188 cloud escalation default off (2026-11-18, logged by build lead)
-Local model only until Eugene enables cloud AI and sets its budget. AI is advise-only; write steps become #65 or #154 proposals and are never executed.
+SUPERSEDED by D-AI188a: API model is primary and on by default (caps $2/day and $30/month, redaction, offline queue of 50); local model optional and off by default. AI is advise-only; write steps become #65 or #154 proposals and are never executed.
 
 ### D-AI188a #188 API-first provider, local as offline fallback (2026-11-18, Eugene)
 Eugene: an API-based model may be better. Provider is pluggable (OpenAI-compatible); default configuration uses the ship's own API key with daily and monthly caps and redacted context packs; local model and deterministic briefing are fallbacks. No key means nothing leaves the ship. Supersedes the "local default, cloud off" line in D-AI188 for the default configuration; enabling the key and budget remains Eugene's. Advise-only. A fix round on the running cloud task follows acceptance.
