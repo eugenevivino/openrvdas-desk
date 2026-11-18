@@ -3,6 +3,7 @@
 Updated 2026-11-18 07:20Z by the build lead. Mac reboot pending; resume steps in `resume/RESUME.md`.
 
 ## Now
+- Console MVP (10:15Z): fork deepsignal/console-mvp faba8fe, 8 modules merged on core-v2, vitest 116, lead_run browser tests 2/2 pass. Pending: harness, visual-gate, manual checks, soak, merged-diff Astra review.
 - PRIORITY (Eugene): MVP #1 is the console display, target Tue 2026-11-25, parallel cloud build
   (ROADMAP "MVP #1"). Cloud cap removed: run as many disjoint-file tasks as the work splits into.
 - Rules: build on the fork first, nothing upstream until Eugene says (D-ARCH6). Kalon is hard

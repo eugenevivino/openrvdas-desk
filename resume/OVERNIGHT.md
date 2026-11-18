@@ -85,3 +85,10 @@ push only deepsignal/* fork branches and desk branches; two failures of the same
 - #197 cds-lockdown: task_e_6afd6aacc6c8832fa998754243fe2f80 (CRITICAL security; push only). #189 auth-gateway waits for #197 green and D-SEC2. Console install integration to point at #197 (note for INTEGRATION).
 - #188 vault fix round: task_e_6afd6aecf954832f88d66b060c32e454
 Last sync 2026-11-18T09:44:50Z: fork branches pushed ok; upstream fetched ok (core dev 1a6f1edb, contrib master 3b4b76e6); desk main pushed after this line.
+- 10:15Z CONSOLE MVP: deepsignal/console-mvp faba8fe = core-v2 2ebdf91 + health, chart, auto-pages, stale-banner,
+  kiosk-night, install (fix c32b6c9: tests no longer assume root), map, bridge (fix 585ca4c). vitest 116 passed,
+  oxlint/tsc clean, dist reproducible (22 files), pytest not-lead_run 7 passed, flake8 clean, lead_run browser tests
+  2 passed (test_console_live, test_bridge_browser). Pending: harness fixture/soak/source-loss, visual-gate, manual
+  checks (USABILITY 1, 4, 12, Impeccable audit), 24 h soak on the Mini, Astra review of the merged diff.
+- Reviews: gate r4 HOLD (3 rounds red; r5 rewrite queued, Astra high + ultra review); MCP design review FIX FIRST
+  (desk research/2026-11-18-mcp-design-review.md); QARTOD BLOCK -> fix1 queued; #78 HOLD -> fix1 queued; #53 HOLD -> cloud fix1.
