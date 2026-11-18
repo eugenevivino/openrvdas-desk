@@ -6,6 +6,7 @@
 - Base: desk `main`
 - Model and effort: Sol high, fresh session, under 40 turns (a Codex builder, rule 23)
 - Upstream home: desk repo only
+- Mac scratch path: `/private/tmp/deepsignal/gate-linux/` (clone in `repo/`, brief in `brief.md`, patches in `patches/`). Never touch other `/private/tmp` folders (Kalon uses them). Eugene's ruling, 2026-11-18.
 
 ## Goal
 A Linux gate that checks out a given fork sha on a real Ubuntu 22.04 runner with
