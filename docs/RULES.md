@@ -55,6 +55,10 @@ Changes to this file need Eugene's own message.
 23. Claude manages; Codex does all hands-on work (code, tests, fixes, scripts,
     long reads), cloud or Mac. Right-size the model; Astra approved for hard
     work. See `docs/BUILDERS.md`.
+24. DeepSignal is tightly scoped, independent modules: one module per branch
+    (`deepsignal/<module>`), per PR and per brief, each with its own tests, a
+    sample logger config and a short README section, few dependencies between
+    modules, each usable alone in a stock OpenRVDAS logger config.
 
 ## Talking to Eugene
 

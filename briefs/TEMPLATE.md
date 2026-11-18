@@ -6,7 +6,8 @@ stop and ask the lead.
 
 - Decision: D-<id> this implements
 - Risk tier: low | medium | high (OPERATING-SYSTEM section 6)
-- Base: fork `dev` at <sha>, branch `<area>/<slug>`
+- Module: exactly one (rule 24). Branch `deepsignal/<module>` for overlay work, `<area>/<slug>` for core fixes
+- Base: fork `dev` (core) or `contrib/master` (overlay) at <sha>
 - Model and effort: <tier from docs/CODEX.md section 2>, fresh session, under 40 turns
 - Upstream home: core | openrvdas_contrib | separate package | fork only
 
@@ -16,6 +17,10 @@ One sentence a crew member would recognize.
 ## Failing test first
 Test file and test names. It must fail on the base sha before any code
 changes. Paste the RED output into the result.
+
+## Module contract (overlay work)
+Own tests, a sample logger config that runs the module alone, a README
+section, and the list of other modules it depends on (default: none).
 
 ## Acceptance (exact commands)
 ```

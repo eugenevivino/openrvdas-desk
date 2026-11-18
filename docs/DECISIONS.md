@@ -165,3 +165,12 @@ tests and scripts. Astra at any needed effort is approved (it still goes through
 create an environment); until then local `codex-run` is the path. The Django
 fix ad10eb1 was written by Claude before this rule and is the last such change.
 
+### D-ARCH4 Overlay is built as tightly scoped independent modules (2026-11-18, DECIDED)
+Eugene: build it module based, tightly scoped. Rule 24. One module per branch
+(`deepsignal/<module>`), PR and brief; own tests, sample config and README
+section; minimal dependencies; usable alone in a stock logger config. This fits
+the contrib layout (`contrib/<project>/logger/...`) and keeps each upstream PR
+small. The contrib project folder name is now PROPOSED `deepsignal` (was
+`openrvdas_overlay` in D-ARCH3); Eugene confirms before the first PR because
+the name is part of every `module:` path.
+

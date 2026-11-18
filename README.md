@@ -12,7 +12,7 @@ Start with `AGENTS.md`, then `docs/OPERATING-SYSTEM.md`.
 | `AGENTS.md` | The contract every agent reads first (Claude and Codex) | 150 lines |
 | `CLAUDE.md` | Import shim for Claude Code | 10 lines |
 | `docs/OPERATING-SYSTEM.md` | Architecture of the team: machines, roles, flow, gates, approvals | 400 lines |
-| `docs/RULES.md` | Numbered standing rules from Eugene. Newest wins | 80 lines |
+| `docs/RULES.md` | Numbered standing rules from Eugene. Newest wins | 90 lines |
 | `docs/DECISIONS.md` | Decision log, one entry per decision, IDs `D-<AREA><n>` | append only |
 | `docs/ROADMAP.md` | Ranked work, phases, bold bets | 150 lines |
 | `docs/CODEX.md` | How we use Codex: codex-run, model tiers, context hygiene, caps | 150 lines |
