@@ -107,7 +107,7 @@ drift view (#54), host health tiles (#119), emulated badge, routes on the map (#
 
 ## 5. Phase 2: parity build-out (candidate Fri 2026-12-04)
 
-Twenty-six items, ranked by scorecard gap. Full table with bases, lanes and dependencies: `briefs/p2/INDEX.md`.
+Twenty-seven items, ranked by scorecard gap. Full table with bases, lanes and dependencies: `briefs/p2/INDEX.md`.
 
 | Feature | What it does | Status | Target | Link |
 |---|---|---|---|---|
@@ -137,6 +137,7 @@ Twenty-six items, ranked by scorecard gap. Full table with bases, lanes and depe
 | #127 Config linter | See section 6 | BUILDING | 12-04 | `briefs/p2/127-config-lint.md` |
 | #128 Component catalog | See section 6 | BUILDING | 12-04 | `briefs/p2/128-component-catalog.md` |
 | #129 Derived-product suggester | Proposes transforms (true wind, salinity, dew point, QC ranges) when inputs exist | PROPOSED (backlog) | later | `docs/IDEAS.md` |
+| #137 EEZ mode | Auto-detects EEZ crossings from ship position and offline Marine Regions polygons; warns at 24, 12, 6 nm and 60, 15 min out; sets each instrument to log, quarantine or stop per the cruise clearance record; strictest action when position is lost; one-tap override with reason and expiry; audit log to a cruise-report table; console banner and Sealog events | BRIEFED | 12-04 | `briefs/p2/137-eez-mode.md` |
 
 ## 6. Setup automation: one engine, three front doors
 

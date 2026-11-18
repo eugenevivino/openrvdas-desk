@@ -20,4 +20,3 @@ Rewritten as items are answered. Each line: what, why it needs you, what is alre
   `~/.codex`). The sign-in probably landed on the MacBook. On the Mini run:
   `mkdir -p ~/.codex-deepsignal && CODEX_HOME=$HOME/.codex-deepsignal /opt/homebrew/bin/codex login`
   then `resume/mini-finish.sh` runs from the MacBook. Meanwhile the #78 `ultra` review runs on the MacBook (no loss, only slower).
-- 2026-11-18 08:00Z: push of desk main (REFERENCE.md ecosystem section #131-#136, local commit 02fda44) blocked by the auto-mode permission check on `git push origin HEAD:main`; commit is ready locally in reference/desk, reference-check passes.
