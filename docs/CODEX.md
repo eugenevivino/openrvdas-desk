@@ -31,6 +31,13 @@ but the rules below apply from the next run on.
    flags, forces approvals off with the sandbox on, and logs every launch to
    `~/.codex/launch-log.txt`. If `codex-run` is missing on a Mac, stop and ask
    Eugene; do not fall back to bare `codex`.
+1b. Scratch path (Eugene, 2026-11-18): on his Macs, every DeepSignal Codex job
+   works only under `/private/tmp/deepsignal/<module>/` (clone in `repo/`,
+   brief in `brief.md`, patches in `patches/`). The Kalon project also uses
+   `/private/tmp`; never read, write or delete any other folder there. Every
+   brief names this path. Standing approval: Codex may build in these scratch
+   copies and push to `deepsignal/*` fork branches for a module and its fix
+   rounds; pull requests still need Eugene.
 2. Read-only (`--sandbox read-only`) for diagnosis and review. Workspace-write
    only for a Builder, never `danger-full-access`. The sandbox blocks `.git`
    writes by design: Codex edits files, the lead (or a script) commits.
