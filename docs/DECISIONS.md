@@ -325,3 +325,12 @@ injectors):
 2. #79 dependency-graph fault detector (`briefs/deepsignal-dependency-graph.md`).
 Order: after #53 so bench numbers are real; they may build before #53 lands
 and report the bench run as pending. Nothing deletes or corrects data.
+
+### D-SUB1 Codex sub-agents allowed only pinned and capped (2026-11-18, DECIDED in principle, mechanism UNVERIFIED)
+Eugene: sub-agents are important, as long as cost does not blow up. After the #56 incident
+(INCIDENTS 2026-11-18) they were switched off. Now: `ds-codex --sub-agents` (default OFF) may re-enable
+them only if the sub-agent model is pinned to the parent's model or cheaper (Sol or Luna), Astra
+needs the parent job's own opt-in, and depth, thread and token caps exist. A sub-agent helps the
+author; it never counts as the independent review (fresh session, rule 21). If the pin cannot be
+enforced in codex-cli 0.169.0, sub-agents stay off. Every job is audited afterward for
+`thread_spawn` sessions and their models.
