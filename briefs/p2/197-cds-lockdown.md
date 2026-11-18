@@ -1,5 +1,7 @@
 # Brief: sec-cds-lockdown (#197 Trust zones and CDS lockdown)
 
+- Revision: r2, 2026-11-18, folds the Astra ultra review (desk `research/2026-11-18-security-architecture-review.md`, eb61677), SECURITY-ARCHITECTURE.md v2 sections 2.3 (T1, T14, T15) and 9.2.
+
 - Decision: D-SEC0 (CDS exposure), D-SEC1 section 9.2. IDEAS #197
 - Risk tier: high (security-critical; merge waits for Eugene, queued in MORNING.md)
 - Module: exactly one. Branch `deepsignal/sec-cds-lockdown`
@@ -20,8 +22,14 @@ reachable through one guarded door.
   `subscribe`, `ready`. `publish` needs no auth.
 - `--udp` makes the CDS read JSON records through `UDPReader(port=..., mc_group=...)` with no
   `interface`, which means INADDR_ANY: a second unauthenticated injection path.
-- The install script's nginx template proxies `location /cds-ws` straight to
-  `http://localhost:${CACHED_DATA_SERVER_PORT}` with no auth.
+- **Both** install-script nginx templates (Django UI and React UI) proxy `location /cds-ws`
+  straight to `http://localhost:${CACHED_DATA_SERVER_PORT}` with no auth.
+- The console currently defaults to `ws://<host>:8766` (`contrib/deepsignal/console/src/pages.ts`).
+  Changing that default is the console module's job (release blocker), not this brief's; this
+  brief's check command reports it.
+- The previous acceptance run of this brief had no passing attempt: CDS tests failed with
+  connection errors. Before writing code, run `test/server/test_cached_data_server.py` on the base
+  sha and paste the result, so a pre-existing gate-host problem is separated from new failures.
 - **nginx cannot inspect WebSocket frames.** A "subscribe only" rule cannot live in nginx. If the
   INTEGRATION.md check was read that way, this brief is the mechanism that makes it true.
 - `logger/writers/cached_data_writer.py` publishes to the CDS over a websocket. Local loggers must
@@ -32,12 +40,23 @@ reachable through one guarded door.
    `''` (unchanged behavior), passed to `websockets.serve`. Add `--udp_interface`, default `None`
    (unchanged), passed to `UDPReader(interface=...)`. No other core edits.
 2. **Read-only gateway (overlay):** `contrib/deepsignal/security/cds_gateway.py`, a small asyncio
-   websocket relay listening on `127.0.0.1:8767` (configurable). For each browser connection it
+   websocket relay listening on a Unix socket `/run/deepsignal/cds-gateway.sock` (mode 0660,
+   group of the nginx user; path configurable) so only nginx can reach it and identity headers
+   cannot be forged from a local TCP client. A `--tcp 127.0.0.1:8767` option exists for the test
+   fixture only. For each browser connection it
    opens one upstream connection to the CDS at `127.0.0.1:8766` and forwards only client messages
    whose `type` is in an allowlist: `fields`, `describe`, `subscribe`, `ready`. Anything else
    (including `publish`, unknown types, non-JSON, frames over 64 KiB) gets
    `{"type": <type>, "status": 403, "error": "read-only connection"}` and is not forwarded.
-   Server-to-client messages pass through unchanged, byte for byte.
+   Server-to-client messages pass through unchanged, byte for byte, **when the field policy is
+   allow-all** (the default in this brief).
+   **Field policy hook (T15):** `FieldPolicy.allowed(identity, field) -> bool`, loaded from a
+   callable path in config. When a non-allow-all policy is set, the gateway filters
+   `subscribe` requests (wildcards are expanded against the CDS `fields` list first, then
+   filtered), filters `describe` metadata, and drops disallowed fields from server-to-client data
+   messages, re-serialized as JSON. Caps: back-history request (`seconds`) capped at 3600, at most
+   500 fields after wildcard expansion. #189 supplies the real policy (roles, pages, kiosks,
+   held-back fields).
 3. Per-connection limits: max 4 messages/second sustained (burst 20), max 200 subscribed fields,
    max 50 concurrent connections. Over a limit: close with code 1008 and a plain reason.
 4. Gateway reads two optional request headers set by nginx: `X-DS-User`, `X-DS-Role`. In this
@@ -48,10 +67,14 @@ reachable through one guarded door.
    `X-DS-Role ""` (strip client copies), `client_max_body_size 64k`, Origin check against the
    configured server name. Plus `security-headers.conf`: CSP `default-src 'self'`,
    `frame-ancestors 'none'`, `X-Content-Type-Options nosniff`, `Referrer-Policy no-referrer`.
+5b. A second snippet `cds-ws-react.conf` for the React UI server block, identical behavior.
+   Both are tested.
 6. **Check command** `python -m contrib.deepsignal.security.check_cds` prints one plain line per
    check and exits non-zero on any FAIL: CDS listening only on loopback (read `ss -ltnu` output
    through an injectable runner); UDP feed (if configured) bound to a named interface, not
-   0.0.0.0; nginx `/cds-ws` points at the gateway port; a live `publish` through the gateway is
+   0.0.0.0, with a documented nftables allowed-source rule; Supervisor web UI off or loopback;
+   console default URL is same-origin `/cds-ws` (WARN, owned by the console module); nginx
+   `/cds-ws` in **both** templates points at the gateway socket; a live `publish` through the gateway is
    refused; a live `subscribe` through the gateway returns data. The console self-test from the
    install module calls this.
 7. Sample supervisord program block for the gateway in `contrib/deepsignal/security/supervisor/`.
@@ -66,6 +89,11 @@ the test, as `test/server/test_cached_data_server.py` does):
 - `test_unknown_type_and_non_json_refused`, `test_oversize_frame_refused`.
 - `test_rate_limit_closes_1008`, `test_field_cap`.
 - `test_local_writer_still_publishes`: `CachedDataWriter` to the CDS port works as before.
+- `test_policy_filters_subscribe_describe_and_data`, `test_wildcard_expanded_then_filtered`,
+  `test_history_and_field_caps`, `test_allow_all_is_byte_identical`.
+- `test_unix_socket_mode_0660`.
+- Tests start the CDS with `--host 127.0.0.1` on a free port and wait for readiness with a
+  bounded connect retry (max 5 s), never a fixed sleep.
 `test/server/test_cached_data_server_host.py`: `--host 127.0.0.1` refuses a connection on a
 non-loopback address of the test machine (skip with a reason if the runner has only loopback);
 default `''` keeps old behavior.
@@ -104,7 +132,7 @@ alters field names or timestamps. It must fail closed: if the allowlist cannot b
 every client message. A gateway crash must not affect the CDS or loggers.
 
 ## Non-goals and banned
-No auth or login (that is #189). No per-role field filtering (#189/#137 later). No change to CDS
+No auth or login (that is #189). Only the field policy hook and allow-all default; real policies come from #189 and #137. No UDP source-address tagging (v2; needs a reader change). No change to CDS
 default behavior. No edits to the install script. No new dependencies. No refactors, renames or
 formatting outside the two new arguments. No skipped or loosened tests, no sleeps for ordering.
 No writes in `/private/tmp` outside `/private/tmp/deepsignal/`.

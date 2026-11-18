@@ -1,5 +1,7 @@
 # Brief: sec-auth-gateway (#189 Auth gateway)
 
+- Revision: r2, 2026-11-18, folds the Astra ultra review (eb61677) and SECURITY-ARCHITECTURE.md v2 sections 3.1, 3.6, 4, 9.2 and 12.
+
 - Decision: D-SEC1 section 3.1, D-SEC2 (login layer = Django accounts; **pending Eugene**). IDEAS #189
 - Risk tier: high (security-critical; merge waits for Eugene, queued in MORNING.md)
 - Module: exactly one. Branch `deepsignal/sec-auth-gateway`
@@ -8,7 +10,7 @@
 - Fresh session, under 40 turns
 - Upstream home: fork only for now
 - Value (techs/science/shore): 5/5/5
-- Depends on: #197 (gateway and nginx snippets), #115 roles engine (`contrib/deepsignal/roles/`). Hold launch until D-SEC2 is approved; if Eugene picks another login layer, this brief is rewritten, not adapted.
+- Depends on: #197 (gateway and nginx snippets), #115 roles engine (`contrib/deepsignal/roles/`), #192a vault core (Django `SECRET_KEY`; until it lands, read the secret from a 0400 file path and mark the test `vault pending`). Hold launch until D-SEC2 is approved; if Eugene picks another login layer, this brief is rewritten, not adapted.
 
 ## Goal
 Every DeepSignal screen, live-data stream and API asks who you are once, at one door, and knows
@@ -22,7 +24,12 @@ your role everywhere after that.
 - #115 engine: `Policy.load(path)`, `policy.can(role, action)`, `policy.role_for(identity)`. Change
   request D-SEC3: lowest role is `viewer` (authenticated). If #115 still says `public`, map
   `public` to `viewer` in this module and flag it in the report; do not edit #115 files.
-- #197 gateway reads `X-DS-User` and `X-DS-Role`; this brief makes them mandatory.
+- #197 gateway reads `X-DS-User` and `X-DS-Role` on a Unix socket; this brief makes them
+  mandatory and supplies the field policy.
+- **Legacy control is open today (T16):** `django_gui/api_views.py` accepts Basic or token auth
+  and allows a mode change with only `IsAuthenticated`. Any new viewer account would gain control.
+- Upstream installer copies `django_gui/settings.py.dist` (development settings, `DEBUG=True`) and
+  recreates a superuser from the database password.
 
 ## Design (lead decisions; flag disagreement in the report)
 1. Small Django app `contrib/deepsignal/security/authgw/` (installed into the existing Django
@@ -48,7 +55,30 @@ your role everywhere after that.
    `contrib.deepsignal.security.audit_emit.emit(event)`. In this brief `emit` writes JSONL to a
    configured path; #193 replaces the body with the hash-chained signer. Keep the call sites.
 5. TLS is assumed on (nginx); `check_auth` command reports FAIL if the server block is plain HTTP.
-6. No MFA here (#190), no break-glass or kiosk (#191). Leave clear extension points.
+6. **Enforcement contract:** nginx strips and overwrites `X-DS-User`, `X-DS-Role`, `X-DS-Device`
+   on every request; backends receive them only over Unix sockets; each backend authorizes the
+   action and object itself.
+7. **Legacy endpoint authorization (T16, release blocker):** a DRF permission class
+   `contrib.deepsignal.security.authgw.permissions.PolicyPermission(action)` that calls #115
+   `policy.can(role, action)`. Apply it to every write or control view in
+   `django_gui/api_views.py` (mode change, logger config edit, load configuration, cruise
+   changes) by changing only their `permission_classes` lines; map each view to an action in a
+   table in the docs. Read views get `view.health`. Token issuance requires `tech` or higher.
+   Django GUI HTML control views get the same check through a decorator in a settings snippet
+   (no edits to their bodies).
+8. **Field policy for the gateway:** implement #197's `FieldPolicy` from #115 roles plus a
+   `pages.yaml` field list per page; held-back fields (configured list) need `download.raw`.
+9. **Kiosk read path without Django (pilot):** nginx kiosk location uses `ssl_verify_client on`
+   against the ship CA and passes `X-DS-Device` (certificate serial) to the gateway; the gateway
+   maps it through `kiosks.yaml` to named pages and their fields, read-only. No `auth_request` on
+   that path, so Django loss does not blank the bridge. Enrolment tooling is #191.
+10. **Stream revocation:** the gateway re-validates each human connection's session through
+    `/auth/check` over the Unix socket every 10 s and closes with 1008 on 401/403.
+11. **Production settings check:** `check_auth` FAILs on `DEBUG=True`, a `SECRET_KEY` equal to the
+    dist value or under 50 chars, `ALLOWED_HOSTS` containing `*`, plain-HTTP server block, or a
+    superuser whose password matches the database password. Ship a settings snippet that reads
+    `SECRET_KEY` from the vault.
+12. No MFA here (#190), no recovery or kiosk enrolment (#191). Leave clear extension points.
 
 ## Failing test first
 `contrib/deepsignal/test/security/test_authgw.py` (Django test client, sqlite):
@@ -60,6 +90,11 @@ your role everywhere after that.
 - `test_login_next_rejects_offsite_redirect`
 - `test_cookie_flags_secure_httponly_samesite_strict`
 - `test_audit_lines_for_login_fail_lockout_logout`
+- `test_viewer_cannot_change_mode_via_legacy_api` (Basic and token), `test_tech_can_change_mode`,
+  `test_every_control_view_has_policy_permission` (introspects the URLconf)
+- `test_disable_closes_open_stream_within_10s` (fake clock)
+- `test_kiosk_device_sees_only_its_page_fields_without_django`
+- `test_check_auth_flags_debug_and_dist_secret`
 `contrib/deepsignal/test/security/test_cds_gateway_auth.py`: gateway refuses upgrade without
 `X-DS-User`; accepts with it; `--allow-anonymous` logs the warning.
 `contrib/deepsignal/test/security/test_nginx_snippets.py`: parses the snippets as text and asserts
@@ -86,7 +121,8 @@ Create or change only: `contrib/deepsignal/security/authgw/**`,
 `contrib/deepsignal/security/audit_emit.py`, `contrib/deepsignal/security/nginx/auth.conf`,
 `contrib/deepsignal/security/check_auth.py`, the auth-check part of
 `contrib/deepsignal/security/cds_gateway.py`, the test files above,
-`contrib/deepsignal/docs/security-auth.md`. Read-only: `django_gui/**`, install script, #115 files.
+`contrib/deepsignal/docs/security-auth.md`. `django_gui/api_views.py` (only `permission_classes` lines), `contrib/deepsignal/configs/kiosks_example.yaml`,
+`contrib/deepsignal/configs/pages_fields_example.yaml`. Read-only: the rest of `django_gui/**`, install script, #115 files.
 
 ## Usability
 Answer each line of `docs/USABILITY.md`. Login errors never reveal whether a username exists.
@@ -99,8 +135,8 @@ or client header. Backends trust `X-DS-*` only on loopback. Fail closed: if `/au
 or times out, nginx denies. Acquisition is never affected by auth failures.
 
 ## Non-goals and banned
-No MFA, kiosk, break-glass, tokens, LDAP or OIDC. No edits to `django_gui/**` or the install
-script. No new dependencies. No refactors or default changes elsewhere. No skipped or loosened
+No MFA, recovery, kiosk enrolment, tokens, LDAP or OIDC. No edits to `django_gui/**` beyond the
+`permission_classes` lines, none to the install script. No new dependencies. No refactors or default changes elsewhere. No skipped or loosened
 tests, no sleeps. No writes in `/private/tmp` outside `/private/tmp/deepsignal/`.
 
 ## Report format

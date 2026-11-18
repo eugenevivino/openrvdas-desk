@@ -59,3 +59,8 @@ Then these manual checks, recorded with screenshots in `/private/tmp/deepsignal/
 
 ## Security check added 2026-11-18 (D-SEC0), corrected by the security thread
 nginx cannot inspect WebSocket frames, so a "subscribe only" nginx proxy is not possible. #197 (briefs/p2/197-cds-lockdown.md) supplies the mechanism: a loopback read-only relay on 127.0.0.1:8767 forwarding only fields/describe/subscribe/ready and refusing publish, with nginx /cds-ws pointing at it, plus a small core change (new --host and --udp_interface args, defaults unchanged) so CDS can bind 127.0.0.1 (upstream has host='' hardcoded and --udp binds INADDR_ANY; an nftables rule is the stopgap). The install module must point at #197, not invent its own. Before the MVP candidate: CDS bound to 127.0.0.1, relay in place, publish through /cds-ws refused (tested), LAN-only, plain-words self-test warning. #197 merges only on Eugene's approval.
+
+Release blockers added 2026-11-18 (security thread, review of the security architecture):
+1. console/src/pages.ts defaults to ws://<host>:8766; it must default to same-origin wss://<host>/cds-ws before the CDS bind ships, or the bridge loses live data. Fix round on console-mvp.
+2. The D-SEC0 check must name BOTH nginx templates (Django and React) and the CDS --udp path (INADDR_ANY).
+3. #197 r2 and #189 r2 briefs replace the earlier versions; code merges wait for Eugene. Nov 25 is a supervised pilot beside the existing bridge display (D-SEC6).

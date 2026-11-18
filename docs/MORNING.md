@@ -3,7 +3,8 @@
 - D-SEC1 adopt the security architecture and its MVP cut (docs/SECURITY-ARCHITECTURE.md section 12). Security code merges wait for you.
 - D-SEC2 login layer: recommended Django accounts plus allauth MFA (this closes the #115 login item).
 - D-SEC3 rename the #115 role "public" to "authenticated viewer".
-- D-SEC4 one secrets vault; #188 AI stays off until #192 lands.
+- D-SEC4 vault core (host-key) moves into the Nov 25 pilot for TOTP seeds, Django secret and TLS keys; AI stays off until the vault is in and the ship opts in explicitly.
+- D-SEC6: Nov 25 is a Wednesday (not Tuesday). It is a supervised pilot beside the existing bridge display; ship cutover only after the four release checks in docs/SECURITY-ARCHITECTURE.md section 12 pass.
 - D-SEC5 reference FIPS platform: RHEL 9.
 
 - SECURITY (critical): upstream CachedDataServer binds all interfaces on 8766 and accepts unauthenticated publish, including via nginx /cds-ws. The console install must bind it to localhost and expose a read-only websocket only; closing publish is part of the security architecture block (#189-#198, trust zones plus CDS write lockdown). Do not expose the console beyond the ship LAN until that lands.
