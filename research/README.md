@@ -53,3 +53,4 @@ Plans written as research files:
 
 sample data (catalog at `../docs/SAMPLE-DATA.md`) (`/mnt/project-files/sample-data`, manifest only, large files stay on the mount), sonar science (#170-#181).
 - [2026-11-18-mcp-design-review.md](2026-11-18-mcp-design-review.md): independent security and effectiveness review of the MCP design (Astra ultra, read-only)
+- [2026-11-18-security-architecture-review.md](2026-11-18-security-architecture-review.md): independent review of docs/SECURITY-ARCHITECTURE.md, security block #189-#198 (Astra ultra, read-only)
