@@ -137,11 +137,7 @@ first draft: re-run at xhigh and compare (C2 "What a Medium result means").
    the lead does it, and tells the build threads.
 The build loop itself is in `docs/BUILDERS.md`.
 
-## 4. Open items for Eugene
-
-- `~/bin/codex-run` exists and is identical on both Macs (verified 2026-11-18).
-
-## 5. Retrievers and the ledger (rules 19 and 21)
+## 4. Retrievers and the ledger (rules 19 and 21)
 
 - A retriever is a read-only, fresh, cheap job (Luna or Sol medium on Codex, or a
   small Claude model). Tools: read, grep, glob, one write for an optional report
