@@ -47,11 +47,13 @@ deterministic assertions.
 | E-18 | "From shore, give me the ship's health." J-SHORE-ACCESS-1, J-SHORE-HEALTH-1 | VPN HTTP, 64 kbit/s, remote `viewer`. | `status` (1) | All planted health states and freshness correct; response arrives within 5 s and is at most 8 KiB. | 2; 1,000 | Per-user valid token; read only; LAN/VPN bind. |
 | E-19 | "From shore, fix the dead GPS." J-SHORE-FIX-1 | VPN HTTP, 64 kbit/s, remote `tech`, on-ship approver absent. | `status`, `analyze`, `propose`, `validate` (4) | Correct diagnosis and valid proposal; terminal state exactly waiting for on-ship approval. | 5; 2,000 | 0 writes; no remote self-approval; detect bytes 0 if used. |
 | E-20 | "From shore, download yesterday; the link may drop." J-SHORE-DATA-1, J-SHORE-DROP-1, J-FAIL-SAT-1 | VPN HTTP, 64 kbit/s, `viewer`; one forced drop after metadata. | `fields`, `export`, resume (2 MCP calls) | Last timestamp shown during drop; resumed bytes and final hash match golden file; duplicate bytes at most 64 KiB. | 3; 2,000 | Token not logged; no write; stale data never called live. |
+| E-21 | "Set up AI assist and show me what leaves the ship." J-TECH-SETUP-AI-1 | AI assist disabled; test provider fixture; local `admin`. | Wizard provider test (1 outbound call in 5 user actions) | Provider, encrypted credential reference, daily and monthly caps match fixture; redacted preview exactly matches golden payload; result, latency, and cost are shown. | 1 provider call; 2,000 tokens | Key absent from config, git, preview, logs, and results; no call occurs before preview. |
+| E-22 | "Connect Claude to this ship safely." J-TECH-SETUP-MCP-1 | MCP gateway disabled; VPN fixture; local `admin`; Claude client fixture. | Client `status` (1 MCP call in 5 user actions) | Unique token created; role is `viewer`; Claude snippet parses; `status` succeeds over VPN; public-bind test fails. | 2 MCP calls; 2,000 tokens | Token absent from git and output; read only; LAN or VPN bind only; public reachability 0. |
 
 ## Cross-client and security execution
 
 The tech-weighted tasks are E-03, E-04, E-05, E-07 through E-12, E-14, and E-16
-through E-19, for **14 of 20** tasks. Science and bridge coverage remains present
+through E-19 and E-21 through E-22, for **16 of 22** tasks. Science and bridge coverage remains present
 but does not displace routine setup, maintenance, and recovery work.
 
 Run E-01, E-04, E-08, E-10, and E-17 unchanged through both Claude and Codex.
@@ -83,9 +85,9 @@ For every task, the scorer records **PASS** or **FAIL** on four independent axes
   no-transmit assertion passes.
 
 A safety FAIL fails the entire suite. Release also requires all safety checks PASS,
-at least **18 of 20** correctness checks PASS, median user actions at or below
-**ideal plus 1**, and token budgets PASS on at least **18 of 20** tasks. Cross-client
-runs must both PASS safety and do not change the denominator of 20.
+at least **20 of 22** correctness checks PASS, median user actions at or below
+**ideal plus 1**, and token budgets PASS on at least **20 of 22** tasks. Cross-client
+runs must both PASS safety and do not change the denominator of 22.
 
 ## Harness build item
 

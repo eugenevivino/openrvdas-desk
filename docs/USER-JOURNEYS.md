@@ -25,7 +25,7 @@ Status: quality contract for D-UX1, D-SETUP1, and D-MCP2. The named MCP tools ar
 
 | Persona | Set up | Improve | Troubleshoot | Operate |
 | --- | --- | --- | --- | --- |
-| Shipboard tech | J-TECH-SETUP-1 | J-TECH-CAL-2 | J-FAIL-DEAD-1 | J-TECH-CRUISE-1 |
+| Shipboard tech | J-TECH-SETUP-1, J-TECH-SETUP-AI-1, J-TECH-SETUP-MCP-1 | J-TECH-CAL-2 | J-FAIL-DEAD-1 | J-TECH-CRUISE-1 |
 | Scientist | J-SCI-DATA-1 | J-SCI-PLOT-1 | J-SCI-QUALITY-1 | J-SCI-EVENT-1 |
 | Bridge watch | Skipped: bridge watch does not configure sensors. | J-BRIDGE-MODE-1 | J-FAIL-STALE-1 | J-BRIDGE-WATCH-1 |
 | Shore support | J-SHORE-ACCESS-1 | J-SHORE-FIX-1 | J-SHORE-HEALTH-1 | J-SHORE-DATA-1 |
@@ -45,6 +45,49 @@ Targets: live data in **10 minutes or less**, **3 actions or fewer**, YAML typed
 **0**, expert knowledge **none**, required knowledge **physical port and label**,
 and correct fields visible on **Live page within 10 seconds**. Proven by E-08 and
 usability test U-SETUP-10.
+
+### J-TECH-SETUP-AI-1: set up outbound AI assist
+
+**Trigger:** "Walk me through connecting an AI assistant without exposing ship
+data." This is the outbound direction: DeepSignal sends a reviewed, redacted
+request to the provider. Role: local `admin`.
+
+1. **Wizard, AI Assist, Provider:** choose the provider. `GAP: #188 AI assist wizard.`
+2. **Wizard, AI Assist, Credentials:** paste the provider key. The wizard says it
+   is stored encrypted in the credential store, never in configuration files or
+   git, and shows how to replace or revoke it. `GAP: #188.`
+3. **Wizard, AI Assist, Limits:** enter daily and monthly spending caps. `GAP: #188.`
+4. **Wizard, AI Assist, Preview:** inspect the redacted preview of exactly what the
+   test will send, with secrets and sensitive fields removed. `GAP: #188.`
+5. **Wizard, AI Assist, Test:** run one test call and read its plain result,
+   latency, and cost. `GAP: #188.`
+
+Targets: **under 5 minutes**, **5 actions**, YAML typed **0**, expert knowledge
+**none**, required knowledge **provider account and key**, encrypted key storage
+**yes**, config or git key copies **0**, preview shown before transmission **yes**.
+Proven by E-21.
+
+### J-TECH-SETUP-MCP-1: set up inbound MCP access
+
+**Trigger:** "Walk me through connecting Claude to this ship safely." This is the
+inbound direction: an MCP client connects to DeepSignal over the ship LAN or VPN.
+Role: local `admin` for setup; the new user is `viewer` by default.
+
+1. **Wizard, MCP Access, User:** create a named per-user token. `GAP: #64 MCP gateway.`
+2. **Wizard, MCP Access, Role:** keep `viewer`, or explicitly choose `tech` or
+   `admin`; read-only `viewer` is selected by default. `GAP: #64.`
+3. **Wizard, MCP Access, Client:** choose Claude Desktop or Claude Code and copy
+   its generated client configuration snippet. The snippet contains the LAN or VPN
+   URL and handles the token without writing it to git. `GAP: #64.`
+4. **MCP, client connection test:** connect from that client and call `status`; the
+   wizard reports a plain pass or fix. `GAP: #64.`
+5. **Wizard, MCP Access, Network check:** confirm the bind address is reachable
+   only on the ship LAN or VPN; a public bind fails the check. `GAP: #64.`
+
+Targets: **under 5 minutes**, **5 actions**, YAML typed **0**, expert knowledge
+**none**, required knowledge **user name, client, and LAN or VPN address**,
+per-user token **yes**, default read-only **yes**, public reachability **no**. Proven
+by E-22.
 
 ### J-TECH-REPLACE-1: replace an instrument with a spare
 
@@ -369,6 +412,8 @@ surface uses plain words, links to evidence, and offers only validated fixes.
 | Journey IDs | Surfaces | GAP items | Test |
 | --- | --- | --- | --- |
 | J-TECH-SETUP-1 | Console, Wizard, CLI, MCP | #125-#128, #130 | E-08, U-SETUP-10 |
+| J-TECH-SETUP-AI-1 | Wizard | #188 | E-21 |
+| J-TECH-SETUP-MCP-1 | Wizard, MCP | #64 | E-22 |
 | J-TECH-REPLACE-1 | Console, Wizard, MCP | #126, #130 | E-09 |
 | J-TECH-RETIRE-1 | Console, Wizard, MCP | #126, #130 | U-RETIRE-03 |
 | J-TECH-CAL-1, J-TECH-CAL-2 | Console, Wizard, MCP | #127, #56 | E-10, E-11 |
