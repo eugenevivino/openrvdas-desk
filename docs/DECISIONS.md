@@ -205,5 +205,7 @@ earlier Astra and Sol picks. Tiers and efforts in `docs/CODEX.md` section 2 are
 unchanged, only the versions. Running jobs finish on their current model.
 Ids verified on the MacBook: `gpt-6.2-sol`, `gpt-6.2-astra`. `~/bin/codex-run`
 (Kalon's script) needs no change: no allow-list, Astra guard matches `astra`.
-Nobody had launched a 6.2 model yet as of 05:12Z. The Mini is unchecked.
+Mini verified 05:2x Z: Codex 0.170.0 via codex-run, lists both 6.2 ids, login
+present, no upgrade needed; 6.2 already runs there. Kalon replaced `codex-run`
+on both Macs at 05:19Z (maps ids to 6.2, refuses no model, narrower clean-up).
 

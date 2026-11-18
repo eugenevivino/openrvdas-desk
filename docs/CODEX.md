@@ -38,14 +38,15 @@ but the rules below apply from the next run on.
    brief names this path. Standing approval: Codex may build in these scratch
    copies and push to `deepsignal/*` fork branches for a module and its fix
    rounds; pull requests still need Eugene.
-1c. Model flag and ids (verified 2026-11-18, `~/bin/codex-run` and the CLI model cache):
-   every launch passes `-m <id>` explicitly (rule 27); the config default is `gpt-6-astra`
-   and `codex-run` refuses any `astra` id unless `KALON_ALLOW_ASTRA=1` (set it
-   only for the Astra job Eugene approved, D-TEAM5). Ids: `gpt-6.2-sol`,
-   `gpt-6.2-astra`, Luna `gpt-6-luna` (no 6.2 Luna). Efforts: low, medium,
-   high, xhigh, max, ultra (Luna: low to max). Never run `codex-run --help` or
-   any probe (rule 28): it only prunes folders in /private/tmp, then refuses. Do not name
-   a DeepSignal folder with swift, -build, scratch or -tests: the prune can match it.
+1c. Model flag and ids (verified 2026-11-18 05:2x Z, both Macs): `~/bin/codex-run`
+   (Kalon's, identical on both Macs, new version since 05:19Z) refuses an exec with
+   no model (exit 7) and maps old ids to 6.2: any sol id runs `gpt-6.2-sol`, any
+   astra id `gpt-6.2-astra` (needs `KALON_ALLOW_ASTRA=1`; set it only for the job
+   Eugene approved, D-TEAM5). Luna `gpt-6-luna` passes through; other ids refused.
+   We still pass `-m <id>` ourselves (rule 27). Its clean-up now touches only
+   `/private/tmp/kalon*` and skips paths containing `deepsignal`. The Mini runs
+   it with CLI 0.170.0 (plain `codex` there is an older 0.163.0, so always use
+   codex-run). Efforts: low to ultra (Luna: low to max).
 2. Read-only (`--sandbox read-only`) for diagnosis and review. Workspace-write
    only for a Builder, never `danger-full-access`. The sandbox blocks `.git`
    writes by design: Codex edits files, the lead (or a script) commits.
