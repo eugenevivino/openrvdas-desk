@@ -12,6 +12,7 @@
 | kiosk-night | `deepsignal/console-mod-kiosk-night` | `deepsignal/console-contract` | 2 | node | 1 |
 | soak | `deepsignal/console-harness-soak` | `deepsignal/console-harness-fixture` | 1 | python | 2 (after fixture) |
 | source-loss | `deepsignal/console-harness-source-loss` | `deepsignal/console-harness-fixture` | 2 | python | 2 (after fixture) |
+| map | `deepsignal/console-mod-map` | `deepsignal/console-contract` | 2 | node | 1 (MVP only if green by 11-21, else stretch) |
 | stale-banner | `deepsignal/console-mod-stale-banner` | `deepsignal/console-contract` | 2 | node | 1 |
 
 Prompt files: `briefs/cloud/console-<task>.md` (header + full brief). Briefs alone: `briefs/console/<task>.md`.
@@ -24,3 +25,5 @@ Environment: node tasks need Node >= 22 and `npm ci` run in `contrib/deepsignal/
 Cannot run in cloud (lead runs outside the sandbox): every `@pytest.mark.lead_run` browser test (test_console_live extensions, test_bridge_browser, test_source_loss_browser), the real 24 h soak, Night luminance and onboard checks.
 
 Integration (lead, after wave 2): merge module branches into core-v2 in any order (disjoint), rebuild dist once, run the full suite plus lead_run tests, Astra 6.2 review of the merged diff, Impeccable audit in all four lighting modes.
+
+D-SETUP1 (first light in 10 minutes or less, 3 or fewer actions): the console's part is the install task (install.sh plus the self-test page). Its docs must show the 3 actions: run install.sh, open /console/, read the self-test page.
