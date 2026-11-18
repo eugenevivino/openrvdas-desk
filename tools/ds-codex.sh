@@ -4,8 +4,8 @@
 #   ds-codex [--dry-run] [--sub-agents] [--wait-ram[=SECONDS]] -m <gpt-6.2-sol|gpt-6.2-astra|gpt-6-luna> [-c model_reasoning_effort=<level>] [codex exec args...] [-]
 # Exit codes: 2 bad usage, 3 Astra without KALON_ALLOW_ASTRA=1, 4 full-access/bypass/write-widening refused,
 #             6 model not allowed, 7 no -m, 8 connector guard refused, 9 cwd outside scratch, 10 another DeepSignal job holds the lock,
-#             11 RAM gate: free RAM under 4 GB or swap used over 3.8 GB (defaults; DS_MIN_FREE_MB / DS_MAX_SWAP_MB /
-#                DS_REQUIRE_PRESSURE1=1 override per machine), with --wait-ram: still so at the deadline.
+#             11 memory gate (D-RAM2): pressure not normal, available RAM under 3 GB, swap grew over 512 MB in 5 min,
+#                or swap over 8 GB (with --wait-ram: still so at the deadline).
 set -u
 DS_HOME="$HOME/.codex-deepsignal"
 SCRATCH="/private/tmp/deepsignal"
@@ -135,18 +135,17 @@ still=$(mcp_names "${dis[@]}" "${off[@]+"${off[@]}"}") || die 8 "MCP server list
 sb=(); [[ " ${args[*]+"${args[*]}"} " == *" -s "* || " ${args[*]+"${args[*]}"} " == *" --sandbox "* || " ${args[*]+"${args[*]}"} " == *"--sandbox="* ]] || sb=(--sandbox workspace-write)
 cmd=("$CX" exec "${dis[@]}" "${off[@]+"${off[@]}"}" "${subcfg[@]+"${subcfg[@]}"}" -c 'approval_policy="never"' -c 'sandbox_workspace_write.writable_roots=[]' "${sb[@]+"${sb[@]}"}" "${args[@]+"${args[@]}"}")
 
-# (i) RAM gate (shared-machine rule from Kalon, 2026-11-18): refuse unless free RAM >= 4 GB and swap used <= 3.8 GB.
-# Available RAM (lead, 2026-11-18) = free + speculative + purgeable + file-backed pages, capped at physical RAM minus
-# wired minus compressor-occupied pages (inactive is NOT added: file-backed already holds the inactive file cache and
-# inactive anonymous pages are not freely reclaimable). Swap used from vm.swapusage. Every component is printed.
-# Floors can be lowered per machine by the caller (the Mini's launch gate sets DS_MIN_FREE_MB=2048 DS_MAX_SWAP_MB=2457
-# ); kernel pressure level 1 (normal) is required by default (DS_REQUIRE_PRESSURE1=1). Values must be plain integers.
-RAM_MIN_FREE_MB=${DS_MIN_FREE_MB:-4096}; SWAP_MAX_USED_MB=${DS_MAX_SWAP_MB:-3891}; REQ_P1=${DS_REQUIRE_PRESSURE1:-1}
-[[ "$RAM_MIN_FREE_MB" =~ ^[0-9]+$ && "$SWAP_MAX_USED_MB" =~ ^[0-9]+$ ]] || die 2 "DS_MIN_FREE_MB and DS_MAX_SWAP_MB must be integers"
+# (i) Health-based memory gate (Eugene, 2026-11-18, D-RAM2; replaces the fixed 3.8 GB swap ceiling and D-ACCEPT-RAM):
+# start only when kernel memory pressure is normal (level 1), available RAM (free + speculative + purgeable + file-backed,
+# capped at RAM minus wired minus compressed) is at least 3 GB, swap used has not grown more than 512 MB versus a reading
+# at least 5 minutes old, and swap used is under the 8 GB hard stop. Overrides: DS_MIN_FREE_MB, DS_MAX_SWAP_MB,
+# DS_MAX_SWAP_GROWTH_MB. Swap readings are kept in /private/tmp/deepsignal/.swap-history.
+RAM_MIN_FREE_MB=${DS_MIN_FREE_MB:-3072}; SWAP_MAX_USED_MB=${DS_MAX_SWAP_MB:-8192}; SWAP_MAX_GROWTH_MB=${DS_MAX_SWAP_GROWTH_MB:-512}
+[[ "$RAM_MIN_FREE_MB" =~ ^[0-9]+$ && "$SWAP_MAX_USED_MB" =~ ^[0-9]+$ && "$SWAP_MAX_GROWTH_MB" =~ ^[0-9]+$ ]] || die 2 "DS_MIN_FREE_MB, DS_MAX_SWAP_MB and DS_MAX_SWAP_GROWTH_MB must be integers"
 ram_state() {
-  local pg free_mb swap_mb
+  local pg free_mb swap_mb comp pl now hist old growth
   pg=$(sysctl -n hw.pagesize)
-  local comp; comp=$(vm_stat | awk -v pg="$pg" -v mem="$(sysctl -n hw.memsize)" '
+  comp=$(vm_stat | awk -v pg="$pg" -v mem="$(sysctl -n hw.memsize)" '
     {v=$NF; gsub(/\./,"",v)}
     /^Pages free:/ {f=v} /^Pages speculative:/ {sp=v} /^Pages purgeable:/ {pu=v} /^File-backed pages:/ {fb=v}
     /^Pages wired down:/ {w=v} /^Pages occupied by compressor:/ {c=v}
@@ -154,9 +153,12 @@ ram_state() {
          printf "%d free=%d speculative=%d purgeable=%d file_backed=%d sum=%d cap(RAM-wired-compressed)=%d", tot, f*mb, sp*mb, pu*mb, fb*mb, sum, cap}')
   free_mb=${comp%% *}
   swap_mb=$(sysctl -n vm.swapusage | sed -E 's/.*used = ([0-9.]+)M.*/\1/'); swap_mb=${swap_mb%.*}
-  RAM_MSG="available_MB=$free_mb (min $RAM_MIN_FREE_MB) [MB: ${comp#* }] swap_used_MB=$swap_mb (max $SWAP_MAX_USED_MB) pressure_level=$(sysctl -n kern.memorystatus_vm_pressure_level)"
-  [ "$free_mb" -ge "$RAM_MIN_FREE_MB" ] && [ "$swap_mb" -le "$SWAP_MAX_USED_MB" ] || return 1
-  [ "$REQ_P1" != 1 ] || [ "$(sysctl -n kern.memorystatus_vm_pressure_level)" = 1 ]
+  pl=$(sysctl -n kern.memorystatus_vm_pressure_level); now=$(date +%s); hist=$SCRATCH/.swap-history
+  { echo "$now $swap_mb" >> "$hist"; tail -400 "$hist" > "$hist.$$" && mv -f "$hist.$$" "$hist"; } 2>/dev/null
+  old=$(awk -v t=$((now-300)) '$1<=t {v=$2} END {print v}' "$hist" 2>/dev/null)
+  growth=$([ -n "$old" ] && echo $((swap_mb-old)) || echo unknown)
+  RAM_MSG="available_MB=$free_mb (min $RAM_MIN_FREE_MB) [MB: ${comp#* }] swap_used_MB=$swap_mb (hard stop $SWAP_MAX_USED_MB) swap_growth_5min_MB=$growth (max $SWAP_MAX_GROWTH_MB) pressure_level=$pl (need 1)"
+  [ "$pl" = 1 ] && [ "$free_mb" -ge "$RAM_MIN_FREE_MB" ] && [ "$swap_mb" -lt "$SWAP_MAX_USED_MB" ] && [ -n "$old" ] && [ "$growth" -le "$SWAP_MAX_GROWTH_MB" ]
 }
 if [ "$dry" = 1 ]; then ram_state && echo "ds-codex: RAM gate OK: $RAM_MSG" >&2 || echo "ds-codex: RAM gate would REFUSE (11): $RAM_MSG" >&2
 elif ! ram_state; then
