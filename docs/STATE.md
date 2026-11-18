@@ -3,6 +3,8 @@
 Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the DeepSignal thread.
 
 ## Now
+- RULE: build on the fork first. No upstream PR or "ready to send" prompt until
+  Eugene says the set is ready (D-ARCH6).
 - Desk repo `eugenevivino/openrvdas-desk` is live (public, `main`). Rules 1 to 28,
   decisions through D-TEAM7, briefs, gate scripts and ideas 1 to 62 are in it.
 - Mini set up (2026-11-18): ~/OpenRVDAS-Work, venv-3.12, deps stamp e241119e.
@@ -14,11 +16,11 @@ Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the Deep
 ## Code
 - Django fix PR: fork branch `django-gui/shared-config-names` ad10eb1 (on dev 1a6f1ed).
   Django 48 OK, pytest 631 passed, flake8 clean on changed lines. Gate NOT RUN.
-  PR text in `pr/`. ON HOLD: Eugene filed the upstream issue; wait for the developer's
-  reply, then open the PR with "Fixes #N" (Eugene sends it; this session cannot reach upstream).
+  PR text in `pr/` (draft only). Parked on the fork (D-ARCH6); also waiting on the
+  developer's reply to Eugene's issue, then "Fixes #N". Eugene sends it.
 - DeepSignal wind: fork branch `claude/project-thread-un3kq6` 558e45b, based on
   contrib master 3b4b76e. VectorWindAverageTransform, 23 tests pass, gate NOT RUN.
-  PR draft `pr/deepsignal-vector-wind.md`; Eugene sends it.
+  DONE, parked on the fork (D-ARCH6). Draft `pr/deepsignal-vector-wind.md`, not for sending yet.
 - Contrib: branches on the existing fork, PRs to openrvdas_contrib `master`,
   folder `contrib/deepsignal/` (D-ARCH3, D-ARCH4).
 
@@ -37,8 +39,8 @@ Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the Deep
 ## Open asks for Eugene
 - Codex cloud setup: connect the fork, create the environment (Python 3.12, deps,
   internet off after setup), send the environment id.
-- Django PR: waiting on the developer's reply to the issue, then send with "Fixes #N".
-- Wind PR: send when ready.
+- Nothing goes upstream until you say the set is ready (D-ARCH6).
+- Codex capacity: which way to go for DeepSignal jobs (hold stands until you answer).
 - First scoreboard make, model, protocol; stale threshold.
 
 ## Next bounded task

@@ -250,3 +250,13 @@ the proposal: raw data immutable; tools suggest with evidence and never
 rewrite data or command ship systems; live mode never uses future data.
 Not yet launched. PRs still need Eugene.
 
+### D-ARCH6 Build on the fork first; nothing goes upstream until Eugene says the set is ready (2026-11-18, DECIDED)
+Eugene: "Build on my repo first." Hard rule. All work lands on branches in
+`eugenevivino/openrvdas` (core fixes and `contrib/deepsignal/` modules). No
+upstream PR, issue or comment is prepared as "ready to send", and agents do not
+prompt him to send one, until he says the set is ready. PR drafts may be kept in
+`pr/` as drafts only. Supersedes any earlier "send when ready" wording. The
+Django fix stays on its fork branch and is also on hold for the upstream
+developer's reply (issue filed by Eugene). The vector wind module is done and
+parked on the fork.
+
