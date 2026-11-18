@@ -174,3 +174,12 @@ small. The contrib project folder name is now PROPOSED `deepsignal` (was
 `openrvdas_overlay` in D-ARCH3); Eugene confirms before the first PR because
 the name is part of every `module:` path.
 
+### D-ARCH5 Standard interfaces, Linux first (2026-11-18, DECIDED)
+Eugene: modules integrate with the existing codebase and run on Linux "or
+whatever". Rule 25. Standard OpenRVDAS interfaces only, pure Python, no new
+dependencies without his approval, Linux first (ships), macOS second. Our Mini
+gate is macOS and cannot prove Linux behavior (the 4 Mini-only baseline failures
+are an example), so every PR also needs a Linux run: Codex cloud environment
+(`docs/BUILDERS.md`) or a Linux VM. The cloud session's Linux baseline
+(Python 3.13) does not replace a run on the target Python 3.11 or 3.12.
+

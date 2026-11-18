@@ -22,6 +22,10 @@ changes. Paste the RED output into the result.
 Own tests, a sample logger config that runs the module alone, a README
 section, and the list of other modules it depends on (default: none).
 
+## Integration and platform (overlay work)
+Which OpenRVDAS interfaces it implements, dependencies added (default: none),
+and the Linux test command that must pass before any PR (rule 25).
+
 ## Acceptance (exact commands)
 ```
 pytest <test file>
