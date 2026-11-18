@@ -20,7 +20,7 @@ The full brief follows.
 - Fresh session, under 40 turns
 - Upstream home: openrvdas_contrib tree, fork only for now
 - Value (techs/science/shore): 5/3/3
-- Depends on: inputs from #162 stream health, #165 time health, QARTOD flags, #167 runbooks, #168 timeline; its `ai_guard` package (redaction, budget, audit) is shared with the inbound MCP gateway (#64); write fixes only as proposals to #65 and #154; model choice from #69 evals
+- Depends on: #192 key vault (AI disabled until it merges); inputs from #162 stream health, #165 time health, QARTOD flags, #167 runbooks, #168 timeline; its `ai_guard` package (redaction, budget, audit) is shared with the inbound MCP gateway (#64); write fixes only as proposals to #65 and #154; model choice from #69 evals
 
 ## Goal
 When something goes wrong, the tech gets a short, evidence-linked briefing in seconds:
@@ -91,11 +91,13 @@ Every item carries a ref id. No raw data streams, and no credentials or tokens, 
 
 **Model adapters** (`models.py`): `ApiModel(provider, url, model, key_env)` is the **primary path**, and
 `LocalModel(url, model)` is optional. Both share one interface.
-- **Cloud on by default.** Calls go directly to the provider URL. The only network path is
+- **Enablement:** on by default once the #192 vault is present and a key is stored. Until #192 merges, it
+  ships with AI disabled by default, and the tech gets tier 1 and runbook briefings only.
+- Calls go directly to the provider URL. The only network path is
   `api.egress_proxy` (an HTTPS proxy URL) when set, else the provider host, which must be in
   `api.allowed_hosts`. Any other host is refused before a socket opens.
-- **Keys:** the key is read only through `ai_guard.secrets` (below). It is never in a config file, git,
-  a log or a pack.
+- **Keys:** the key is read only through the #192 vault (below). It is never in a config file, git, a
+  log, a pack, argv or the environment.
 - **Spending cap per ship** in `ai_triage.yaml`:
   - `api.max_usd_per_day` (default 2)
   - `api.max_usd_per_month` (default 30)
@@ -126,13 +128,18 @@ Every item carries a ref id. No raw data streams, and no credentials or tokens, 
   - Optional `sig`: an HMAC-SHA256 of the line without `sig`, keyed by a key loaded through
     `ai_guard.secrets` when `sign_key` is configured. `verify` checks the signatures too when it is given
     the key. The MCP gateway signs its apply records this way.
-- `secrets.py`: `store_key(name, value)` and `load_key(name)`.
-  - The key is encrypted at rest with `systemd-creds encrypt` when the host has it (systemd 250 or newer,
-    for example Ubuntu 24.04 or RHEL 9). It is stored under `/etc/deepsignal/credentials/` with mode
-    0600.
-  - Without systemd-creds it writes a 0600 root-only file and returns a warning. The self-test then says
-    "AI key stored without encryption on this host". It never silently pretends.
+- **Keys come from the #192 vault, not `ai_guard`** (security architecture thread, 2026-11-18). `store_key`
+  calls `vault.put("ai-triage", provider, value)` and `load_key` calls `vault.get("ai-triage", provider)`.
+  - The vault is an AES-256-GCM envelope through platform OpenSSL, with a tpm2 KEK protector or else a 0400
+    host-key file owned by the ai-triage service user. It works the same on Ubuntu 22.04, 24.04 and RHEL 9.
+  - There is no plaintext path at all. Do not write any fallback that stores a key unencrypted.
+  - #192 is not on your base. Code against the interface `put(namespace, name, value)`,
+    `get(namespace, name) -> str`, `protector() -> "tpm2" | "hostkey"` through an injectable `vault`
+    object. Import the real one lazily by its module path when present. If it is absent, AI assist is
+    **disabled** and every surface says plainly: "AI assist needs the key vault (#192), not installed
+    yet."
   - Keys are never accepted on the command line (shell history). They are read from stdin or the wizard.
+- `secrets.py` keeps only token hashing:
   - `hash_token(token) -> str` and `check_token(token, stored) -> bool`: PBKDF2-HMAC-SHA256 from stdlib
     `hashlib`, at least 200000 iterations, with a random salt and a constant-time compare. Bearer tokens
     such as MCP access tokens are stored only this way, never in plaintext.
@@ -141,7 +148,7 @@ Every item carries a ref id. No raw data streams, and no credentials or tokens, 
 **Guided setup** (setup engine functions in `ai_triage/setup.py`, pure or behind injectable I/O, which the
 wizard, console and CLI all call):
 1. `providers() -> list`: the built-in provider choices with their default URLs and request shapes.
-2. `store_key(provider, key)`: through `ai_guard.secrets`.
+2. `store_key(provider, key)`: through the #192 vault.
 3. `set_caps(daily_usd, monthly_usd, prices)`: validated, written to `ai_triage.yaml` (no secrets in it).
 4. `test_call() -> dict`: one tiny fixed prompt. It reports ok or error in plain words (bad key, host not
    allowed, proxy unreachable, over budget), latency, tokens and cost.
@@ -200,8 +207,11 @@ it removes EEZ hold-back fields and rounds positions as #116 does. A ship can tu
 - Redaction strips secrets, emails, held-back fields and EEZ hold-back fields, and rounds positions.
 - `api.enabled: false` sends nothing.
 - A host outside `allowed_hosts` is refused before any connection.
-- The key is never in the YAML, logs, packs or argv. Assert it across all written files in a temp dir.
-- systemd-creds present gives an encrypted store; absent gives the warning path (fake runner both ways).
+- The key is never in the YAML, logs, packs, argv or the environment. Assert it across all written files
+  in a temp dir and in the fake process environment.
+- A fake vault with each protector (`tpm2`, `hostkey`, using a fake protector runner): the round trip
+  works, and the self-test wording names the protector.
+- With no vault, AI is disabled, the message is exact, and no call is attempted.
 - `test_call` maps a fake 401, a DNS failure and the budget-exceeded case to plain messages.
 - `preview` shows removal counts.
 - Audit hash chain: verify passes; editing, deleting or reordering a line reports the first break.

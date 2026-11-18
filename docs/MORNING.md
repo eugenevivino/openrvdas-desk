@@ -8,7 +8,6 @@
 
 - SECURITY (critical): upstream CachedDataServer binds all interfaces on 8766 and accepts unauthenticated publish, including via nginx /cds-ws. The console install must bind it to localhost and expose a read-only websocket only; closing publish is part of the security architecture block (#189-#198, trust zones plus CDS write lockdown). Do not expose the console beyond the ship LAN until that lands.
 
-- #188 secrets: Ubuntu 22.04 has no systemd-creds, so API keys there are stored in a 0600 file unencrypted with a loud warning. Accept that or pick another store.
 
 - #188 AI watch assistant: pick the API provider and put the key in the ship environment (never in git). A lead check against the real API runs outside the sandbox. Defaults: $2/day, $30/month caps; you can change them.
 
