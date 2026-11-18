@@ -35,6 +35,17 @@ Use at most two prior-scaled modes, analytic layered integration or controlled q
 
 The tech gets the depth band and expected outer-beam improvement on a new line. Scientists get a profile-error diagnostic with uncertainty. Uniform bias over flat repeat geometry, tidal offsets, uncompensated heave, roll, water-mass changes between lines or a steered fan treated as vertical can all mimic refraction. Retain the identifiable linear combination only. Rank zero gives AMBIGUOUS. Registration gaps give POSTHOC_REVIEW.
 
+## Math review fixes (binding; `research/2026-11-18-sonar-math-review.md`, cdb7efb)
+
+These override anything above or below that conflicts. Each added test is part of "Failing test first".
+
+1. **Two outputs, not one (P2).** Report `rank(G)` (algebraic) and `visible_modes = count(singular values of G P^(1/2) >= 1)` (modes the data constrain beyond the prior) as separate fields. Test `test_rank_vs_visible`: scalar G=0.5, P=1 gives rank 1, visible_modes 0.
+2. **Likelihood label (P2).** The information pair (G^T G, -G^T r_w) built from frozen Huber weights is a local quadratic approximation; label it so in output metadata and docs. Only with fixed Gaussian weights is it the exact projected Gaussian information.
+3. **Added tests.** `test_turning_ray` (|p c| = 1 at a turning depth: no division by zero, ray marked turned, excluded with reason), `test_hidden_mode_positive_rank` (a mode below the visibility cutoff while rank is positive: not reported as constrained), and `test_sloping_crossing_sign` (sloping seafloor where the -g^T dDeltax/dalpha term flips the inversion sign versus the flat-bottom approximation).
+4. Builds on #161: the fused profile prior P comes from #161 when present; this module never edits it.
+
+Simulation targets (fault recall, Monte Carlo covariance error, reflector recall, false-repeat rate) are acceptance claims only once the run's realized outputs are pasted in the report; the review could not verify them from the brief.
+
 ## Failing test first
 
 Add `contrib/deepsignal/test/swath_refraction/test_estimator.py`. Run `test_profile_mode_survives_nuisance_projection` and `test_duplicate_crossing_prior_refused` on the base before implementing the estimator. Capture the actual RED output. Each test must exercise the future public class or function, with explicit expected numbers or verdicts. Follow with tests for record shape, replay determinism, immutable inputs, absent channels and the demo logger chain.

@@ -55,6 +55,17 @@ For each order, estimate the aligned local multiple at k−M_im by robust median
 
 The tech sees shadow zones and heave breaks. The scientist gets trace ID, TWT picks, gap intervals and alternatives for annotation. A dipping multiple crossing a bed, gas blanking, gain discontinuity, datum mismatch or a genuinely pinching layer can erase tilt evidence. Resolve two horizons only when pulse bandwidth and SNR support the spacing. Convert to metres only with independently measured sediment velocity.
 
+## Math review fixes (binding; `research/2026-11-18-sonar-math-review.md`, cdb7efb)
+
+These override anything above or below that conflicts. Each added test is part of "Failing test first".
+
+1. **Track termination (P1).** Terminate a track when `missing_run >= 3` consecutive traces, everywhere (code, docs, SONAR-SCIENCE). Test `test_terminate_at_three_missing` (exactly three missing terminates, two does not); the old four-trace fixture is not enough.
+2. **Multiple timing uncertainty (P2).** For order m at fixed draft and sound speed, M_m = mT + 2(m-1)d/c and SD(M_m) = m SD(T). With uncertain draft or speed, propagate the full gradient with their covariance. Never reuse the bottom-pick SD for higher orders. Test `test_order3_timing_sd` (SD triples at m=3).
+3. **Score units (P3).** The contrast threshold is 1 standardized contrast unit (equal to 1.4826 raw log-envelope MADs when the floor is negligible). State it that way in code and docs.
+4. **Added tests.** `test_repeated_positions` (Delta x = 0 between traces: no division by zero, traces merged or flagged), `test_withheld_traces_one_footprint` (adjacent withheld traces inside one footprint count as one independent block). Repeatability counts independent footprint or line blocks, not traces.
+
+Simulation targets (fault recall, Monte Carlo covariance error, reflector recall, false-repeat rate) are acceptance claims only once the run's realized outputs are pasted in the report; the review could not verify them from the brief.
+
 ## Failing test first
 
 Add `contrib/deepsignal/test/subbottom_reflectors/test_estimator.py`. Run `test_primary_disappears_inside_multiple_tube` and `test_no_pick_in_trace_gap` on the base before implementing the estimator. Capture the actual RED output. Each test must exercise the future public class or function, with explicit expected numbers or verdicts. Follow with tests for record shape, replay determinism, immutable inputs, absent channels and the demo logger chain.

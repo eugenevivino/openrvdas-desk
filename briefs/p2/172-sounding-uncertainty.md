@@ -35,6 +35,16 @@ Accept a positive-semidefinite Σ with physically valid units, finite diagonals 
 
 A tech can see timing dominate on turns and SV dominate at large incidence. Science can select soundings by stated precision. Wrong covariance, sound-speed/motion double counting, a new installation epoch and common datum errors defeat crossline tests. Report an uncalibrated propagated interval or missing component on unsupported inputs. Offline seed-fixed Monte Carlo checks strong nonlinearity and bounded inputs.
 
+## Math review fixes (binding; `research/2026-11-18-sonar-math-review.md`, cdb7efb)
+
+These override anything above or below that conflicts. Each added test is part of "Failing test first".
+
+1. **Detection cross-term (P2).** Total propagated variance is J Sigma_q J^T + Sigma_detect + J C + C^T J^T with C = Cov(q, e_detect). Set C=0 only when independence is documented, and record which. Test `test_detection_cross_term`.
+2. **What the conformal check certifies (P2).** The finite-sample conformal guarantee is for disagreement with the crossline reference, not absolute depth. With independent reference SD 0.1 s_z the comparison variance is 1.01 s_z^2; report absolute-depth coverage as approximate and state the reference-variance inflation used.
+3. **Added tests.** `test_heave_sign_convention` (upward-positive heave input converted to positive-down before propagation), `test_deg_to_rad_covariance` (angle covariance converted by (pi/180)^2), `test_invalid_joint_covariance` (valid marginal blocks but non-positive-semidefinite joint matrix rejected with reason), `test_zero_sz_guard` (s_z must be finite and positive before standardization; s^2=0 yields missing value with reason, never divide).
+
+Simulation targets (fault recall, Monte Carlo covariance error, reflector recall, false-repeat rate) are acceptance claims only once the run's realized outputs are pasted in the report; the review could not verify them from the brief.
+
 ## Failing test first
 
 Add `contrib/deepsignal/test/sounding_uncertainty/test_estimator.py`. Run `test_common_draft_survives_per_sounding_covariance` and `test_difference_quantile_never_labels_absolute_depth` on the base before implementing the estimator. Capture the actual RED output. Each test must exercise the future public class or function, with explicit expected numbers or verdicts. Follow with tests for record shape, replay determinism, immutable inputs, absent channels and the demo logger chain.

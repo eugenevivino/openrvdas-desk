@@ -35,6 +35,17 @@ Default tube widths one/two beam footprints, anchor spacing one footprint over c
 
 Techs can check whether a promising feature survives the next crossing. Scientists get candidate coordinates, repeatability, detection footprint and a bounded comparison of strength. Needs intersecting independently navigated headings and a resolved base, calibrated coverage for quantitative comparisons, and background observations on both sides. Fish schools, turbidity plumes, bottom sidelobes, current variability, blind zones near bed and dependent EK/EM picks can defeat identification. One line is a candidate. An unobserved base remains unresolved.
 
+## Math review fixes (binding; `research/2026-11-18-sonar-math-review.md`, cdb7efb)
+
+These override anything above or below that conflicts. Each added test is part of "Failing test first".
+
+1. **Heading wrap (P1).** Line heading difference is abs(((h2 - h1 + 180) mod 360) - 180). "Opposing or perpendicular" requires that difference >= 30 degrees. Test `test_heading_wrap`: 350 and 10 degrees differ by 20 degrees and do not qualify.
+2. **Correlated voxels (P1).** With voxel covariance R: D = K^T R^-1 K + tau^-2, A_hat = max(0, K^T R^-1 y)/D, gain = A_hat^2 D / 2. Never use diagonal weighting when R has off-diagonal terms. Test `test_correlated_voxel_gain`: the review's correlation-0.5 fixture gives gain 8/3 (diagonal weighting would give 4).
+3. **Null distribution.** Null shifts must preserve each line's spatial correlation while breaking cross-pass alignment. p = (1 + count(null max >= observed)) / (1 + n_shifts). Test `test_null_p_value`: 199 shifts with 9 ties-or-exceedances give p = 0.05; 10 give 0.055.
+4. **Added tests.** `test_zero_template_support` (no support: missing value with reason) and `test_near_zero_first_pass` (relative index with a near-zero first-pass value is reported as undefined, never a huge ratio).
+
+Simulation targets (fault recall, Monte Carlo covariance error, reflector recall, false-repeat rate) are acceptance claims only once the run's realized outputs are pasted in the report; the review could not verify them from the brief.
+
 ## Failing test first
 
 Add `contrib/deepsignal/test/seep_repeatability/test_estimator.py`. Run `test_repeat_anchor_beats_beam_fixed_ghost` and `test_missing_coverage_is_missing_strength` on the base before implementing the estimator. Capture the actual RED output. Each test must exercise the future public class or function, with explicit expected numbers or verdicts. Follow with tests for record shape, replay determinism, immutable inputs, absent channels and the demo logger chain.
