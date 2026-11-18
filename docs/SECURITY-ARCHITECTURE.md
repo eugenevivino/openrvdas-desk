@@ -350,7 +350,11 @@ audit read and export, vault and crypto profile changes, self-test results, time
 - Capacity: alert at 75% of the audit partition, never silently drop (NIST AU-5); acquisition
   continues regardless.
 
-### 8.3 Signed config history (#194)
+### 8.3 Approval service and signed config history (#194)
+
+All write paths are approved on one console screen that issues single-use signed receipts; full
+spec in `docs/APPROVALS.md` (answers MCP review F1/F2).
+
 
 - Every deployed config (cruise definition, logger configs, page files, role policy, EEZ settings)
   is stored content-addressed (SHA-256) with a signed manifest: hash, parent hash, proposer,

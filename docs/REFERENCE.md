@@ -363,7 +363,7 @@ Security-first design for the console, CDS, REST and MCP. Full design: `docs/SEC
 | #191 Break-glass, kiosk and service identities | Sealed emergency access and non-human identities | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
 | #192 Secrets vault | One AES-256-GCM envelope vault; #188 AI stays off until it lands | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
 | #193 Tamper-evident audit log | Hash-chained JSONL | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
-| #194 Signed config history | Content-addressed signed config versions | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
+| #194 Approval service and signed config history | Trusted approvals and receipts (answers MCP review F1/F2) plus content-addressed signed config versions; `docs/APPROVALS.md`; branch `deepsignal/sec-approvals`, Mac Astra high, v2 | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
 | #195 Crypto profile and FIPS path | One approved-algorithm profile; RHEL 9 reference platform | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
 | #196 STIG-aligned policy profile | Standard versus STIG profile | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
 | #197 Trust zones and CDS write lockdown | Bind CDS to localhost, refuse unauthenticated publish | DESIGNED | MVP | `docs/SECURITY-ARCHITECTURE.md`, D-SEC0 |
