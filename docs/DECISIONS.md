@@ -418,3 +418,6 @@ DeepSignal builds per-instrument link health (#156) on what OpenRVDAS already pu
 
 ### D-FUSE1 Use all available good data, within reason (2026-11-18, DECIDED by Eugene: "We should use all available good data within reason to improve our outcomes.")
 Every DeepSignal cross-check fuses at least two independent sources, weights each by quality and age, names the odd one out, and records which sources it used. External data (Argo, climatology, ocean models) is fetched ashore or when bandwidth allows, never required for a module to work. Applied first to sound speed (#140, #147, #161) and to heading, depth, position and shot position in `docs/SHIP-SYSTEMS.md`.
+
+### D-ONBOARD1a onboard-wizard un-parked (2026-11-18, logged by build lead)
+Its second "failure" was the paho-mqtt NameError on the Mac (contrib mqtt_reader reads mqtt.* at class definition), not a real defect. Acceptance now uses a stub at /private/tmp/deepsignal/shims/paho/ (nothing installed). Ten modules re-queued for acceptance with the stub. The real Linux gate installs real dependencies, so stubbed passes are provisional until the gate runs them.
