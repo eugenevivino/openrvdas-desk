@@ -62,4 +62,26 @@ push only deepsignal/* fork branches and desk branches; two failures of the same
 - #157 device-servers: task_e_6afd628285f8832fb9cbc0904351bac8
 - #158 seismic-shot-qc: task_e_6afd632eba60832f8e3e06e1d7a31509
 - #145 adcp-health: task_e_6afd649fb2e4832f840ac759cba32b5a; #147 sv-manager queued on the Mac after chain-3 (Astra high)
-Last sync 2026-11-18T08:44:46Z: fork branches pushed ok; upstream fetched ok (core dev 1a6f1edb, contrib master 3b4b76e6); desk main pushed after this line.
+- batch 9 console-chain: task_e_6afd674990b4832f8724d88faa43a9e8
+- batch 9 stream-health: task_e_6afd674ce358832fb8c13f6002cdc19a
+- batch 9 cal-units-registry: task_e_6afd675013e4832fbdd870990a02f5d0
+- batch 9 time-health: task_e_6afd675336d0832fb20c6cee76129ea6
+- batch 9 config-provenance: task_e_6afd67566524832fa4f4e0448e4bea19
+- batch 9 event-timeline: task_e_6afd6759eb2c832fa26a3443ba92b504
+- batch 9 runbooks: task_e_6afd675d0580832f860c2646e318bd13
+- batch 9 archive-readiness: task_e_6afd675fbe04832fa95f53c419526731
+- batch 9 console-trust: task_e_6afd6762b448832f8102f7d2564d3652
+- scoreboard profiles: task_e_6afd678117c0832fb1fb0677c6ece69f
+- scoreboard transports: task_e_6afd6784cc84832fa3d5b2879813cef7
+- scoreboard text-codec: task_e_6afd67877f30832f9beec7117fd5af01
+- scoreboard alpha-codec: task_e_6afd678a5c5c832f8763e1513bdcb8c3
+- scoreboard modbus-codec: task_e_6afd678db2cc832fb3d24651fd5c7ee5
+- #188 ai-triage: task_e_6afd68182320832fa73fbfbe4a0b7349 (CRITICAL: push only, never merge)
+- #188 resubmitted task_e_6afd6831ea1c832f8a772812155e141d; first submit task_e_6afd68182320 had only the header (prompt file not pulled yet) and is ignored
+- #188 ai-triage HELD: task_e_6afd6831ea1c runs but is not accepted or pushed until the revised brief lands; then a fix round (Sol medium, 1 attempt) on its best attempt
+- #188 revised API-first prompt: task_e_6afd6860fe48832f9003e33bf01b4f97; older task_e_6afd6831ea1c (old prompt) marked ignored
+- #188 final prompt: task_e_6afd6905e1e0832f88b60411e8f2adf5; task_e_6afd6860fe48 ignored; at most one more resubmit
+- docs-journeys: desk docs c217afa; fix round for J-TECH-SETUP-AI-1/MCP-1: task_e_6afd692ea358832f9f86c0448338674f (lead copies to desk)
+- #197 cds-lockdown: task_e_6afd6aacc6c8832fa998754243fe2f80 (CRITICAL security; push only). #189 auth-gateway waits for #197 green and D-SEC2. Console install integration to point at #197 (note for INTEGRATION).
+- #188 vault fix round: task_e_6afd6aecf954832f88d66b060c32e454
+Last sync 2026-11-18T09:44:50Z: fork branches pushed ok; upstream fetched ok (core dev 1a6f1edb, contrib master 3b4b76e6); desk main pushed after this line.
