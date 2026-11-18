@@ -320,3 +320,18 @@ D-SCORE2. Outdoor deck LED scoreboards; a new board is a profile file, not code.
 | # | Idea | One line | Value | Status | Phase | Source |
 |---|---|---|---|---|---|---|
 | 188 | AI watch assistant | Event-triggered triage (held transitions, alerts, "Explain", end-of-watch digest), never a stream: compact redacted context pack (chain, timeline, time health, runbook, prior incidents), API model as primary path (provider-pluggable, via MCP over VPN, on by default) with per-ship daily and monthly caps, cached by signature; offline queues the request and gives runbook steps at once, local model optional; evidence-checked JSON, advise only (writes become #65/#154 proposals), outcomes logged to #168. Brief `briefs/p2/188-ai-triage.md`. Eugene 2026-11-18 | 5/3/3 | DESIGNED | 2 | Eugene |
+
+## Security architecture (2026-11-18, security thread; numbers 189-198 from the build lead)
+
+| # | Idea | One line | Value | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| 189 | Auth gateway | nginx TLS + auth_request to Django login; one identity for console, CDS, REST, MCP; identity headers only from nginx | 5/5/5 | DESIGNED | MVP | T-SEC |
+| 190 | MFA | TOTP (MVP, admin) and WebAuthn/FIDO2 (v2); required for admin, tech and any write role; offline; step-up for writes | 4/3/5 | DESIGNED | MVP/2 | T-SEC |
+| 191 | Break-glass, kiosk and service identities | Sealed offline break-glass, viewer-capped kiosk device identity for bridge, per-service Unix identities; cruise-scoped expiring accounts | 5/3/4 | DESIGNED | MVP/2 | T-SEC |
+| 192 | Secrets vault | AES-256-GCM envelope vault via platform OpenSSL, TPM2 or host-key KEK protector, per-service namespaces, no plaintext fallback; works on Ubuntu 22.04/24.04 and RHEL 9; replaces #188 key storage | 4/3/5 | DESIGNED | 2 | T-SEC |
+| 193 | Tamper-evident audit log | Hash-chained JSONL by a dedicated signer, ECDSA P-384 checkpoints, rsyslog and shore copies, offline verify tool | 4/4/5 | DESIGNED | MVP (chain) / 2 (signing) | T-SEC |
+| 194 | Signed config history | Content-addressed signed manifests for every deploy, rollback as signed deploy, loggers refuse unverified configs; v3 WebAuthn-bound approvals | 5/4/5 | DESIGNED | 2 | T-SEC |
+| 195 | Crypto profile and FIPS path | One approved-algorithm list, FIPS TLS suites, system-OpenSSL linkage check in self-test, fips-scan CI job, RHEL 9 FIPS gate (v3) | 2/2/5 | DESIGNED | 2/3 | T-SEC |
+| 196 | STIG-aligned policy profile | standard vs stig profiles: banner, idle/absolute timeouts, lockout, password rules, concurrent sessions; v3 CKL self-assessment | 2/2/5 | DESIGNED | 2/3 | T-SEC |
+| 197 | Trust zones and CDS lockdown | CDS on 127.0.0.1, authenticated read-only /cds-ws, publish refused from browsers, supervisord UI off, security headers, nftables zone templates (D-SEC0) | 5/5/5 | DESIGNED | MVP | T-SEC |
+| 198 | Supply chain | Hash-pinned locks, CycloneDX SBOM, pip-audit/npm audit with shipped offline snapshot, ECDSA-signed releases verified offline, signed tags; v3 SLSA provenance | 3/2/5 | DESIGNED | 2 | T-SEC |

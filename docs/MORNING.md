@@ -1,5 +1,11 @@
 # Morning queue for Eugene (newest first)
 
+- D-SEC1 adopt the security architecture and its MVP cut (docs/SECURITY-ARCHITECTURE.md section 12). Security code merges wait for you.
+- D-SEC2 login layer: recommended Django accounts plus allauth MFA (this closes the #115 login item).
+- D-SEC3 rename the #115 role "public" to "authenticated viewer".
+- D-SEC4 one secrets vault; #188 AI stays off until #192 lands.
+- D-SEC5 reference FIPS platform: RHEL 9.
+
 - SECURITY (critical): upstream CachedDataServer binds all interfaces on 8766 and accepts unauthenticated publish, including via nginx /cds-ws. The console install must bind it to localhost and expose a read-only websocket only; closing publish is part of the security architecture block (#189-#198, trust zones plus CDS write lockdown). Do not expose the console beyond the ship LAN until that lands.
 
 - #188 secrets: Ubuntu 22.04 has no systemd-creds, so API keys there are stored in a 0600 file unencrypted with a loud warning. Accept that or pick another store.

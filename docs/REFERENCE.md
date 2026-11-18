@@ -351,3 +351,21 @@ table above when it gets a design, brief or branch.
 | Scoreboard Alpha codec (#185) | Alpha Protocol LED signs | BRIEFED, wave 1 | p2 | fork:deepsignal/p2-scoreboard-alpha-codec, `briefs/p2/185-scoreboard-alpha-codec.md` |
 | Scoreboard Modbus codec (#186) | Register writes for Modbus-only large displays | BRIEFED, wave 1 | p2 | fork:deepsignal/p2-scoreboard-modbus-codec, `briefs/p2/186-scoreboard-modbus-codec.md` |
 | Scoreboard bench tool (#187) | Check a profile's bytes, send a test frame | BRIEFED, wave 2 (after #182-#186 merge to `deepsignal/scoreboard-integ`) | p2 | fork:deepsignal/p2-scoreboard-bench, `briefs/p2/187-scoreboard-bench.md` |
+
+## 13. Security architecture (D-SEC1 to D-SEC5, T-SEC)
+
+Security-first design for the console, CDS, REST and MCP. Full design: `docs/SECURITY-ARCHITECTURE.md`. Security code merges wait for Eugene.
+
+| Item | What | Status | Phase | Where |
+|---|---|---|---|---|
+| #189 Auth gateway | nginx TLS plus auth_request, one identity everywhere | DESIGNED | MVP | `docs/SECURITY-ARCHITECTURE.md` |
+| #190 MFA | TOTP for admin (MVP), WebAuthn/FIDO2 later | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
+| #191 Break-glass, kiosk and service identities | Sealed emergency access and non-human identities | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
+| #192 Secrets vault | One AES-256-GCM envelope vault; #188 AI stays off until it lands | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
+| #193 Tamper-evident audit log | Hash-chained JSONL | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
+| #194 Signed config history | Content-addressed signed config versions | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
+| #195 Crypto profile and FIPS path | One approved-algorithm profile; RHEL 9 reference platform | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
+| #196 STIG-aligned policy profile | Standard versus STIG profile | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
+| #197 Trust zones and CDS write lockdown | Bind CDS to localhost, refuse unauthenticated publish | DESIGNED | MVP | `docs/SECURITY-ARCHITECTURE.md`, D-SEC0 |
+| #198 Supply chain | Pinned dependencies, signed releases | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
+
