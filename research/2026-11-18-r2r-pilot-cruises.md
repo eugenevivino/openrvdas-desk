@@ -26,14 +26,30 @@ Verified:
 - R2R format for all three met filesets: "SIO MET-Station ACQ,LOG,UCR,COR,MET".
 - Each hy1 file has SALNTY (bottle) and CTDSAL columns with counts above.
 
+Verified 2026-11-18 by reading only the first 4 MB of the RR2205 tarball
+(no full download):
+- The TSG is in the met archive. The tarball is a BagIt bag
+  (`RR2205/151255/data/`), one set per day with extensions ACQ, COR, UCR,
+  UNC, MET, LOG, DCC, M00, NOA, SLT, WCH (32 to 33 days each).
+- `.ACQ` is the MetAcq configuration and calibration file (Revelle `RR21C.ACQ`,
+  2021-11-06). It lists **two SBE45 TSGs** and an SBE38 hull SST:
+  - TSG83: SBE45 s/n 0083, bow thruster room UCW intake, Sea-Bird cal 22-Sep-2020
+  - TSG72: SBE45 s/n 0572, aft hydro lab, Sea-Bird cal 06-Mar-2021
+    (note in file: "changed TSG73 for TSG72 11/06/2021", a swap)
+  - SST53: SBE38 s/n 1188, bow thruster UCW intake, SIO/STS cal 05-Jan-2021
+  - Also oxygen, fluorometer and flow meters on the hydro lab loop.
+  So at RR2205 the TSGs were 15 to 21 months past calibration, which makes
+  drift plausible, and the two TSGs plus the SBE38 give a redundant set for
+  Tier C consistency.
+- `.COR` lines are `$WICOR` sentences carrying both TSGs (TT, TC, SA, SD, SV,
+  TG fields) every second, plus met, nav and gyro.
 Inferred, check first:
-- That the MetAcq archive contains the TSG channels. No separate TSG fileset
-  exists for these cruises, and MetAcq on Revelle logs the TSG, so it should
-  be inside; confirm by listing one tarball before planning around it.
-- The archive has both raw (ACQ) and MetAcq-corrected (COR) files. If so,
-  COR is a ready-made baseline: our pass must at least match it on holdout.
-- Calibration certificates are not in R2R or CCHDO. Ask SIO shipboard tech
-  group (STS) for the TSG and met sensor cal sheets for 2022 and 2023.
+- UCR and UNC look like uncorrected and COR corrected streams (MetAcq applies
+  the ACQ slope and offset). If so, COR is a ready-made baseline: our pass
+  must at least match it on holdout.
+- Calibration certificates are not in R2R or CCHDO; the ACQ gives only cal
+  dates. Ask SIO STS for the Sea-Bird certificates (pre and post) for SBE45
+  0083 and 0572 and SBE38 1188, and for whatever replaced them by 2023.
 
 Why these: same ship and system (one reader, module 3, covers all three), two
 back-to-back legs (RR2204 and RR2205) let a TSG drift be followed across a
