@@ -56,3 +56,6 @@ Then these manual checks, recorded with screenshots in `/private/tmp/deepsignal/
 - Astra 6.2 high, read-only, fresh session, reviews `origin/deepsignal/console-contract...deepsignal/console-mvp` against the briefs, DESIGN.md, CONTRACT.md and the CODEX.md rule 13 banned list. Output: findings by severity with file:line, each marked verified or inferred.
 - Fix tasks go to the owning module branches. Re-merge them, then re-run sections 2 to 4.
 - PR text is drafted in the desk under `pr/deepsignal-console-mvp.md`. Eugene sends it (openrvdas_contrib, `master`).
+
+## Security check added 2026-11-18 (D-SEC0)
+Before the MVP candidate: (1) the install script binds CachedDataServer to 127.0.0.1 (not 0.0.0.0) on 8766; (2) the nginx /cds-ws proxy passes subscribe only and a publish attempt through it is refused (test it); (3) the console is reachable on the ship LAN only, never a public address; (4) the self-test prints a plain-words warning if any of these is not true. If the install branch does not do this, run a fix round on it. Full lockdown (auth, trust zones) is the security block #189-#198.
