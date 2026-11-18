@@ -48,7 +48,7 @@ C = [
  ('C7', 'Download UI: high-res, binned, binned+stats, native raw; by date, parameter, resolution; CSV, TSV, JSON, GeoJSON, MAT, netCDF, OPeNDAP; zip plus metadata file', ['cx:export_data', 'cx:PAGES_data', 'SKQ'],
   'Gap', 'none', 'Binned downloads (#16)', 'Designed', 1, 1, 'DS', 2, 5, 5),
  ('C8', 'REST API for data and metadata', ['cx:API_endpoints', 'SKQ'],
-  'Partial', 'CachedDataServer websocket; FastAPI backend is logger control, not data', 'MCP gateway (#64) is read-only tools, not REST', 'Idea', 0.5, 1, 'DS', 2, 4, 5),
+  'Partial', 'CachedDataServer HTTP `/fields` and `/latest/` (fork `dev`); no history or metadata routes', 'REST API (#105)', 'Briefed', 1, 1, 'DS', 2, 4, 5),
  ('C9', 'ERDDAP server (subset, format translation, OGC)', ['cx:TS_erddap_data_download', 'R25', 'R20'],
   'Gap', 'none', 'none', '-', 0, 1, 'DS', 2, 5, 5),
  ('C10', 'Pushed real-time data services (UDP, MQTT, websockets)', ['cx:HT_data_access', 'R25'],
@@ -121,7 +121,7 @@ C = [
 
 M = [
  ('M1', 'RS232/RS422 serial input', ['MA'], 'Have', '`SerialReader`', '-', '-', 1, 1, 'core', 0, 0, 0),
- ('M2', 'RS485 multidrop polling, per-address round robin with timeouts', ['MA'], 'Partial', '`PolledSerialReader` sends queries, no per-device timeout loop', 'none', '-', 0.5, 1, 'core', 3, 1, 1),
+ ('M2', 'RS485 multidrop polling, per-address round robin with timeouts', ['MA'], 'Have', '`PolledSerialReader` `pre_read_cmd` dict: round-robin polling with per-command timeout (fork `dev`)', '-', '-', 1, 1, 'core', 0, 0, 0),
  ('M3', 'ADAM/DGH analog-to-RS485 modules (ASCII protocol)', ['MA'], 'Partial', '`ModbusSerialReader` (ADAM-4000 ASCII is not Modbus)', 'none', '-', 0.5, 1, 'core', 3, 2, 1),
  ('M4', 'NI DAQ / USB analog input', ['MA'], 'Gap', 'none', 'none', '-', 0, 0, 'core', 1, 1, 0),
  ('M5', 'UDP input, NMEA and non-NMEA', ['MA'], 'Have', '`UDPReader`, `ParseNMEATransform`', '-', '-', 1, 1, 'core', 0, 0, 0),
@@ -141,7 +141,7 @@ M = [
  ('M19', 'Range checks with per-value quality digit carried downstream', ['MA'], 'Partial', 'drop or warn only', 'QARTOD flags (#8)', 'Briefed', 1, 1, 'DS', 5, 5, 5),
  ('M20', 'Parallel uncorrected and corrected streams', ['MA'], 'Have', 'two chains in one config', 'Correction ledger (#56) goes further', 'Briefed', 1, 1, 'core', 0, 0, 0),
  ('M21', 'Daily files rolling at 0000Z', ['MA'], 'Have', '`LogfileWriter`', '-', '-', 1, 1, 'core', 0, 0, 0),
- ('M22', '.MET/.UCR column files with headers on each new file', ['MA'], 'Partial', '`FormatTransform` plus `LogfileWriter`, no per-file header', 'none', '-', 0.5, 1, 'core', 2, 3, 2),
+ ('M22', '.MET/.UCR column files with headers on each new file', ['MA'], 'Have', '`FormatTransform` plus `LogfileWriter` `header`/`header_file` on each new file', '-', '-', 1, 1, 'core', 0, 0, 0),
  ('M23', '.COR/.UNC $WICOR/$WIUNC files with quality digits', ['MA', 'OVDM'], 'Gap', 'none', '$WICOR writer (#6)', 'Designed', 1, 1, 'DS', 4, 4, 4),
  ('M24', 'Configuration copied next to each day of data', ['MA'], 'Partial', '`server/config_snapshot.py` (verify per day)', 'Provenance (#32)', 'Idea', 1, 1, 'core', 2, 3, 3),
  ('M25', 'Daily operations log', ['MA'], 'Have', 'logging', '-', '-', 1, 1, 'core', 0, 0, 0),

@@ -5,7 +5,7 @@ everything, so nothing raised in a thread is lost. Add a row the day an idea
 comes up. Never delete a row: mark it DROPPED with a reason.
 
 
-**Numbering: the build lead owns IDEAS numbers (next free: 125). Other threads do not
+**Numbering: the build lead owns IDEAS numbers (next free: 130). Other threads do not
 assign numbers. Write ideas as unnumbered drafts in your patch notes and ask the build
 lead for a range, to avoid collisions (three-way collision on 2026-11-18).**
 Status: PROPOSED (idea only), DESIGNED (design doc exists), BUILDING (brief
@@ -217,3 +217,17 @@ is techs/science/shore, 1 to 5 each, from the scorecard.
 | 122 | Small core fixes | RS485 round-robin polling with per-device timeout, ADAM ASCII reader, header on each new log file, "emulated" flag from simulators | 3/2/1 | PROPOSED | 1 | T-PARITY |
 | 123 | Low-bandwidth shore snapshot | Static image plus compact JSON every N seconds for slow links (MetAcq 10 s PNGs) | 2/3/5 | PROPOSED | 3 | T-PARITY |
 | 124 | Zero-prompt installer plus install clock | `--defaults` install to live data in 10 minutes and 3 actions; CI measures it on clean runners (`briefs/install-clock.md`) | 4/2/3 | PROPOSED | 0 | T-PARITY |
+
+## Config assist and automation (2026-11-18, parity thread; numbers 125-129 taken from the build lead's next free)
+
+Eugene asked that "all the auto stuff" that helps people configure OpenRVDAS be covered, across every
+OpenRVDAS input and output, not just serial. Coverage table: `docs/TARGET-PARITY.md` section 9.
+
+| # | Idea | One line | Value | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| 125 | Stream auto-discovery | Read-only scan of local serial ports (baud detection), UDP ports, MQTT topics, Redis channels, cache fields and growing files; captures feed the wizard (#114). No LAN scanning. Brief `briefs/p2/125-stream-discovery.md` | 5/2/3 | DESIGNED | 2 | T-PARITY, EUG |
+| 126 | Config generator from the instrument inventory | One acquisition file (plus #52 history) generates the whole cruise definition with modes, byte-stable, with a diff against what runs now (CORIOLIX does this from its sensor database). Brief `briefs/p2/126-config-from-inventory.md` | 5/2/3 | DESIGNED | 2 | T-PARITY |
+| 127 | Cruise config linter | Ship-sense checks beyond schema validation: shared ports, loggers missing from modes, nothing feeding the cache, no logfile in log modes. Brief `briefs/p2/127-config-lint.md` | 5/1/2 | DESIGNED | 2 | T-PARITY |
+| 128 | Component catalog | Introspect every reader, writer and transform into JSON Schema forms with plain labels, availability of optional dependencies and kwarg checks, so nothing in OpenRVDAS needs hand-written YAML. Brief `briefs/p2/128-component-catalog.md` | 5/2/3 | DESIGNED | 2 | T-PARITY, EUG |
+| 129 | Derived-product suggester | When the fields for true wind, vector averages, salinity, dew point or QC ranges are present, propose the transform (#106, #112, #4, #8) with a preview, for a tech to accept | 4/4/2 | PROPOSED | 3 | T-PARITY |
+

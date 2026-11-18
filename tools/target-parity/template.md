@@ -25,9 +25,10 @@ hand-edit the tables below.
   value ranking in section 4 is where importance shows up.
 - Measurable goal proposed: **"most of CORIOLIX" = at least 80% of CORIOLIX
   rows fully covered (score 1), and every gap valued 12 or more closed.**
-  Fully covered today: 6 of 42 (14%). With planned work: 22 of 42 (52%).
-  With the drafts: 40 of 42 (95%). Planned work alone misses the goal, so the
-  drafts are not optional.
+  Fully covered today: 6 of 42 (14%). With work planned before this scorecard:
+  23 of 42 (55%). With #104-#124 (now numbered and briefed, phase 2): 40 of 42
+  (95%). Re-scored 2026-11-18 07:45Z after finding that fork `dev` already has
+  round-robin polling, per-file log headers and CDS HTTP routes.
 
 What this says plainly: OpenRVDAS core already owns acquisition, parsing,
 logging, derived values and data push (the bottom of both stacks). Everything
@@ -213,7 +214,7 @@ onboarding wizard, vocabularies.
 
 ## 7. Draft ideas from this scorecard
 
-Unnumbered, per the IDEAS numbering rule. The build lead assigns numbers.
+Unnumbered, per the IDEAS numbering rule. Numbers assigned 2026-11-18: P-ERDDAP=#104, P-REST=#105, P-BEST=#106, P-MAP=#107, P-ROUTE=#108, P-CAST=#109, P-FLOW=#110, P-SAMOS=#111, P-METLIB=#112, P-GEOM=#113, P-WIZARD=#114, P-ROLES=#115, P-RELEASE=#116, P-VOCAB=#117, P-DOCS=#118, P-HOST=#119, P-CRUISE=#120, P-DEVPACK=#121, P-CORESMALL=#122, P-SNAP=#123, P-INSTALL=#124.
 Also listed in IDEAS.md under "Drafts from the parity scorecard".
 
 | Draft | Idea | Closes | Home |
@@ -239,6 +240,53 @@ Also listed in IDEAS.md under "Drafts from the parity scorecard".
 | P-CORESMALL | Small core fixes: RS485 round-robin polling, ADAM ASCII reader, header on new file, emulated flag | M2, M3, M22, M28 | core |
 | P-SNAP | Low-bandwidth shore snapshot page: static image plus compact JSON every N seconds | M43 | DS |
 | P-INSTALL | Zero-prompt installer default plus install clock CI (section 5) | setup target | core (installer), fork (CI) |
+
+## 9. Config assist coverage: every OpenRVDAS component
+
+Eugene (2026-11-18): the "auto stuff" that helps people configure OpenRVDAS must cover all of it, UDP,
+MQTT and the rest, not just serial. Inventory from fork `dev` 1a6f1ed: 19 readers, 22 writers, 34
+transforms, plus the servers. The plan has three layers:
+
+- **Forms for everything (#128 component catalog):** every component's settings become a form with
+  defaults, checks and typo suggestions, generated from its code. This is what makes "no YAML" true for
+  all of OpenRVDAS, not just the guided cases. Guided labels for the 15 most used components.
+- **Guided setup (#114 wizard, #126 generator):** capture, identify, propose, diff, accept, for
+  instruments; whole cruise definitions from the inventory.
+- **Auto-detection (#125 discovery):** read-only, local or named targets only.
+
+| Component | Kind | No-YAML setup | Auto-detect | Notes |
+|---|---|---|---|---|
+| SerialReader | reader | guided (#114, #126) | yes: port and baud scan (#125) | never writes to the port |
+| PolledSerialReader | reader | form (#128); ADAM recipe (#121) | partial: reported as "silent, may need polling" | polling commands come from the device type |
+| UDPReader | reader | guided (#114, #126) | yes: passive listen on local ports (#125) | |
+| TCPReader | reader | form (#128) | named target only (#125) | no network scanning, by design |
+| NetworkReader, SocketReader | reader | form (#128) | named target only | older network readers |
+| MQTTReader | reader | form (#128), guided label | yes: subscribe `#` on a named broker (#125) | needs the `mqtt` extra (paho-mqtt) |
+| RedisReader | reader | form (#128), guided label | yes: channels and keys on a named server (#125) | needs the `redis` extra |
+| CachedDataReader | reader | form (#128), guided label | yes: cache field list (#125) | |
+| WebsocketReader | reader | form (#128) | named target only | |
+| HTTPReader | reader | form (#128) | named URL only (#125) | |
+| DatabaseReader | reader | form (#128) | no (needs credentials; listing tables is a later option) | needs a database extra |
+| ModbusReader, ModbusSerialReader | reader | form (#128) | no: register maps cannot be guessed safely, and probing writes requests | |
+| SealogReader | reader | form (#128) | named URL only | |
+| LogfileReader, TextFileReader | reader | form (#128); wizard trial runs use them | yes: growing files in a named folder (#125) | |
+| ComposedReader, TimeoutReader | reader | form (#128) | n/a | wrappers |
+| CachedDataWriter, LogfileWriter | writer | automatic in every generated config (#126) | n/a | |
+| UDPWriter, TCPWriter, SerialWriter, NetworkWriter, SocketWriter | writer | form (#128); $WICOR and nav repeat recipes (#6) | n/a | |
+| MQTTWriter, RedisWriter, WebsocketWriter | writer | form (#128), guided labels for MQTT | n/a | optional extras |
+| DatabaseWriter, InfluxDBWriter, GrafanaLiveWriter | writer | form (#128) | n/a | |
+| EmailWriter, GoogleSheetsWriter, SealogWriter | writer | form (#128) | n/a | |
+| FileWriter, TextFileWriter, RegexLogfileWriter, RecordScreenWriter | writer | form (#128) | n/a | |
+| TimeoutWriter, ComposedWriter, LoggerManagerWriter | writer | form (#128) | n/a | TimeoutWriter feeds alerts (#9) |
+| ParseTransform, ParseNMEATransform, RegexParseTransform | transform | automatic: chosen by the wizard's fingerprint (#114) | yes: device type identified from samples | |
+| PrefixTransform, TimestampTransform | transform | automatic in generated configs (#126) | n/a | |
+| TrueWindsTransform, ComputedFieldsTransform, SubsampleTransform, QC transforms | transform | form (#128); suggested when inputs exist (#129) | n/a | |
+| All other transforms (format, select, convert, geofence, JSON, XML, Sealog, ...) | transform | form (#128) | n/a | |
+| CachedDataServer, LoggerManager | server | installer (#124) and console install | n/a | already configured by the installer |
+| Cruise definition as a whole | config | generated (#126), checked by core `validate_config` plus lint (#127) | n/a | |
+
+Status: #114, #124, #125, #126, #127 and #128 are briefed (phase 2). Console auto-pages (display built
+from what loggers publish) is in the console MVP. #129 and the console wizard page are next.
 
 ## 8. Next actions
 

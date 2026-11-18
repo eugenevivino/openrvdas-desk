@@ -16,9 +16,9 @@ hand-edit the tables below.
 
 | Scope | Rows | Core today | Core + built DeepSignal today | With briefed and planned work | With this doc's drafts |
 |---|---|---|---|---|---|
-| CORIOLIX | 42 | 38% | 38% | 69% | 98% |
-| MetAcq | 43 | 50% | 52% | 72% | 98% |
-| Combined | 85 | 44% | 45% | 71% | 98% |
+| CORIOLIX | 42 | 38% | 38% | 70% | 98% |
+| MetAcq | 43 | 52% | 55% | 74% | 98% |
+| Combined | 85 | 45% | 46% | 72% | 98% |
 
 - **Today** means code that runs now: OpenRVDAS core plus DeepSignal modules
   that are built and tested (only vector wind, #4).
@@ -29,9 +29,10 @@ hand-edit the tables below.
   value ranking in section 4 is where importance shows up.
 - Measurable goal proposed: **"most of CORIOLIX" = at least 80% of CORIOLIX
   rows fully covered (score 1), and every gap valued 12 or more closed.**
-  Fully covered today: 6 of 42 (14%). With planned work: 22 of 42 (52%).
-  With the drafts: 40 of 42 (95%). Planned work alone misses the goal, so the
-  drafts are not optional.
+  Fully covered today: 6 of 42 (14%). With work planned before this scorecard:
+  23 of 42 (55%). With #104-#124 (now numbered and briefed, phase 2): 40 of 42
+  (95%). Re-scored 2026-11-18 07:45Z after finding that fork `dev` already has
+  round-robin polling, per-file log headers and CDS HTTP routes.
 
 What this says plainly: OpenRVDAS core already owns acquisition, parsing,
 logging, derived values and data push (the bottom of both stacks). Everything
@@ -89,7 +90,7 @@ PROPOSED), **none**.
 | C5 | Automated QC flag on every value (global limits), flag kept with value | [Sikuliaq site](https://coriolix.sikuliaq.alaska.edu), [RVTEC 2025](https://www.unols.org/sites/default/files/2025-12/202511rvtec_romsos_chris_openrvdas_coriolix_2.pdf), [export_data](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/export_data.md) | Partial: `QCFilterTransform` drops or warns; no flag travels with the value | QARTOD flags (#8) (Briefed) | 0.5 | 1 | 1 | DS |
 | C6 | One-minute bins with statistics (mean, circular mean, std, min, max, median, count, spot; QC-filtered; composite flag) | [export_data](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/export_data.md), [RVTEC 2023](https://www.unols.org/sites/default/files/2023-11/202310rvt_apxxxvi.pdf) | Partial: `SubsampleTransform` boxcar; `contrib/logger_templates/averaging_logger_template.yaml` | Vector wind (#4) built; binned downloads (#16) (Designed) | 0.5 | 1 | 1 | DS |
 | C7 | Download UI: high-res, binned, binned+stats, native raw; by date, parameter, resolution; CSV, TSV, JSON, GeoJSON, MAT, netCDF, OPeNDAP; zip plus metadata file | [export_data](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/export_data.md), [PAGES_data](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/PAGES_data.md), [Sikuliaq site](https://coriolix.sikuliaq.alaska.edu) | Gap: none | Binned downloads (#16) (Designed) | 0 | 1 | 1 | DS |
-| C8 | REST API for data and metadata | [API_endpoints](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/API_endpoints.md), [Sikuliaq site](https://coriolix.sikuliaq.alaska.edu) | Partial: CachedDataServer websocket; FastAPI backend is logger control, not data | MCP gateway (#64) is read-only tools, not REST (Idea) | 0.5 | 0.5 | 1 | DS |
+| C8 | REST API for data and metadata | [API_endpoints](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/API_endpoints.md), [Sikuliaq site](https://coriolix.sikuliaq.alaska.edu) | Partial: CachedDataServer HTTP `/fields` and `/latest/` (fork `dev`); no history or metadata routes | REST API (#105) (Briefed) | 0.5 | 1 | 1 | DS |
 | C9 | ERDDAP server (subset, format translation, OGC) | [TS_erddap_data_download](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/TS_erddap_data_download.md), [RVTEC 2025](https://www.unols.org/sites/default/files/2025-12/202511rvtec_romsos_chris_openrvdas_coriolix_2.pdf), [RVTEC 2020](https://www.unols.org/sites/default/files/202010rvt_ap09.pdf) | Gap: none | none | 0 | 0 | 1 | DS |
 | C10 | Pushed real-time data services (UDP, MQTT, websockets) | [HT_data_access](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/HT_data_access.md), [RVTEC 2025](https://www.unols.org/sites/default/files/2025-12/202511rvtec_romsos_chris_openrvdas_coriolix_2.pdf) | Have: `UDPWriter`, `MQTTWriter`, `CachedDataServer` | - | 1 | 1 | 1 | core |
 | C11 | Map: track, clickable trackpoints, underway data colored on track, events, cached OSM/GMRT/NOAA ENC basemaps, SST and Chl overlays | [PAGES_map](https://github.com/R-DESC/CORIOLIX_docs/blob/master/docs/PAGES_map.md), [Sikuliaq site](https://coriolix.sikuliaq.alaska.edu) | Gap: none maintained | Console map (in console plan, no brief) (Idea) | 0 | 0.5 | 1 | DS |
@@ -130,7 +131,7 @@ PROPOSED), **none**.
 | # | Capability | Source | OpenRVDAS core today | DeepSignal | Today | Planned | +Drafts | Home |
 |---|---|---|---|---|---|---|---|---|
 | M1 | RS232/RS422 serial input | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Have: `SerialReader` | - | 1 | 1 | 1 | core |
-| M2 | RS485 multidrop polling, per-address round robin with timeouts | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Partial: `PolledSerialReader` sends queries, no per-device timeout loop | none | 0.5 | 0.5 | 1 | core |
+| M2 | RS485 multidrop polling, per-address round robin with timeouts | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Have: `PolledSerialReader` `pre_read_cmd` dict: round-robin polling with per-command timeout (fork `dev`) | - | 1 | 1 | 1 | core |
 | M3 | ADAM/DGH analog-to-RS485 modules (ASCII protocol) | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Partial: `ModbusSerialReader` (ADAM-4000 ASCII is not Modbus) | none | 0.5 | 0.5 | 1 | core |
 | M4 | NI DAQ / USB analog input | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Gap: none | none | 0 | 0 | 0 | core |
 | M5 | UDP input, NMEA and non-NMEA | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Have: `UDPReader`, `ParseNMEATransform` | - | 1 | 1 | 1 | core |
@@ -150,7 +151,7 @@ PROPOSED), **none**.
 | M19 | Range checks with per-value quality digit carried downstream | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Partial: drop or warn only | QARTOD flags (#8) (Briefed) | 0.5 | 1 | 1 | DS |
 | M20 | Parallel uncorrected and corrected streams | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Have: two chains in one config | Correction ledger (#56) goes further (Briefed) | 1 | 1 | 1 | core |
 | M21 | Daily files rolling at 0000Z | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Have: `LogfileWriter` | - | 1 | 1 | 1 | core |
-| M22 | .MET/.UCR column files with headers on each new file | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Partial: `FormatTransform` plus `LogfileWriter`, no per-file header | none | 0.5 | 0.5 | 1 | core |
+| M22 | .MET/.UCR column files with headers on each new file | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Have: `FormatTransform` plus `LogfileWriter` `header`/`header_file` on each new file | - | 1 | 1 | 1 | core |
 | M23 | .COR/.UNC $WICOR/$WIUNC files with quality digits | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf), [OpenVDM #408](https://github.com/OceanDataTools/openvdm/issues/408) | Gap: none | $WICOR writer (#6) (Designed) | 0 | 1 | 1 | DS |
 | M24 | Configuration copied next to each day of data | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Partial: `server/config_snapshot.py` (verify per day) | Provenance (#32) (Idea) | 0.5 | 1 | 1 | core |
 | M25 | Daily operations log | [MetAcq 2.15](https://downloads.psl.noaa.gov/psd3/cruises/ASTRAL_2023/Revelle/docs/MetAcq.pdf) | Have: logging | - | 1 | 1 | 1 | core |
@@ -231,7 +232,7 @@ yet. Scores are judgement; argue with them in this file.
 | 23 | M8 | GPS failover (write one GPS, fail over to next) | 4 | 4 | 3 | 11 | NO: draft below | core |
 | 24 | C18 | Primary-parameter rules: which sensor is primary per parameter, by model and location | 4 | 4 | 3 | 11 | partly | core |
 | 25 | C27 | Data release policy: privacy level, restricted content, EEZ mode | 3 | 4 | 4 | 11 | NO: draft below | DS |
-| 26 | C8 | REST API for data and metadata | 2 | 4 | 5 | 11 | NO: draft below | DS |
+| 26 | C8 | REST API for data and metadata | 2 | 4 | 5 | 11 | yes | DS |
 | 27 | M36 | Strip charts with history scroll and per-plot scale | 4 | 4 | 3 | 11 | yes | DS |
 | 28 | M42 | Status bar: scans per second, current file, silent sensors (CHK MOD) | 5 | 2 | 4 | 11 | yes | DS |
 | 29 | C21 | CTD package configuration and CTD plot page | 4 | 4 | 2 | 10 | NO: draft below | DS |
@@ -259,18 +260,16 @@ yet. Scores are judgement; argue with them in this file.
 | 51 | M24 | Configuration copied next to each day of data | 2 | 3 | 3 | 8 | yes | core |
 | 52 | C41 | UNOLS planning integration (MFP, MOMS) as metadata source of truth | 2 | 2 | 3 | 7 | NO: draft below | DS |
 | 53 | M15 | Antenna lever-arm correction of position | 2 | 3 | 2 | 7 | NO: draft below | core |
-| 54 | M22 | .MET/.UCR column files with headers on each new file | 2 | 3 | 2 | 7 | NO: draft below | core |
-| 55 | M31 | Sound velocity to multibeam (per-target format) | 3 | 3 | 1 | 7 | NO: draft below | core |
-| 56 | M7 | Device definitions for the MetSpecs sensor list (RM Young, Vaisala, Eppley, SBE45/43, QSR, LCI90) | 4 | 2 | 1 | 7 | NO: draft below | core |
-| 57 | M33 | Winch data to signboards | 4 | 2 | 1 | 7 | yes | DS |
-| 58 | C28 | Retention settings (raw files, backup, database) | 3 | 1 | 2 | 6 | NO: draft below | core |
-| 59 | M28 | Emulation mode with "emulated" flag | 2 | 2 | 2 | 6 | NO: draft below | core |
-| 60 | M3 | ADAM/DGH analog-to-RS485 modules (ASCII protocol) | 3 | 2 | 1 | 6 | NO: draft below | core |
-| 61 | C22 | Sensor groups (parent and child sensors shown together) | 2 | 2 | 2 | 6 | yes | DS |
-| 62 | C42 | Site-wide message banner | 2 | 2 | 2 | 6 | yes | DS |
-| 63 | M38 | MetBig: huge met values for the bridge, night-safe | 3 | 2 | 1 | 6 | yes | DS |
-| 64 | M2 | RS485 multidrop polling, per-address round robin with timeouts | 3 | 1 | 1 | 5 | NO: draft below | core |
-| 65 | M4 | NI DAQ / USB analog input | 1 | 1 | 0 | 2 | NO: draft below | core |
+| 54 | M31 | Sound velocity to multibeam (per-target format) | 3 | 3 | 1 | 7 | NO: draft below | core |
+| 55 | M7 | Device definitions for the MetSpecs sensor list (RM Young, Vaisala, Eppley, SBE45/43, QSR, LCI90) | 4 | 2 | 1 | 7 | NO: draft below | core |
+| 56 | M33 | Winch data to signboards | 4 | 2 | 1 | 7 | yes | DS |
+| 57 | C28 | Retention settings (raw files, backup, database) | 3 | 1 | 2 | 6 | NO: draft below | core |
+| 58 | M28 | Emulation mode with "emulated" flag | 2 | 2 | 2 | 6 | NO: draft below | core |
+| 59 | M3 | ADAM/DGH analog-to-RS485 modules (ASCII protocol) | 3 | 2 | 1 | 6 | NO: draft below | core |
+| 60 | C22 | Sensor groups (parent and child sensors shown together) | 2 | 2 | 2 | 6 | yes | DS |
+| 61 | C42 | Site-wide message banner | 2 | 2 | 2 | 6 | yes | DS |
+| 62 | M38 | MetBig: huge met values for the bridge, night-safe | 3 | 2 | 1 | 6 | yes | DS |
+| 63 | M4 | NI DAQ / USB analog input | 1 | 1 | 0 | 2 | NO: draft below | core |
 
 ### Top 5 gaps (merged across duplicate CORIOLIX and MetAcq rows)
 
@@ -396,6 +395,53 @@ Also listed in IDEAS.md under "Drafts from the parity scorecard".
 | P-CORESMALL | Small core fixes: RS485 round-robin polling, ADAM ASCII reader, header on new file, emulated flag | M2, M3, M22, M28 | core |
 | P-SNAP | Low-bandwidth shore snapshot page: static image plus compact JSON every N seconds | M43 | DS |
 | P-INSTALL | Zero-prompt installer default plus install clock CI (section 5) | setup target | core (installer), fork (CI) |
+
+## 9. Config assist coverage: every OpenRVDAS component
+
+Eugene (2026-11-18): the "auto stuff" that helps people configure OpenRVDAS must cover all of it, UDP,
+MQTT and the rest, not just serial. Inventory from fork `dev` 1a6f1ed: 19 readers, 22 writers, 34
+transforms, plus the servers. The plan has three layers:
+
+- **Forms for everything (#128 component catalog):** every component's settings become a form with
+  defaults, checks and typo suggestions, generated from its code. This is what makes "no YAML" true for
+  all of OpenRVDAS, not just the guided cases. Guided labels for the 15 most used components.
+- **Guided setup (#114 wizard, #126 generator):** capture, identify, propose, diff, accept, for
+  instruments; whole cruise definitions from the inventory.
+- **Auto-detection (#125 discovery):** read-only, local or named targets only.
+
+| Component | Kind | No-YAML setup | Auto-detect | Notes |
+|---|---|---|---|---|
+| SerialReader | reader | guided (#114, #126) | yes: port and baud scan (#125) | never writes to the port |
+| PolledSerialReader | reader | form (#128); ADAM recipe (#121) | partial: reported as "silent, may need polling" | polling commands come from the device type |
+| UDPReader | reader | guided (#114, #126) | yes: passive listen on local ports (#125) | |
+| TCPReader | reader | form (#128) | named target only (#125) | no network scanning, by design |
+| NetworkReader, SocketReader | reader | form (#128) | named target only | older network readers |
+| MQTTReader | reader | form (#128), guided label | yes: subscribe `#` on a named broker (#125) | needs the `mqtt` extra (paho-mqtt) |
+| RedisReader | reader | form (#128), guided label | yes: channels and keys on a named server (#125) | needs the `redis` extra |
+| CachedDataReader | reader | form (#128), guided label | yes: cache field list (#125) | |
+| WebsocketReader | reader | form (#128) | named target only | |
+| HTTPReader | reader | form (#128) | named URL only (#125) | |
+| DatabaseReader | reader | form (#128) | no (needs credentials; listing tables is a later option) | needs a database extra |
+| ModbusReader, ModbusSerialReader | reader | form (#128) | no: register maps cannot be guessed safely, and probing writes requests | |
+| SealogReader | reader | form (#128) | named URL only | |
+| LogfileReader, TextFileReader | reader | form (#128); wizard trial runs use them | yes: growing files in a named folder (#125) | |
+| ComposedReader, TimeoutReader | reader | form (#128) | n/a | wrappers |
+| CachedDataWriter, LogfileWriter | writer | automatic in every generated config (#126) | n/a | |
+| UDPWriter, TCPWriter, SerialWriter, NetworkWriter, SocketWriter | writer | form (#128); $WICOR and nav repeat recipes (#6) | n/a | |
+| MQTTWriter, RedisWriter, WebsocketWriter | writer | form (#128), guided labels for MQTT | n/a | optional extras |
+| DatabaseWriter, InfluxDBWriter, GrafanaLiveWriter | writer | form (#128) | n/a | |
+| EmailWriter, GoogleSheetsWriter, SealogWriter | writer | form (#128) | n/a | |
+| FileWriter, TextFileWriter, RegexLogfileWriter, RecordScreenWriter | writer | form (#128) | n/a | |
+| TimeoutWriter, ComposedWriter, LoggerManagerWriter | writer | form (#128) | n/a | TimeoutWriter feeds alerts (#9) |
+| ParseTransform, ParseNMEATransform, RegexParseTransform | transform | automatic: chosen by the wizard's fingerprint (#114) | yes: device type identified from samples | |
+| PrefixTransform, TimestampTransform | transform | automatic in generated configs (#126) | n/a | |
+| TrueWindsTransform, ComputedFieldsTransform, SubsampleTransform, QC transforms | transform | form (#128); suggested when inputs exist (#129) | n/a | |
+| All other transforms (format, select, convert, geofence, JSON, XML, Sealog, ...) | transform | form (#128) | n/a | |
+| CachedDataServer, LoggerManager | server | installer (#124) and console install | n/a | already configured by the installer |
+| Cruise definition as a whole | config | generated (#126), checked by core `validate_config` plus lint (#127) | n/a | |
+
+Status: #114, #124, #125, #126, #127 and #128 are briefed (phase 2). Console auto-pages (display built
+from what loggers publish) is in the console MVP. #129 and the console wizard page are next.
 
 ## 8. Next actions
 

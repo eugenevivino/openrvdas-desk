@@ -21,8 +21,26 @@ Written 2026-11-18 by the parity thread, ranked by value from docs/TARGET-PARITY
 | 15 | #119 | [Host health reader](119-host-health.md), prompt `briefs/cloud/p2-host-health.md` | `deepsignal/p2-host-health` | `3b4b76e` contrib tree | cloud | py | 3 | display is the console `health` module: the build lead routes a small follow-up there; this task only publishes fields | no |
 | 16 | #120 | [Cruise metadata](120-cruise-meta.md), prompt `briefs/cloud/p2-cruise-meta.md` | `deepsignal/p2-cruise-meta` | `3b4b76e` contrib tree | cloud | py | 3 | none; uses #117 vocab files for port codes if present (optional) | yes |
 | 17 | #124 | [Installer `--defaults` (zero-prompt install, core fix)](124-install-defaults.md), prompt `briefs/cloud/p2-install-defaults.md` | `deepsignal/p2-install-defaults` | `1a6f1ed` fork dev | cloud | core | 3 | validated on real runners by `ci/install-clock` (briefs/install-clock.md); rerun that workflow on this branch | yes |
+| 18 | #113 | [Vessel geometry and lever-arm correction](113-geometry.md), prompt `briefs/mac/p2-geometry.md` | `deepsignal/p2-geometry` | `3b4b76e` contrib tree | mac | py | 4 | none; #52 instrument history may later reference sensor position ids | no |
+| 19 | #121 | [UNOLS met device definitions (core contrib/devices)](121-device-pack.md), prompt `briefs/mac/p2-device-pack.md` | `deepsignal/p2-device-pack` | `1a6f1ed` fork dev | mac | core | 4 | none; needs manufacturer manuals, so it runs where the network allows reading them (Mac) | yes |
+| 20 | #125 | [Stream auto-discovery (serial, UDP, MQTT, Redis, CDS, files)](125-stream-discovery.md), prompt `briefs/cloud/p2-stream-discovery.md` | `deepsignal/p2-stream-discovery` | `3b4b76e` contrib tree | cloud | py | 5 | none; its captures feed #114 onboarding wizard | no |
+| 21 | #128 | [Component catalog: every reader, writer and transform as a form](128-component-catalog.md), prompt `briefs/cloud/p2-component-catalog.md` | `deepsignal/p2-component-catalog` | `3b4b76e` contrib tree | cloud | py | 5 | none; #114 wizard, #126 generator, console forms and the MCP gateway (#64) all read its output | no |
+| 22 | #126 | [Cruise config generator from the instrument inventory](126-config-from-inventory.md), prompt `briefs/cloud/p2-config-from-inventory.md` | `deepsignal/p2-config-from-inventory` | `3b4b76e` contrib tree | cloud | py | 5 | reads #52 instrument history YAML by path and device types from contrib/devices; no code imports | no |
+| 23 | #127 | [Cruise config linter](127-config-lint.md), prompt `briefs/cloud/p2-config-lint.md` | `deepsignal/p2-config-lint` | `3b4b76e` contrib tree | cloud | py | 5 | none; complements core `validate_config` (schema) with ship-sense checks | no |
 
-Not written yet: #113, #121, #122.
+## Not briefed, and why
+
+- #122 small core fixes: two of its four parts already exist on fork `dev` (round-robin polling with per-command timeout in `PolledSerialReader`; per-file headers via `LogfileWriter` `header`/`header_file`). ADAM-4000 polling moved into #121. The emulated flag (value 2/2/2) is parked as a console follow-up: a simulated logger config adds `emulated: 1` and the console shows EMULATED. Decided under D-NIGHT1.
+- #107 map: console module `map` (briefs/console/map.md).
+- #124 install clock half: briefs/install-clock.md (submitted). The `--defaults` half is #124 above.
+- #129 derived-product suggester: backlog, no brief yet.
+
+## What is left after these land
+
+1. Console follow-ups: host health tiles (#119 fields), emulated badge, routes drawn on the map (#108 + #107), wizard page over #114/#125/#126/#128, roles wired into pages (#115).
+2. Eugene decisions (MORNING): login layer for #115; release policy content for #116; SWL values for #109; MFP/MOMS access for #120; a hand-downloaded KAOU SAMOS day for #111/#95.
+3. Verification outside the sandbox: ERDDAP load of #104 output; real-hardware run of #125; install-clock with `--defaults` (#124) on both Ubuntu legs plus a Mac.
+4. Integration: merge order is free (disjoint files); run the desk gate contrib mode (#49) over all p2 branches together, then re-score docs/TARGET-PARITY.md.
 
 File ownership is disjoint: Python modules own `contrib/deepsignal/<module>/`, its test folder, one docs file and `configs/<module>_*.yaml`; console modules own `src/modules/<id>/**` and one docs file; core tasks own only their new files. Empty `__init__.py` files are byte-identical across branches.
 
