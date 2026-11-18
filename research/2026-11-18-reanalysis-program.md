@@ -234,6 +234,9 @@ Minimum to start M0 and M1 (one cruise); M3 needs three.
 6. **Rights:** whether each cruise's data and results may be published
    openly, and who may sign off corrections.
 
+Proposed pilot set found 2026-11-18: three Revelle GO-SHIP cruises, see
+`research/2026-11-18-r2r-pilot-cruises.md`.
+
 If gathering these is slow, public R2R underway archives could bootstrap M0
 and M1 for UNOLS ships (inferred, not verified: confirm what formats and
 references R2R actually holds for a chosen cruise before relying on it). The
