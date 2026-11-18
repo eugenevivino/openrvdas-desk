@@ -1,6 +1,6 @@
 # Brief: p2-config-from-inventory (Cruise config generator from the instrument inventory)
 
-- Decision: D-PARITY1, IDEAS #126 (Eugene approved building #104-#124, 2026-11-18)
+- Decision: IDEAS #126, from Eugene's 2026-11-18 asks (config assist, sensor init, ecosystem and compression); build per D-NIGHT1
 - Risk tier: medium
 - Module: exactly one. Branch `deepsignal/p2-config-from-inventory` from `3b4b76e`
 - Lane: `cloud` (Sol medium, fixed)
@@ -57,6 +57,9 @@ Package `contrib/deepsignal/config_gen/`:
 disabled instrument only in off; output loads with the base config reader (and validates if available);
 byte-identical regeneration; history warnings both ways; unknown device type is a plain error naming the
 nearest known type; `--out` refuses to overwrite.
+
+## Setup engine interface (MCP, console and CLI all call this)
+A shared facade `contrib/deepsignal/setup/` (built separately; do not create it) exposes detect, propose, diff, validate and apply to the MCP gateway, the console and the CLI. It imports this module and never shells out. So, next to the CLI, provide pure functions that take plain dicts and return JSON-serializable dicts, with no printing, no prompts and no side effects beyond what the name says: `propose_config(acq: dict, history: dict|None) -> dict` (`{cruise: <dict>, yaml: <str>, warnings: [...]}`) and `diff_config(new: dict, current: dict) -> dict` (`{unified: <str>, added: [...], removed: [...], changed: [...]}`). Nothing is written to disk. The CLI calls these same functions. Test that each return value survives `json.dumps`.
 
 ## Module contract
 Docs `contrib/deepsignal/docs/config_gen.md`. Depends on #52's file format only (optional input).

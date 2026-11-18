@@ -13,7 +13,7 @@ The full brief follows.
 ----------------------------------------------------------------
 # Brief: p2-stream-discovery (Stream auto-discovery (serial, UDP, MQTT, Redis, CDS, files))
 
-- Decision: D-PARITY1, IDEAS #125 (Eugene approved building #104-#124, 2026-11-18)
+- Decision: IDEAS #125, from Eugene's 2026-11-18 asks (config assist, sensor init, ecosystem and compression); build per D-NIGHT1
 - Risk tier: medium
 - Module: exactly one. Branch `deepsignal/p2-stream-discovery` from `3b4b76e`
 - Lane: `cloud` (Sol medium, fixed)
@@ -76,6 +76,9 @@ Package `contrib/deepsignal/discovery/`:
 `contrib/deepsignal/test/discovery/test_discovery.py` with fake serial and UDP sources: picks 4800 for an
 NMEA stream at 4800 and rejects garbage at other rates; silent port; busy port skipped; no write method on
 the fake is ever called (assert); UDP rate estimate; capture files written; JSON shape.
+
+## Setup engine interface (MCP, console and CLI all call this)
+A shared facade `contrib/deepsignal/setup/` (built separately; do not create it) exposes detect, propose, diff, validate and apply to the MCP gateway, the console and the CLI. It imports this module and never shells out. So, next to the CLI, provide pure functions that take plain dicts and return JSON-serializable dicts, with no printing, no prompts and no side effects beyond what the name says: `detect(listen_s=3, targets=None) -> dict`: same content as `discovery.json`. It must skip any port a running logger holds (read the held ports from the logger manager's status if reachable, else from OS locks) and never send a byte. The CLI calls these same functions. Test that each return value survives `json.dumps`.
 
 ## Module contract
 Docs `contrib/deepsignal/docs/discovery.md` ("plug it in, run this, then run the wizard"), with the

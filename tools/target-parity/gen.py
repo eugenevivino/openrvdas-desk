@@ -14,6 +14,13 @@ SRC = {
     'MA12': 'https://calcofi.org/downloads/underway/2017/1711SR/met/docs/MetAcq.pdf',
     'MS': 'https://calcofi.org/downloads/underway/2021/2107SR/met/docs/MetSpecs.pdf',
     'OVDM': 'https://github.com/OceanDataTools/openvdm/issues/408',
+    'VDM': 'https://github.com/OceanDataTools/openvdm',
+    'VDMD': 'https://www.oceandatatools.org/openvdm-docs/',
+    'SLS': 'https://github.com/OceanDataTools/sealog-server',
+    'GCP': 'https://github.com/OceanDataTools/grafana-compass-panel',
+    'NQA': 'https://github.com/OceanDataTools/nav-qa-processing',
+    'WDP': 'https://github.com/OceanDataTools/winch-data-processing',
+    'SQA': 'https://github.com/OceanDataTools/sbe-qa-processing',
 }
 
 
@@ -24,7 +31,9 @@ def link(k):
     lab = {'R25': 'RVTEC 2025', 'R23': 'RVTEC 2023', 'R22': 'RVTEC 2022',
            'R20': 'RVTEC 2020', 'R19': 'RVTEC 2019', 'SKQ': 'Sikuliaq site',
            'MA': 'MetAcq 2.15', 'MA12': 'MetAcq 2.12', 'MS': 'MetSpecs',
-           'OVDM': 'OpenVDM #408'}[k]
+           'OVDM': 'OpenVDM #408', 'VDM': 'OpenVDM 2.17', 'VDMD': 'OpenVDM docs',
+           'SLS': 'Sealog server 2.4.9', 'GCP': 'Grafana compass panel', 'NQA': 'nav-qa-processing',
+           'WDP': 'winch-data-processing', 'SQA': 'sbe-qa-processing'}[k]
     return f'[{lab}]({SRC[k]})'
 
 
@@ -166,6 +175,20 @@ M = [
  ('M44', 'Sensor initialization over the wire: startup and setup commands, reply checks, re-init after power loss or reconnect, audit log of what was sent', ['MA'], 'Partial', '`PolledSerialReader` `start_cmd` (sent once at open, reply not checked, not resent after a power cycle), `stop_cmd`, `pre_read_cmd`, `__PAUSE__`; serial only. MetAcq 2.15 documents only per-module poll commands (CMD, CMD2, CMD3 in the .ACQ file); init is silent in its manual', 'Instrument init profiles (#130)', 'Briefed', 1, 1, 'DS', 5, 3, 1),
 ]
 
+# Ecosystem rows (OceanDataTools: OpenVDM, Sealog, Grafana tooling, QA processors). Same tuple shape.
+E = [
+ ('E1', 'Raw logs land in the OpenVDM cruise package and plot on its Data Dashboard', ['VDM', 'VDMD'], 'Have', 'OpenVDM collection system transfer copies OpenRVDAS log files; OpenVDM ships `openrvdas_plugin.py.dist` with GGA, met, SSV, TSG and true wind parsers', '-', '-', 1, 1, 'core', 0, 0, 0),
+ ('E2', 'DeepSignal quality flags, freshness and products in the OpenVDM package and Data Dashboard (qualityTests, stats)', ['VDM', 'VDMD'], 'Partial', 'OpenVDM parsers count bad rows only; no QC flags', 'OpenVDM bridge (#131)', 'Briefed', 1, 1, 'DS', 4, 4, 4),
+ ('E3', 'One cruise and lowering identity across OpenRVDAS, OpenVDM, Sealog and DeepSignal', ['VDM', 'SLS'], 'Partial', 'Sealog creates its cruise from OpenVDM (`sealog_create_cruise_from_openvdm.py.dist`); the OpenRVDAS cruise definition is separate', 'Cruise context (#132)', 'Briefed', 1, 1, 'DS', 4, 3, 3),
+ ('E4', 'Sealog events from data-system alerts, QC changes, flow state and instrument init results', ['SLS'], 'Partial', 'core `SealogWriter` maps records to events with a field map; nothing produces quality events', 'Sealog bridge (#133)', 'Briefed', 1, 1, 'DS', 4, 5, 3),
+ ('E5', 'Every Sealog event carries the quality state of the sensors at that moment (aux data)', ['SLS'], 'Partial', 'Sealog inserters attach raw values from InfluxDB, CORIOLIX or OpenRVDAS, never their quality', 'Sealog bridge (#133)', 'Briefed', 1, 1, 'DS', 3, 5, 3),
+ ('E6', 'Grafana dashboards for QC flags, freshness and system health, provisioned from the cruise definition', ['GCP'], 'Partial', '`InfluxDBWriter`, `GrafanaLiveWriter`, compass and attitude panels; dashboards built by hand, no quality views', 'Grafana quality pack (#134)', 'Briefed', 1, 1, 'DS', 4, 3, 4),
+ ('E7', 'Lossless compressed archive of closed raw logs (zstd or xz) with checksum manifest, byte-reproducible', ['VDM'], 'Gap', 'plain text logs only; OpenVDM keeps an MD5 manifest but compresses nothing', 'Archive and compression (#135)', 'Briefed', 1, 1, 'DS', 3, 4, 5),
+ ('E8', 'Science exports in NetCDF4/CF with chunked compression (Parquet if cheap)', ['VDMD'], 'Gap', 'none in core', 'ERDDAP (#104) serves netCDF on request; offline export in #135 phase 2', 'Briefed', 0.5, 1, 'DS', 2, 4, 4),
+ ('E9', 'Compressed, prioritized ship-to-shore transfer over satellite', ['VDMD'], 'Partial', 'OpenVDM ship-to-shore has priorities 1 to 5 and a bandwidth cap; no compression found in its transfer code', 'Shore bundles (#135) plus snapshot (#123)', 'Briefed', 1, 1, 'DS', 2, 3, 5),
+ ('E10', 'Verdicts from OceanDataTools QA tools (nav QA, CTD QA, winch wire logs) shown in the console and Sealog', ['NQA', 'SQA', 'WDP'], 'Gap', 'separate tools, run by hand or as OpenVDM post hooks', 'QA tool adapters (#136)', 'Idea', 0.5, 1, 'DS', 3, 4, 3),
+]
+
 
 def today(r):
     core = CS[r[3]]
@@ -193,7 +216,7 @@ def table(rows):
 def summary():
     lines = ['| Scope | Rows | Core today | Core + built DeepSignal today | With briefed and planned work | With this doc\'s drafts |',
              '|---|---|---|---|---|---|']
-    for name, rows in (('CORIOLIX', C), ('MetAcq', M), ('Combined', C + M)):
+    for name, rows in (('CORIOLIX', C), ('MetAcq', M), ('Combined', C + M), ('Ecosystem (OceanDataTools)', E)):
         core = pct(rows, lambda r: CS[r[3]])
         t = pct(rows, today)
         p = pct(rows, lambda r: r[7])
@@ -203,7 +226,7 @@ def summary():
 
 
 def gaps():
-    rows = [r for r in C + M if today(r) < 1]
+    rows = [r for r in C + M + E if today(r) < 1]
     rows.sort(key=lambda r: (-(r[10] + r[11] + r[12]), -(1 - r[7]), r[0]))
     out = ['| Rank | Row | Gap | Techs | Science | Shore | Value | Covered by plan? | Home |',
            '|---|---|---|---|---|---|---|---|---|']
@@ -220,7 +243,7 @@ def build():
     for k, v in SRC.items():
         t = t.replace('{' + k + '}', v)
     t = (t.replace('{SUMMARY}', summary()).replace('{CTABLE}', table(C))
-          .replace('{MTABLE}', table(M)).replace('{GAPS}', gaps()[0]))
+          .replace('{MTABLE}', table(M)).replace('{ETABLE}', table(E)).replace('{GAPS}', gaps()[0]))
     out = os.path.join(here, '..', '..', 'docs', 'TARGET-PARITY.md')
     open(out, 'w').write(t)
     print('wrote', os.path.normpath(out))

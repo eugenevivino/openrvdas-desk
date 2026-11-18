@@ -65,6 +65,9 @@ devices are identified first with evidence; a shuffled-junk capture gives "No kn
 proposal YAML loads and validates with the base's config reader; trial counts match; diff shows only
 additions; `--write` refuses to overwrite an existing file.
 
+## Setup engine interface (MCP, console and CLI all call this)
+A shared facade `contrib/deepsignal/setup/` (built separately; do not create it) exposes detect, propose, diff, validate and apply to the MCP gateway, the console and the CLI. It imports this module and never shells out. So, next to the CLI, provide pure functions that take plain dicts and return JSON-serializable dicts, with no printing, no prompts and no side effects beyond what the name says: `propose(capture_lines: list[str], hints: dict|None) -> dict`: device type candidates with scores, the proposed logger config as a dict and its YAML, and the diff. Nothing is written or sent. The CLI calls these same functions. Test that each return value survives `json.dumps`.
+
 ## Module contract
 Two small captures under `contrib/deepsignal/test/onboard/data/` (cut from NBP1406 files on the base, under
 200 lines each). Docs `contrib/deepsignal/docs/onboard.md` with the 5-minute walkthrough. Depends on no

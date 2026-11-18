@@ -1,6 +1,6 @@
 # Brief: p2-component-catalog (Component catalog: every reader, writer and transform as a form)
 
-- Decision: D-PARITY1, IDEAS #128 (Eugene approved building #104-#124, 2026-11-18)
+- Decision: IDEAS #128, from Eugene's 2026-11-18 asks (config assist, sensor init, ecosystem and compression); build per D-NIGHT1
 - Risk tier: low
 - Module: exactly one. Branch `deepsignal/p2-component-catalog` from `3b4b76e`
 - Lane: `cloud` (Sol medium, fixed)
@@ -53,6 +53,9 @@ Package `contrib/deepsignal/catalog/`:
 classes found by walking the package (no hard-coded number); `UDPReader` has its `port` parameter as
 required; a simulated missing dependency yields `available: false`; a typo kwarg gets a suggestion; the
 NBP1406 cruise configs check clean; schema output is valid JSON with `required` lists.
+
+## Setup engine interface (MCP, console and CLI all call this)
+A shared facade `contrib/deepsignal/setup/` (built separately; do not create it) exposes detect, propose, diff, validate and apply to the MCP gateway, the console and the CLI. It imports this module and never shells out. So, next to the CLI, provide pure functions that take plain dicts and return JSON-serializable dicts, with no printing, no prompts and no side effects beyond what the name says: `catalog() -> dict`, `schema(class_name) -> dict` and `check_component(entry: dict) -> dict`. The CLI calls these same functions. Test that each return value survives `json.dumps`.
 
 ## Module contract
 Docs `contrib/deepsignal/docs/catalog.md` including the coverage table this produces. Depends on no other

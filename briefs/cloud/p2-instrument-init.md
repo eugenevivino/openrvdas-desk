@@ -13,7 +13,7 @@ The full brief follows.
 ----------------------------------------------------------------
 # Brief: p2-instrument-init (Instrument init profiles (sensor setup over the wire))
 
-- Decision: D-PARITY1, IDEAS #130 (Eugene approved building #104-#124, 2026-11-18)
+- Decision: IDEAS #130, from Eugene's 2026-11-18 asks (config assist, sensor init, ecosystem and compression); build per D-NIGHT1
 - Risk tier: high
 - Module: exactly one. Branch `deepsignal/p2-instrument-init` from `3b4b76e`
 - Lane: `cloud` (Sol medium, fixed)
@@ -129,6 +129,9 @@ Package `contrib/deepsignal/instrument_init/`:
 - `plan` opens nothing
 - `run` without `--yes` exits 2
 - an instrument with no profile gets zero writes; assert the fake's write count
+
+## Setup engine interface (MCP, console and CLI all call this)
+A shared facade `contrib/deepsignal/setup/` (built separately; do not create it) exposes detect, propose, diff, validate and apply to the MCP gateway, the console and the CLI. It imports this module and never shells out. So, next to the CLI, provide pure functions that take plain dicts and return JSON-serializable dicts, with no printing, no prompts and no side effects beyond what the name says: `propose_init(profile: dict, port: dict) -> dict`: exactly `{instrument, port, precondition: 'logger on this port is stopped', steps: [{name, class, bytes_text, bytes_hex, expect, timeout_s}]}` with `{utc:...}` shown unfilled, and `apply_init(proposal, confirm: bool, allow_persist=False) -> dict` that refuses unless `confirm` is True and the port is free, and returns the audit records. `plan` and `run` in the CLI are thin wrappers over these. Sends happen only in `apply_init` or inside a logger whose config a person applied. Applying a logger config that names a profile counts as approving it, so also provide `describe_reader_sends(profile) -> dict` (`{instrument, profile_id, version, triggers: {on_open: true, after_silence_s, on_reconnect, max_per_hour}, steps: [{name, class, bytes_text, bytes_hex, expect}]}`, query and setup steps only, persist steps listed separately as never sent by the reader); the setup diff shows it whenever a proposed logger config uses `InitSerialReader` or `InitTCPClientReader`. The CLI calls these same functions. Test that each return value survives `json.dumps`.
 
 ## Module contract
 Docs `contrib/deepsignal/docs/instrument_init.md`: what core `start_cmd` already does and when to use it

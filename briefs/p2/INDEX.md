@@ -28,6 +28,11 @@ Written 2026-11-18 by the parity thread, ranked by value from docs/TARGET-PARITY
 | 22 | #126 | [Cruise config generator from the instrument inventory](126-config-from-inventory.md), prompt `briefs/cloud/p2-config-from-inventory.md` | `deepsignal/p2-config-from-inventory` | `3b4b76e` contrib tree | cloud | py | 5 | reads #52 instrument history YAML by path and device types from contrib/devices; no code imports | no |
 | 23 | #127 | [Cruise config linter](127-config-lint.md), prompt `briefs/cloud/p2-config-lint.md` | `deepsignal/p2-config-lint` | `3b4b76e` contrib tree | cloud | py | 5 | none; complements core `validate_config` (schema) with ship-sense checks | no |
 | 24 | #130 | [Instrument init profiles (sensor setup over the wire)](130-instrument-init.md), prompt `briefs/cloud/p2-instrument-init.md` | `deepsignal/p2-instrument-init` | `3b4b76e` contrib tree | cloud | py | 6 | none; #121 and #114 produce profiles | no (hardware check with a tech present, after merge) |
+| 25 | #133 | [Sealog bridge: quality events and quality aux data](133-sealog-bridge.md), prompt `briefs/cloud/p2-sealog-bridge.md` | `deepsignal/p2-sealog-bridge` | `3b4b76e` contrib tree | cloud | py | 7 | QARTOD flags | no (live-system check by the lead, see docs/ECOSYSTEM.md) |
+| 26 | #131 | [OpenVDM bridge: quality products and Data Dashboard plugin](131-openvdm-bridge.md), prompt `briefs/cloud/p2-openvdm-bridge.md` | `deepsignal/p2-openvdm-bridge` | `3b4b76e` contrib tree | cloud | py | 7 | QARTOD flags | no (live-system check by the lead, see docs/ECOSYSTEM.md) |
+| 27 | #135 | [Lossless archive compression and shore bundles](135-archive-compress.md), prompt `briefs/cloud/p2-archive-compress.md` | `deepsignal/p2-archive-compress` | `3b4b76e` contrib tree | cloud | py | 7 | none | no (live-system check by the lead, see docs/ECOSYSTEM.md) |
+| 28 | #134 | [Grafana quality pack](134-grafana-quality.md), prompt `briefs/cloud/p2-grafana-quality.md` | `deepsignal/p2-grafana-quality` | `3b4b76e` contrib tree | cloud | py | 7 | QARTOD flags | no (live-system check by the lead, see docs/ECOSYSTEM.md) |
+| 29 | #132 | [Cruise context from OpenVDM and Sealog](132-cruise-context.md), prompt `briefs/cloud/p2-cruise-context.md` | `deepsignal/p2-cruise-context` | `3b4b76e` contrib tree | cloud | py | 7 | #120 format | no (live-system check by the lead, see docs/ECOSYSTEM.md) |
 
 ## Not briefed, and why
 
@@ -35,6 +40,7 @@ Written 2026-11-18 by the parity thread, ranked by value from docs/TARGET-PARITY
 - #107 map: console module `map` (briefs/console/map.md).
 - #124 install clock half: briefs/install-clock.md (submitted). The `--defaults` half is #124 above.
 - #129 derived-product suggester: backlog, no brief yet.
+- #136 OceanDataTools QA tool adapters: backlog; the tools are marked under heavy development.
 
 ## What is left after these land
 

@@ -398,3 +398,6 @@ Option (a): download only publicly hosted manufacturer manuals, listed first in 
 
 ### D-UPSTREAM0 Nothing goes to OceanDataTools until Eugene approves, much later (2026-11-18, DECIDED by Eugene)
 No pushes, PRs, issues or comments to any OceanDataTools repo, by anyone, for any reason. Technical guards: every DeepSignal clone has origin = eugenevivino/*; any remote whose URL contains OceanDataTools gets pushurl DISABLED; a pre-push hook refuses any OceanDataTools URL; gh CLI calls never target OceanDataTools (fetching by URL is read-only and allowed); cloud prompts carry the same rule. Supersedes any softer "issue before PR" wording until Eugene lifts it.
+
+### D-BATCH7 Ecosystem and compression decisions (2026-11-18, logged by build lead)
+#135 v1 is lossless-only: zstd via CLI, falling back to xz; offline NetCDF and Parquet deferred (ERDDAP #104 serves netCDF). #132 extends the #120 cruise-meta format, no second metadata model. #109 reads winch-data-processing outputs for SWL and RVSS logic, not re-derived (see docs/ECOSYSTEM.md).

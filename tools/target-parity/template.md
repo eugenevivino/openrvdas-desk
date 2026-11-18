@@ -83,6 +83,13 @@ PROPOSED), **none**.
 
 {MTABLE}
 
+### 3b2. OceanDataTools ecosystem (10 rows)
+
+How DeepSignal fits OpenVDM, Sealog and the Grafana tooling. Design: `docs/ECOSYSTEM.md`. The Combined
+headline stays CORIOLIX plus MetAcq so it is comparable over time; this group is scored on its own line.
+
+{ETABLE}
+
 ### 3c. Already planned (IDEAS.md and briefs)
 
 IDEAS.md holds 103 numbered ideas: 1 BUILDING, 18 DESIGNED, 84 PROPOSED,

@@ -1,6 +1,6 @@
 # Brief: p2-config-lint (Cruise config linter)
 
-- Decision: D-PARITY1, IDEAS #127 (Eugene approved building #104-#124, 2026-11-18)
+- Decision: IDEAS #127, from Eugene's 2026-11-18 asks (config assist, sensor init, ecosystem and compression); build per D-NIGHT1
 - Risk tier: low
 - Module: exactly one. Branch `deepsignal/p2-config-lint` from `3b4b76e`
 - Lane: `cloud` (Sol medium, fixed)
@@ -45,6 +45,9 @@ Package `contrib/deepsignal/config_lint/`, `lint(cruise_dict) -> list[Finding]`,
 `contrib/deepsignal/test/config_lint/test_lint.py`: the NBP1406 cruise file lints with no errors (record
 any warnings it has as the expected baseline); one small fixture per finding; core validator findings are
 included when importable; exit codes.
+
+## Setup engine interface (MCP, console and CLI all call this)
+A shared facade `contrib/deepsignal/setup/` (built separately; do not create it) exposes detect, propose, diff, validate and apply to the MCP gateway, the console and the CLI. It imports this module and never shells out. So, next to the CLI, provide pure functions that take plain dicts and return JSON-serializable dicts, with no printing, no prompts and no side effects beyond what the name says: `lint(cruise: dict) -> dict` (`{findings: [...], errors: N, warnings: N}`). The CLI calls these same functions. Test that each return value survives `json.dumps`.
 
 ## Module contract
 Docs `contrib/deepsignal/docs/config_lint.md` with each finding, why it matters, and the fix. Depends on no

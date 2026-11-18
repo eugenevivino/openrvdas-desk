@@ -1,5 +1,7 @@
 # Morning queue for Eugene (newest first)
 
+- FYI no action: live checks of #131 against OpenVDM 2.17 sample data and #133 against a Sealog demo server come after merge.
+
 - #121 device-pack: approve downloading the public manufacturer manuals named in briefs/mac/p2-device-pack.md (for example the MetSpecs PDF at calcofi.org) into /private/tmp/deepsignal/p2-device-pack/manuals/. Reply yes in the project thread. Until then #121 is held; everything else runs.
 
 - #130 instrument-init: after merge, needs a real-hardware check with a tech present (it writes to instruments). Not run before then.

@@ -5,7 +5,7 @@ everything, so nothing raised in a thread is lost. Add a row the day an idea
 comes up. Never delete a row: mark it DROPPED with a reason.
 
 
-**Numbering: the build lead owns IDEAS numbers (next free: 131). Other threads do not
+**Numbering: the build lead owns IDEAS numbers (next free: 137). Other threads do not
 assign numbers. Write ideas as unnumbered drafts in your patch notes and ask the build
 lead for a range, to avoid collisions (three-way collision on 2026-11-18).**
 Status: PROPOSED (idea only), DESIGNED (design doc exists), BUILDING (brief
@@ -232,3 +232,16 @@ OpenRVDAS input and output, not just serial. Coverage table: `docs/TARGET-PARITY
 | 129 | Derived-product suggester | When the fields for true wind, vector averages, salinity, dew point or QC ranges are present, propose the transform (#106, #112, #4, #8) with a preview, for a tech to accept | 4/4/2 | PROPOSED | 3 | T-PARITY |
 | 130 | Instrument init profiles | Per-instrument, reviewed command profiles sent over the wire: startup and setup (mode, rate, units), optional instrument clock set, reply checks with timeouts and retries, re-init after silence or reconnect, and an append-only log of every byte sent and every reply. Only commands listed in a profile are ever sent; no probing. Extends core `start_cmd`, which sends once at open, never checks a reply and is not resent after a power cycle. Wizard (#114) and device pack (#121) supply profiles. Brief `briefs/p2/130-instrument-init.md`. Eugene 2026-11-18: "sensor initiation stuff over the wire. We need to do that too." | 5/3/1 | DESIGNED | 2 | Eugene, T-PARITY M44 |
 
+## OceanDataTools ecosystem and compression (2026-11-18, parity thread; numbers 131-136)
+
+Eugene: compression "industry standard", integrate with OpenVDM, "maybe even sealog and grafana ... let's do
+something great." Design and source evidence: `docs/ECOSYSTEM.md`; scorecard rows E1-E10.
+
+| # | Idea | One line | Value | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| 131 | OpenVDM bridge | DeepSignal products and quality flags written into the OpenVDM cruise package as a collection system, plus an OpenVDM Data Dashboard plugin that turns them into `qualityTests` and `stats`; File Naming Guide friendly names. Brief `briefs/p2/131-openvdm-bridge.md` | 4/4/4 | DESIGNED | 2 | Eugene, E2 |
+| 132 | Cruise context | One read-only source of the current cruise and lowering (OpenVDM `api/warehouse/getCruiseConfig`, Sealog cruises, or the OpenRVDAS cruise definition) for every DeepSignal module and report. Brief `briefs/p2/132-cruise-context.md` | 4/3/3 | DESIGNED | 2 | E3 |
+| 133 | Sealog bridge | Alerts, QC changes, flow state (#110) and init results (#130) become Sealog events through core `SealogWriter`, and an aux-data inserter attaches the quality state of the relevant sensors to every new Sealog event. Brief `briefs/p2/133-sealog-bridge.md` | 4/5/3 | DESIGNED | 2 | Eugene, E4, E5 |
+| 134 | Grafana quality pack | QC flags, freshness and health into InfluxDB as fields and tags; Grafana dashboards generated from the cruise definition with the ODT compass and attitude panels, flag colors and alert rules. Brief `briefs/p2/134-grafana-quality.md` | 4/3/4 | DESIGNED | 2 | Eugene, E6 |
+| 135 | Archive and compression | Closed raw logs compressed losslessly (zstd when the `zstd` tool exists, else xz), with sha256 manifest, round-trip verify, originals kept by default; prioritized shore bundles for OpenVDM ship-to-shore. NetCDF4/CF export comes from ERDDAP (#104); offline NetCDF and Parquet are phase 2b. Brief `briefs/p2/135-archive-compress.md` | 3/4/5 | DESIGNED | 2 | Eugene, E7-E9 |
+| 136 | QA tool adapters | Surface verdicts of ODT nav-qa-processing, sbe-qa-processing and winch-data-processing (run as OpenVDM post hooks) in the console and Sealog; #109 cast view should read winch wire logs from it rather than re-derive RVSS rules | 3/4/3 | PROPOSED | backlog (tools are "under heavy development") | E10 |
