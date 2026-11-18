@@ -17,7 +17,7 @@ When something goes wrong, the tech gets a short, evidence-linked briefing in se
 - the exact checks to do next
 
 It stays cheap because AI runs only on events, with caching and a per-ship spending cap. It uses an
-API-based model: DeepSignal calls the provider's API OUTBOUND through one egress proxy or allowlisted host. It degrades gracefully
+API-based model: DeepSignal calls the provider's API OUTBOUND, only through the ship's allowlisting egress proxy. It degrades gracefully
 offline, and it only advises. Eugene: "It might be better if it was an API based model, frankly." and
 "starlink is exceptional though" (2026-11-18): design for connectivity as the normal case, with offline
 as the exception path. Eugene, 2026-11-18: "have either local or off-prem AI analyze the data
@@ -76,13 +76,22 @@ characters / 4):
 
 Every item carries a ref id. No raw data streams, and no credentials or tokens, ever go into the pack.
 
-**Model adapters** (`models.py`): `ApiModel(provider, url, model, key_env)` is the **primary path**, and
+**Model adapters** (`models.py`): `ApiModel(provider, url, model)` is the **primary path**, and
 `LocalModel(url, model)` is optional. Both share one interface.
-- **Enablement:** on by default once the #192 vault is present and a key is stored. Until #192 merges, it
-  ships with AI disabled by default, and the tech gets tier 1 and runbook briefings only.
-- Calls go directly to the provider URL. The only network path is
-  `api.egress_proxy` (an HTTPS proxy URL) when set, else the provider host, which must be in
-  `api.allowed_hosts`. Any other host is refused before a socket opens.
+- **Enablement** (SECURITY-ARCHITECTURE.md section 7.3): a stored key never enables calls by itself.
+  Outbound calls need three things together:
+  - the #192 vault is present
+  - a key is in it
+  - an explicit ship opt-in, `api.opt_in: {by, at, cruise_id}`, written only by the final step of the
+    guided setup (`opt_in(by)`)
+
+  So it is "on" as soon as a tech finishes setup, and never before. Until #192 merges, AI is disabled by
+  default and the tech gets tier 1 and runbook briefings only. `opt_out(by, reason)` turns it off and is
+  logged.
+- **Egress only through the allowlisting proxy:** every call goes through `api.egress_proxy`, which is
+  required. There is no direct-to-provider option. The client also checks the provider host against
+  `api.allowed_hosts` before connecting, as a second guard. If no proxy is configured, AI stays disabled
+  and every surface says: AI assist needs the ship's egress proxy.
 - **Keys:** the key is read only through the #192 vault (below). It is never in a config file, git, a
   log, a pack, argv or the environment.
 - **Spending cap per ship** in `ai_triage.yaml`:
@@ -94,9 +103,10 @@ Every item carries a ref id. No raw data streams, and no credentials or tokens, 
     runbook fallback marked "budget reached".
 - **Offline** (#156 link-health field says down, or the call fails to connect): the request goes into a
   disk queue (`queue.jsonl`, at most 50 entries, oldest dropped with a note). The tech gets the
-  deterministic runbook briefing at once, marked "AI pending". When the link returns, queued items still
-  relevant (the problem is still open) are sent within the caps, and the answer replaces the pending
-  mark. If `local.enabled` (default false) and a local model answers, that answer is used meanwhile,
+  deterministic runbook briefing at once, marked "AI pending". The queue stores the unredacted pack
+  reference and trigger only, on the ship, and nothing is redacted at enqueue time. When the link
+  returns, queued items still relevant (the problem is still open) are sent within the caps. The answer
+  replaces the pending mark. If `local.enabled` (default false) and a local model answers, that answer is used meanwhile,
   labeled "local model".
 - Retries: one retry on a timeout or 5xx, then fallback. Timeouts default to 60 s.
 
@@ -141,7 +151,9 @@ wizard, console and CLI all call):
    allowed, proxy unreachable, over budget), latency, tokens and cost.
 5. `preview(stream) -> dict`: the exact redacted pack that would be sent for a stream right now, with
    counts of what was removed by each rule.
-- CLI `python -m contrib.deepsignal.ai_triage setup` walks these five steps in order. It reads the key
+6. `opt_in(by) -> dict`: the explicit ship opt-in, shown after a successful test call and preview. This
+   is the only thing that turns outbound calls on.
+- CLI `python -m contrib.deepsignal.ai_triage setup` walks these six steps in order. It reads the key
   without echo.
 
 **Output contract** (`schema.py`): JSON only. The fields are:
@@ -173,11 +185,14 @@ labeled "no AI used".
 alert detail and the trust view. The setup engine and MCP call `briefing(stream) -> dict`, pure over a
 given snapshot.
 
-**Privacy and redaction** (`redact.py`, applied to every pack before it leaves the ship): no raw data
+**Privacy and redaction** (`redact.py`). It is applied at SEND time, using the cruise disclosure policy in
+force at that moment (#116 release policy, EEZ state from #137 or `eez_inside`, the redaction rules), never
+at enqueue time. A request queued outside an EEZ and sent after entering one is redacted for the EEZ. No raw
+data
 series, only the compact pack. It strips anything that looks like a credential, token, password,
 private key, email address or phone number. It removes the #116 held-back fields, and while `eez_inside`
 it removes EEZ hold-back fields and rounds positions as #116 does. A ship can turn the API path off
-(`api.enabled: false`) for a cruise with stricter terms. It is on by default.
+with `opt_out` for a cruise with stricter terms.
 
 ## Failing test first
 `contrib/deepsignal/test/ai_triage/test_triage.py`, with a fake model client:
@@ -192,8 +207,14 @@ it removes EEZ hold-back fields and rounds positions as #116 does. A ship can tu
   open, and caps the queue at 50.
 - The optional local model is used only when enabled.
 - Redaction strips secrets, emails, held-back fields and EEZ hold-back fields, and rounds positions.
-- `api.enabled: false` sends nothing.
-- A host outside `allowed_hosts` is refused before any connection.
+- A vault and key with no opt-in send nothing. Opt-in plus vault plus key sends. `opt_out` stops sending
+  and is logged.
+- No egress proxy configured means disabled with the exact message. Every call goes through the proxy
+  (assert the fake opener's proxy setting). A host outside `allowed_hosts` is refused before any
+  connection.
+- Send-time redaction: an item queued while `eez_inside` is false, with EEZ hold-back fields in its pack,
+  is sent after `eez_inside` turns true. The sent pack lacks those fields and has rounded positions.
+  Also, a #116 policy change between enqueue and send is honored.
 - The key is never in the YAML, logs, packs, argv or the environment. Assert it across all written files
   in a temp dir and in the fake process environment.
 - A fake vault with each protector (`tpm2`, `hostkey`, using a fake protector runner): the round trip
@@ -215,7 +236,7 @@ it removes EEZ hold-back fields and rounds positions as #116 does. A ship can tu
 Docs `contrib/deepsignal/docs/ai_triage.md`. It covers:
 - the two tiers, drawn as a small text diagram
 - the two directions (outbound API here, inbound MCP in #64), drawn as a small diagram
-- the five setup steps
+- the six setup steps, the opt-in, and why the proxy is required
 - the spending caps, with a worked cost example: say 40 briefings a day at about 7k tokens each, using
   prices the ship enters, marked as an example only
 - what happens offline
