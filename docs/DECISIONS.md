@@ -395,3 +395,6 @@ Choice: checks V1 to V9 (design/console-VISUAL-GATE.md) plus a lead and Astra 6.
 
 ### D-121A #121 device-pack manual downloads (2026-11-18, HELD for Eugene's explicit yes; RC rule requires it)
 Option (a): download only publicly hosted manufacturer manuals, listed first in a manifest with URL, size and SHA-256, into /private/tmp/deepsignal/p2-device-pack/manuals/. Codex then runs offline on them. Manuals are never committed to the repo (cite formats and page numbers only). Inbound read-only fetches, no logins, no robots-blocked sites. Reversible; Eugene can veto in the morning.
+
+### D-UPSTREAM0 Nothing goes to OceanDataTools until Eugene approves, much later (2026-11-18, DECIDED by Eugene)
+No pushes, PRs, issues or comments to any OceanDataTools repo, by anyone, for any reason. Technical guards: every DeepSignal clone has origin = eugenevivino/*; any remote whose URL contains OceanDataTools gets pushurl DISABLED; a pre-push hook refuses any OceanDataTools URL; gh CLI calls never target OceanDataTools (fetching by URL is read-only and allowed); cloud prompts carry the same rule. Supersedes any softer "issue before PR" wording until Eugene lifts it.
