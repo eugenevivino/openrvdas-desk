@@ -7,7 +7,7 @@
 - Fresh session, under 40 turns
 - Upstream home: openrvdas_contrib tree, fork only for now
 - Value (techs/science/shore): 5/3/3
-- Depends on: inputs from #162 stream health, #165 time health, QARTOD flags, #167 runbooks, #168 timeline; escalation through the MCP gateway (#64); write fixes only as proposals to #65 and #154; model choice from #69 evals
+- Depends on: inputs from #162 stream health, #165 time health, QARTOD flags, #167 runbooks, #168 timeline; its `ai_guard` package (redaction, budget, audit) is shared with the inbound MCP gateway (#64); write fixes only as proposals to #65 and #154; model choice from #69 evals
 
 ## Goal
 When something goes wrong, the tech gets a short, evidence-linked briefing in seconds:
@@ -17,7 +17,7 @@ When something goes wrong, the tech gets a short, evidence-linked briefing in se
 - the exact checks to do next
 
 It stays cheap because AI runs only on events, with caching and a per-ship spending cap. It uses an
-API-based model (provider-pluggable, through the MCP gateway over the ship's VPN). It degrades gracefully
+API-based model: DeepSignal calls the provider's API OUTBOUND through one egress proxy or allowlisted host. It degrades gracefully
 offline, and it only advises. Eugene: "It might be better if it was an API based model, frankly." and
 "starlink is exceptional though" (2026-11-18): design for connectivity as the normal case, with offline
 as the exception path. Eugene, 2026-11-18: "have either local or off-prem AI analyze the data
@@ -35,6 +35,12 @@ regularly ... and help the techs fix the issue."
   `module: contrib.deepsignal.<module>.<file>`). Records may arrive as a DASRecord, a dict with
   `timestamp` and `fields`, a list of either, or None; handle all, pass None through.
 - File ownership is disjoint across phase 2 tasks: you own ONLY the paths under Scope.
+- Two directions; do not mix them up.
+  - **Outbound (this module):** DeepSignal calls an AI provider's API, and the ship's network sees one
+    HTTPS destination. It does NOT go through the MCP server.
+  - **Inbound (the MCP gateway #64, not this module):** an AI client such as Claude Desktop or Claude Code
+    connects to DeepSignal's MCP server over the VPN or LAN to query and propose.
+  - Both use the same `ai_guard` layer built here.
 - Two tiers.
   - Tier 1 is the deterministic checks, which already run continuously at no AI cost: QARTOD flags,
     #162, #165, #79 and #10. They are inputs here.
@@ -72,9 +78,11 @@ Every item carries a ref id. No raw data streams, and no credentials or tokens, 
 
 **Model adapters** (`models.py`): `ApiModel(provider, url, model, key_env)` is the **primary path**, and
 `LocalModel(url, model)` is optional. Both share one interface.
-- **Cloud on by default.** When MCP is configured, calls go through the MCP gateway (#64) over the VPN.
-  Otherwise they go to the provider URL the ship sets. The key comes from an environment variable only
-  and is never logged or put in a pack.
+- **Cloud on by default.** Calls go directly to the provider URL. The only network path is
+  `api.egress_proxy` (an HTTPS proxy URL) when set, else the provider host, which must be in
+  `api.allowed_hosts`. Any other host is refused before a socket opens.
+- **Keys:** the key is read only through `ai_guard.secrets` (below). It is never in a config file, git,
+  a log or a pack.
 - **Spending cap per ship** in `ai_triage.yaml`:
   - `api.max_usd_per_day` (default 2)
   - `api.max_usd_per_month` (default 30)
@@ -89,6 +97,32 @@ Every item carries a ref id. No raw data streams, and no credentials or tokens, 
   mark. If `local.enabled` (default false) and a local model answers, that answer is used meanwhile,
   labeled "local model".
 - Retries: one retry on a timeout or 5xx, then fallback. Timeouts default to 60 s.
+
+**Shared guard** (`contrib/deepsignal/ai_guard/`, owned by this task; the MCP gateway imports it later):
+- `redact.py`: the redaction described under Privacy, below.
+- `budget.py`: the meter, the daily and monthly caps, and the per-call limits. It persists to a small JSON
+  file, and its method is `check_and_reserve(cost_estimate)`.
+- `audit.py`: an append-only JSONL with timeline export to #168.
+- `secrets.py`: `store_key(name, value)` and `load_key(name)`.
+  - The key is encrypted at rest with `systemd-creds encrypt` when the host has it (systemd 250 or newer,
+    for example Ubuntu 24.04 or RHEL 9). It is stored under `/etc/deepsignal/credentials/` with mode
+    0600.
+  - Without systemd-creds it writes a 0600 root-only file and returns a warning. The self-test then says
+    "AI key stored without encryption on this host". It never silently pretends.
+  - Keys are never accepted on the command line (shell history). They are read from stdin or the wizard.
+  - Both `store_key` and `load_key` run the commands behind an injectable runner for tests.
+
+**Guided setup** (setup engine functions in `ai_triage/setup.py`, pure or behind injectable I/O, which the
+wizard, console and CLI all call):
+1. `providers() -> list`: the built-in provider choices with their default URLs and request shapes.
+2. `store_key(provider, key)`: through `ai_guard.secrets`.
+3. `set_caps(daily_usd, monthly_usd, prices)`: validated, written to `ai_triage.yaml` (no secrets in it).
+4. `test_call() -> dict`: one tiny fixed prompt. It reports ok or error in plain words (bad key, host not
+   allowed, proxy unreachable, over budget), latency, tokens and cost.
+5. `preview(stream) -> dict`: the exact redacted pack that would be sent for a stream right now, with
+   counts of what was removed by each rule.
+- CLI `python -m contrib.deepsignal.ai_triage setup` walks these five steps in order. It reads the key
+  without echo.
 
 **Output contract** (`schema.py`): JSON only. The fields are:
 - `summary` (2 sentences at most)
@@ -139,6 +173,11 @@ it removes EEZ hold-back fields and rounds positions as #116 does. A ship can tu
 - The optional local model is used only when enabled.
 - Redaction strips secrets, emails, held-back fields and EEZ hold-back fields, and rounds positions.
 - `api.enabled: false` sends nothing.
+- A host outside `allowed_hosts` is refused before any connection.
+- The key is never in the YAML, logs, packs or argv. Assert it across all written files in a temp dir.
+- systemd-creds present gives an encrypted store; absent gives the warning path (fake runner both ways).
+- `test_call` maps a fake 401, a DNS failure and the budget-exceeded case to plain messages.
+- `preview` shows removal counts.
 - Both provider adapters build the right request shape.
 - The fallback briefing is correct and labeled.
 - Timeline entries are written.
@@ -148,7 +187,8 @@ it removes EEZ hold-back fields and rounds positions as #116 does. A ship can tu
 ## Module contract
 Docs `contrib/deepsignal/docs/ai_triage.md`. It covers:
 - the two tiers, drawn as a small text diagram
-- the API setup (provider, key in an environment variable, VPN or MCP path)
+- the two directions (outbound API here, inbound MCP in #64), drawn as a small diagram
+- the five setup steps
 - the spending caps, with a worked cost example: say 40 briefings a day at about 7k tokens each, using
   prices the ship enters, marked as an example only
 - what happens offline
@@ -164,9 +204,15 @@ python3.12 -m unittest discover -s contrib/deepsignal/test/ai_triage -t . -v
 ```
 python3.12 -m flake8 --config .flake8 contrib/deepsignal/ai_triage contrib/deepsignal/test/ai_triage
 ```
+```
+python3.12 -m unittest discover -s contrib/deepsignal/test/ai_guard -t . -v
+```
+```
+python3.12 -m flake8 --config .flake8 contrib/deepsignal/ai_guard contrib/deepsignal/test/ai_guard
+```
 
 ## Scope
-Create or change only: `contrib/deepsignal/ai_triage/**`, `contrib/deepsignal/test/ai_triage/**`, `contrib/deepsignal/docs/ai_triage.md`, `contrib/deepsignal/configs/ai_triage_*.yaml`, and empty `__init__.py` files where missing. Everything else is read-only.
+Create or change only: `contrib/deepsignal/ai_triage/**`, `contrib/deepsignal/test/ai_triage/**`, `contrib/deepsignal/docs/ai_triage.md`, `contrib/deepsignal/configs/ai_triage_*.yaml`, and empty `__init__.py` files where missing. Everything else is read-only. Also own `contrib/deepsignal/ai_guard/**` and `contrib/deepsignal/test/ai_guard/**`.
 
 ## Usability (anything a tech sees or edits)
 Answer each line of desk `docs/USABILITY.md` in the report, or N/A with a reason. Every config error is one

@@ -1,5 +1,7 @@
 # Morning queue for Eugene (newest first)
 
+- #188 secrets: Ubuntu 22.04 has no systemd-creds, so API keys there are stored in a 0600 file unencrypted with a loud warning. Accept that or pick another store.
+
 - #188 AI watch assistant: pick the API provider and put the key in the ship environment (never in git). A lead check against the real API runs outside the sandbox. Defaults: $2/day, $30/month caps; you can change them.
 
 - CRITICAL security package, offline first: signed audit (#32), local identity, trust zones (#115, #151, #155). Needs your review before anything is enabled.
