@@ -1,9 +1,10 @@
 #!/bin/bash
 # ds-codex: DeepSignal-only Codex launcher (D-SEP, Eugene 2026-11-18: DeepSignal and Kalon/l2audio are fully separate).
 # Never calls or edits ~/bin/codex-run and never touches ~/.codex. Usage, from a folder under /private/tmp/deepsignal/:
-#   ds-codex [--dry-run] -m <gpt-6.2-sol|gpt-6.2-astra|gpt-6-luna> [-c model_reasoning_effort=<level>] [codex exec args...] [-]
+#   ds-codex [--dry-run] [--sub-agents] [--wait-ram[=SECONDS]] -m <gpt-6.2-sol|gpt-6.2-astra|gpt-6-luna> [-c model_reasoning_effort=<level>] [codex exec args...] [-]
 # Exit codes: 2 bad usage, 3 Astra without KALON_ALLOW_ASTRA=1, 4 full-access/bypass/write-widening refused,
-#             6 model not allowed, 7 no -m, 8 connector guard refused, 9 cwd outside scratch, 10 another DeepSignal job holds the lock.
+#             6 model not allowed, 7 no -m, 8 connector guard refused, 9 cwd outside scratch, 10 another DeepSignal job holds the lock,
+#             11 RAM gate: free RAM under 4 GB or swap used over 3.8 GB (with --wait-ram: still so at the deadline).
 set -u
 DS_HOME="$HOME/.codex-deepsignal"
 SCRATCH="/private/tmp/deepsignal"
@@ -19,10 +20,12 @@ LOG="$DS_HOME/launch-log.txt"
 die() { echo "ds-codex: REFUSED: $2" >&2; exit "$1"; }
 
 # Parse our own flag and the model; copy everything else through.
-dry=0; subs=0; model=""; effort="default"; prev=""; args=(); cds=()
+dry=0; subs=0; waitram=0; model=""; effort="default"; prev=""; args=(); cds=()
 for a in "$@"; do
   if [ "$a" = "--dry-run" ]; then dry=1; prev="$a"; continue; fi
   if [ "$a" = "--sub-agents" ]; then subs=1; prev="$a"; continue; fi
+  if [ "$a" = "--wait-ram" ]; then waitram=3600; prev="$a"; continue; fi
+  case "$a" in --wait-ram=*) waitram="${a#--wait-ram=}"; [[ "$waitram" =~ ^[0-9]+$ ]] || die 2 "--wait-ram=SECONDS needs a number"; prev="$a"; continue;; esac
   case "$prev" in
     -m|--model) model="$a";;
     -C|--cd) cds+=("$a");;
@@ -127,6 +130,25 @@ still=$(mcp_names "${dis[@]}" "${off[@]+"${off[@]}"}") || die 8 "MCP server list
 
 sb=(); [[ " ${args[*]+"${args[*]}"} " == *" -s "* || " ${args[*]+"${args[*]}"} " == *" --sandbox "* || " ${args[*]+"${args[*]}"} " == *"--sandbox="* ]] || sb=(--sandbox workspace-write)
 cmd=("$CX" exec "${dis[@]}" "${off[@]+"${off[@]}"}" "${subcfg[@]+"${subcfg[@]}"}" -c 'approval_policy="never"' -c 'sandbox_workspace_write.writable_roots=[]' "${sb[@]+"${sb[@]}"}" "${args[@]+"${args[@]}"}")
+
+# (i) RAM gate (shared-machine rule from Kalon, 2026-11-18): refuse unless free RAM >= 4 GB and swap used <= 3.8 GB.
+# Free RAM = (free + inactive + speculative pages) x page size from vm_stat; swap used from vm.swapusage.
+RAM_MIN_FREE_MB=4096; SWAP_MAX_USED_MB=3891
+ram_state() {
+  local pg free_mb swap_mb
+  pg=$(sysctl -n hw.pagesize)
+  free_mb=$(vm_stat | awk -v pg="$pg" '/^Pages (free|inactive|speculative):/ {gsub(/\./,"",$NF); n+=$NF} END {print int(n*pg/1048576)}')
+  swap_mb=$(sysctl -n vm.swapusage | sed -E 's/.*used = ([0-9.]+)M.*/\1/'); swap_mb=${swap_mb%.*}
+  RAM_MSG="free_RAM_MB=$free_mb (min $RAM_MIN_FREE_MB) swap_used_MB=$swap_mb (max $SWAP_MAX_USED_MB) pressure_level=$(sysctl -n kern.memorystatus_vm_pressure_level)"
+  [ "$free_mb" -ge "$RAM_MIN_FREE_MB" ] && [ "$swap_mb" -le "$SWAP_MAX_USED_MB" ]
+}
+if [ "$dry" = 1 ]; then ram_state && echo "ds-codex: RAM gate OK: $RAM_MSG" >&2 || echo "ds-codex: RAM gate would REFUSE (11): $RAM_MSG" >&2
+elif ! ram_state; then
+  [ "$waitram" -gt 0 ] || die 11 "RAM gate: $RAM_MSG (use --wait-ram[=SECONDS] to wait)"
+  ram_deadline=$(( $(date +%s) + waitram )); echo "ds-codex: waiting for RAM (up to ${waitram}s): $RAM_MSG" >&2
+  until ram_state; do [ "$(date +%s)" -ge "$ram_deadline" ] && die 11 "RAM gate still closed after ${waitram}s: $RAM_MSG"; sleep 30; done
+  echo "ds-codex: RAM gate open: $RAM_MSG" >&2
+fi
 
 # (d) One DeepSignal job at a time: lock dir holding the owner PID; a lock whose PID is gone is stale and removed.
 lock_held() { [ -d "$LOCK" ] || return 1; local p; p=$(cat "$LOCK/pid" 2>/dev/null); [ -n "$p" ] && kill -0 "$p" 2>/dev/null && { echo "$p"; return 0; }; return 1; }
