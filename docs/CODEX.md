@@ -180,6 +180,4 @@ Legacy Codex Cloud environment `deepsignal` on `eugenevivino/openrvdas` (created
 32-hex id is in team memory, not in this public repo). Use `--env deepsignal` or the id from the
 picker, from inside a clone of the fork, under `CODEX_HOME=$HOME/.codex-deepsignal`. Cloud is always
 Sol medium. Prompts must carry the full brief inline (cloud cannot see this repo): see
-`briefs/cloud/`. RAM rule: at most one DeepSignal Codex job per Mac, check memory pressure before
-every Mac launch and hold if it is high, move work that can go to cloud off the Macs, never signal Kalon processes.
-
+`briefs/cloud/`. RAM rule (shared with Kalon, 2026-11-18): at most one DeepSignal Codex job per Mac; hold a launch when free RAM is under 4 GB or swap used is over 3.8 GB (ds-codex refuses with exit 11); big clones get `gc.auto=0` and `maintenance.auto=false` (an auto repack once pushed swap to 22 GB); the Mini may be used, one heavy job, 4 GB floor, own folder, tell the build lead first; move work that can go to cloud off the Macs, never signal Kalon processes.
