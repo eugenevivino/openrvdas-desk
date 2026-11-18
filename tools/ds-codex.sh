@@ -107,7 +107,8 @@ log_line() { printf '%s\tmodel=%s\teffort=%s\tsandbox=%s\tcwd=%s\texit=%s\n' "$(
 trap 'on_signal 14' ALRM; trap 'on_signal 15' TERM; trap 'on_signal 2' INT; trap 'on_signal 1' HUP
 
 # (h) Run codex exec as a child (not exec) so the exit code is logged (f) and the lock is released.
-"${cmd[@]}" &
+# The explicit <&0 keeps our stdin (the piped prompt): without it bash gives a background job /dev/null.
+"${cmd[@]}" <&0 &
 child=$!
 wait "$child"; rc=$?
 log_line "$rc"; cleanup
