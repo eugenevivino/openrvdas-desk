@@ -5,6 +5,20 @@ SUPERSEDED (by D-x). Never edit a DECIDED entry; add a new one that supersedes
 it. Seeded 2026-11-17 from the project's design threads; entries marked
 PROPOSED wait for Eugene or the named evidence.
 
+## Architecture
+
+### D-ARCH1 Everything is an overlay on the existing core, for now (2026-11-18, DECIDED, Eugene)
+New capability ships as a separate layer on top of unmodified OpenRVDAS: its
+own package and repo, reading through the core's public interfaces
+(CachedDataServer websocket, logger configs, the ServerAPI, recorded files)
+and adding readers, transforms and writers through the normal config
+`module:` path. Core changes are limited to small upstream bug fixes with a
+test. Why: ships keep running stock OpenRVDAS, upgrades stay painless, and
+upstream can adopt pieces later on their merits. How to apply: a brief that
+needs a core change must say why the overlay cannot do it, and that change
+goes upstream as its own small PR first. Working name for the package:
+`openrvdas-overlay` (rename is cheap until the first release).
+
 ## Team and process
 
 ### D-TEAM1 Kalon-style desk structure (2026-11-17, PROPOSED)
@@ -40,7 +54,7 @@ MultipleObjectsReturned); verdict RED on that one row, 1m44s. Same error on
 ## Scoreboard
 
 ### D-SCORE1 One ScoreboardWriter fed from CachedDataServer (2026-11-17, PROPOSED)
-A new `ScoreboardWriter` in its own small display logger, reading the latest
+Lives in the overlay (D-ARCH1). A new `ScoreboardWriter` in its own small display logger, reading the latest
 value of every field from CachedDataServer. Four parts: latest-value cache,
 page and cell layout, swappable per-model formatter, transport reusing the
 Serial, TCP, and UDP writers. Why: the existing FormatTransform plus
@@ -72,7 +86,8 @@ instead of compete. Outreach is Eugene-only (rule 14).
 ## MCP server
 
 ### D-MCP1 Separate read-only-first package `openrvdas-mcp` (2026-11-17, PROPOSED)
-Own pip package on the official MCP Python SDK, not in `contrib/`. Read-only
+Own pip package on the official MCP Python SDK, not in `contrib/`; an overlay
+consumer under D-ARCH1. Read-only
 by default; config help writes only to a drafts folder; live control behind a
 start flag and a human confirmation per call. Analysis runs server-side so
 each call sends kilobytes over the satellite link. No core changes needed for
