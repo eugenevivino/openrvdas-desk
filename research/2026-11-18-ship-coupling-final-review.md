@@ -1,0 +1,26 @@
+**1. Ranked findings**
+
+- **P1 VERIFIED** With lags `[0, 1]`, a flat-field cruise contributed 50 rotations with identical paired observations, taking independent noise from `rejected` at p = 1/2 to `confirmed` at p = 1/51 in both splits. [stats.py:199](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/stats.py:199)
+- **P1 VERIFIED** A field exactly equal to `1000 × latitude` received 385 `ship_artifact` votes and passed both time shifts because the reciprocal control treated distinct positions within one metre as the same environment. [controls.py:145](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/controls.py:145)
+- **P1 VERIFIED** Listing `temp` before a constant input channel named `temp_residual` overwrote that channel during preparation and falsely confirmed it, while reversing the field order returned `insufficient`. [prep.py:174](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/prep.py:174)
+- **P1 VERIFIED** Two late headings of 320° and 40° lost their bin average after an unrelated measurement advanced the clock, changing the next live result from sector 0, QC 3 to sector 1, QC 1. [transform.py:62](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/transform.py:62)
+- **P1 VERIFIED** A supplied heading rate of −3°/s was classified as `transit` and issued QC 3 from the transit calibration because the threshold checks only positive rates. [prep.py:78](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/prep.py:78)
+- **P1 VERIFIED** Multiplying the injected temperature signal by `1e-200` erased all 688 ship-artifact votes and changed the verdict to `cannot_tell` because the sign-test products underflowed, with identical Spearman effect and p-value. [controls.py:82](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/controls.py:82)
+- **P1 VERIFIED** Two identical finite readings of `1e308` produced residuals of negative infinity where both residuals should be zero because the even-window median overflowed. [prep.py:32](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/prep.py:32)
+- **P2 VERIFIED** On a complete 70-second grid spanning over 30 hours, exact timestamp lookup left both the 12-hour and 24-hour controls unavailable. [controls.py:166](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/controls.py:166)
+- **P2 VERIFIED** An explicitly listed live field with no eligible atlas hypothesis and no ship state received no QC field, although the brief specifies QC 2. [transform.py:196](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/transform.py:196)
+- **P2 VERIFIED** Valid reciprocal legs at 89.999° latitude with fixes at longitudes 0° and 180° raised `TypeError` when their undefined mean longitude entered the distance calculation. [controls.py:124](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/controls.py:124)
+- **P2 VERIFIED** A live measurement containing the integer `10**400` raised `OverflowError` during the finiteness check and prevented the transform from returning the record. [stats.py:9](/private/tmp/deepsignal/ship-coupling-fix3/repo/contrib/deepsignal/coupling/stats.py:9)
+
+**2. Brief and prior findings**
+
+- **VERIFIED** I traced all 46 prior ranked cases, 18 original, 16 first follow-up and 12 second follow-up, to implementation changes and regression tests. The specific fixtures are covered. The surrogate, geographic and late-state failures above remain reproducible.
+- **VERIFIED** On ordinary finite vectors, Pearson, average-tie Spearman, biased ACF, the capped 1/e crossing, winning-lag `n_eff` with its floor of two, paired moving blocks, max-over-lags surrogate statistics and per-family BH/BY in both splits follow the brief. The real NBP1406 split returned `insufficient` with effective sizes 20.81 and 17.87.
+- **VERIFIED** The implementation documents its realized surrogate denominator, unavailable CI after an undefined bootstrap replicate, and extra one-metre site tolerance. The field-order dependency, signed-rate handling and omitted live QC are silent deviations. Existing live annotations, raw bytes and timestamps were preserved in the tested cases.
+
+**3. Tests**
+
+- **VERIFIED** All 61 tests executed with temporary I/O held in memory passed. I inspected the three filesystem-specific tests for hard-link input protection, stale polar cleanup and interrupted publication. The fault bench is absent.
+- **VERIFIED** The suite exercises production code and checks hand-computed correlations, exact `n_eff`, BH/BY rejection sets, seeded resampling, lag alignment, QC boundaries and raw bytes. Its 50-hypothesis null tests cover three seeds. It misses the reproduced duplicate pairs at nonzero lag, sub-metre Earth-fixed gradient, field-name collision and late-bin QC change.
+
+**4. HOLD (VERIFIED).** Independent noise can replicate, a purely geographic field can be reported as ship contamination, and packet arrival order can turn a suspect reading into QC 1.
