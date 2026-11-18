@@ -20,6 +20,9 @@ private memory. `CLAUDE.md` imports this file and adds nothing.
 | `eugenevivino/openrvdas` (fork of `OceanDataTools/openrvdas`) | Code | Yes, from topic branches, target `dev` |
 | `eugenevivino/openrvdas-desk` (this repo) | Team, decisions, briefs, gate | Never |
 
+Contrib work (D-ARCH3) uses the same fork on its own branches; those PRs target
+`OceanDataTools/openrvdas_contrib` `master`, not core `dev`.
+
 Never commit desk files (this repo's content, briefs, handoffs, agent notes)
 into the fork. Upstream already has its own `CLAUDE.md` and `OPERATIONS.md`;
 follow them when editing fork code, and do not edit them unless the change is

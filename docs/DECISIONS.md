@@ -31,6 +31,30 @@ stay separate unless contrib's maintainer prefers otherwise.
 
 ## Team and process
 
+
+### D-ARCH3 Contrib work: branches on the existing fork, PRs to openrvdas_contrib `master` (2026-11-18, DECIDED)
+Verified 2026-11-18 by reading `OceanDataTools/openrvdas_contrib` (shallow, read-only):
+- It shares history with core (69 identical commits across refs), so GitHub
+  gives Eugene one fork for both. `gh repo fork openrvdas_contrib` answers
+  "eugenevivino/openrvdas already exists" for that reason. No second fork.
+- Target branch is `master`, not `dev`. Its `dev` stopped at cc7b9e8 on
+  2024-06-05 and is fully contained in `master`, which is 24 commits ahead
+  (latest 3b4b76e, 2024-10-07). All three merged PRs (#1, #2, #4) went to
+  `master`. Its CONTRIBUTING.md is a copy of core's and says nothing about contrib
+  PRs, so this rests on history, not a written rule. If a maintainer says
+  otherwise, they win.
+- Layout rule (its `contrib/README.md`): code lives in `contrib/<project>/`
+  mirroring core (`logger/`, `database/`, `utils/`, plus `test/`) and is loaded
+  with `module: contrib.<project>.<path>`. Project folder name: PROPOSED
+  `openrvdas_overlay`, Eugene to confirm.
+- Mechanics: fork checkout in a separate folder, remote `contrib` pointing at
+  OceanDataTools/openrvdas_contrib, branch from `contrib/master`, push to
+  `origin`, PR with base `OceanDataTools/openrvdas_contrib` `master`. Builders
+  do this; Eugene sends the PR (his message naming it). Core fixes still go to
+  core `dev` (D-ARCH1).
+- The cloud session cannot open PRs on either upstream repo (fork only), so the
+  PR step stays with Eugene or a session that has the upstream attached.
+
 ### D-TEAM1 Kalon-style desk structure (2026-11-17, PROPOSED)
 Use the Kalon desk's structure (shared AGENTS.md, decision log, briefs, lead
 handoffs, research desk, gate with exact expected failures, Eugene-only list),
@@ -129,4 +153,3 @@ OpenRouter (code and prompts leave the machine on a new key); its planner/expert
 loop (we already have briefs, gate and review tiers). Revisit the statusline
 only as our own small script over local logs.
 See `research/2026-11-18-projectarchitect.md`.
-
