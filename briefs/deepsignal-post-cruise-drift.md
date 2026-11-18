@@ -5,7 +5,7 @@
 - Module: exactly one, offline post-cruise drift review. Branch `deepsignal/post-cruise-drift`
 - Base: `OceanDataTools/openrvdas_contrib` `master` at 3b4b76e, after `deepsignal/fault-bench` and `deepsignal/correction-ledger` are green (read their docs, do not import their code except the bench runner in tests)
 - Mac scratch path: `/private/tmp/deepsignal/post-cruise-drift/` only (docs/CODEX.md rule 1b)
-- Model id for `-m` (rule 27) and effort: `gpt-6.2-astra`, high (math), with `KALON_ALLOW_ASTRA=1` for this job only, fresh session, under 40 turns. Review: a separate fresh `gpt-6.2-astra` xhigh, read-only.
+- Lane: `mac`. Model id for `-m` (rule 27) and effort: `gpt-6.2-astra`, high (math), with `KALON_ALLOW_ASTRA=1` for this job only, fresh session, under 40 turns. Review: a separate fresh `gpt-6.2-astra` xhigh, read-only.
 - Upstream home: openrvdas_contrib (Eugene sends the PR)
 
 ## Goal

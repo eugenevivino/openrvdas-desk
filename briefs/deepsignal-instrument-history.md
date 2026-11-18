@@ -5,7 +5,7 @@
 - Module: exactly one, instrument history registry plus checker. Branch `deepsignal/instrument-history`
 - Base: `OceanDataTools/openrvdas_contrib` `master` at 3b4b76e
 - Mac scratch path: `/private/tmp/deepsignal/instrument-history/` only (docs/CODEX.md rule 1b)
-- Model id for `-m` (rule 27) and effort: `gpt-6.2-sol`, high, fresh session, under 40 turns. Review: fresh `gpt-6.2-astra` high, read-only.
+- Lane: `cloud` (Sol medium, fixed, so no `-m`; rules 8 and 27, D-TEAM7), fresh task, under 40 turns. Review: fresh `gpt-6.2-astra` high on a Mac, read-only.
 - Upstream home: openrvdas_contrib (Eugene sends the PR)
 
 ## Goal
