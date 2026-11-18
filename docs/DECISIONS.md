@@ -404,3 +404,6 @@ No pushes, PRs, issues or comments to any OceanDataTools repo, by anyone, for an
 
 ### D-REVIEW1 Astra ultra auto-approval of non-critical changes (2026-11-18, DECIDED by Eugene)
 Astra at ultra (read-only) reviews non-critical changes and PRs; when it recommends approval, merge on the fork or desk without waiting for Eugene. Fork and desk only, never OceanDataTools (D-UPSTREAM0). CRITICAL, queued in MORNING.md and never auto-merged: anything touching OpenRVDAS core behavior, writes to instruments or ship systems (#130 instrument-init), security or auth code (#115, MCP remote/security (e)(f)), the gate itself, or anything Astra flags as risky. Every auto-approval is logged here with the reviewer verdict, branch and head SHA.
+
+### D-ONBOARD1 onboard-wizard parked after two failed acceptances (2026-11-18, logged by build lead)
+Failed acceptance twice (attempt 1, fix round 1). No more cloud retries. Re-brief as a Mac Sol high job after the console MVP chain, with the failing tests attached; not on the MVP critical path.

@@ -1,5 +1,7 @@
 # Morning queue for Eugene (newest first)
 
+- Cloud env setup script fix (one edit, explains why cloud node tasks cannot run vitest or tsc): change the last line to `cd contrib/deepsignal/console && npm ci` with no `|| true`, so it fails loudly. Diagnostic showed node_modules is empty at task time (setup likely ran before the task branch checkout, or on the default branch with no console/package.json). Until fixed, console modules are built in the cloud and accepted on the Mac; core-v2 runs on the Mac.
+
 - FYI no action: live checks of #131 against OpenVDM 2.17 sample data and #133 against a Sealog demo server come after merge.
 
 - #121 device-pack: approve downloading the public manufacturer manuals named in briefs/mac/p2-device-pack.md (for example the MetSpecs PDF at calcofi.org) into /private/tmp/deepsignal/p2-device-pack/manuals/. Reply yes in the project thread. Until then #121 is held; everything else runs.
