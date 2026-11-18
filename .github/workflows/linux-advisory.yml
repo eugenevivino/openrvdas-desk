@@ -1,0 +1,134 @@
+name: Linux advisory
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag, or commit SHA in eugenevivino/openrvdas
+        default: dev
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  advisory:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the fork
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: eugenevivino/openrvdas
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+          submodules: false
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies and prepare settings
+        run: |
+          python -m pip install -e '.[dev,mqtt]' flake8==7.5.0 pytest-timeout==2.4.0 pyyaml pytest
+          for file in database/settings.py database/influxdb/settings.py django_gui/settings.py; do
+            if [[ -f "$file.dist" && ! -e "$file" ]]; then
+              cp -- "$file.dist" "$file"
+            fi
+          done
+
+      - name: Run pytest and flake8
+        env:
+          FORK_REF: ${{ inputs.ref }}
+        run: |
+          results="$RUNNER_TEMP/linux-advisory"
+          mkdir -p "$results"
+          sha=$(git rev-parse HEAD)
+
+          if [[ "$FORK_REF" == dev || "$FORK_REF" == refs/heads/dev ]]; then
+            git ls-files -z -- ':(glob)contrib/deepsignal/**/*.py' > "$RUNNER_TEMP/lint-paths"
+          else
+            git diff --name-only --diff-filter=ACMRT -z refs/remotes/origin/dev...HEAD \
+              -- '*.py' > "$RUNNER_TEMP/lint-paths"
+          fi
+          lint_files=()
+          while IFS= read -r -d '' path; do
+            if [[ -f "$path" && ! -L "$path" ]]; then
+              lint_files+=("./$path")
+            fi
+          done < "$RUNNER_TEMP/lint-paths"
+
+          # Keep the counts available even when the summary log is truncated.
+          printf 'Pytest counts unavailable. See pytest.log.\n' > "$results/pytest-counts.txt"
+          cat > "$RUNNER_TEMP/linux_advisory_counts.py" <<'PY'
+          from os import environ
+          from pathlib import Path
+
+          def pytest_sessionfinish(session):
+              reporter = session.config.pluginmanager.get_plugin("terminalreporter")
+              if reporter is None:
+                  return
+              counts = {
+                  name: len(reporter.stats.get(name, ()))
+                  for name in ("passed", "failed", "skipped", "deselected")
+              }
+              collected = session.testscollected + counts["deselected"]
+              outcomes = ", ".join(f"{count} {name}" for name, count in counts.items())
+              Path(environ["PYTEST_COUNTS_FILE"]).write_text(f"{collected} collected, {outcomes}\n")
+          PY
+
+          pytest_status=0
+          PYTEST_COUNTS_FILE="$results/pytest-counts.txt" PYTEST_PLUGINS=linux_advisory_counts \
+            PYTHONPATH="$RUNNER_TEMP${PYTHONPATH:+:$PYTHONPATH}" \
+            python -m pytest test/ -p no:cacheprovider --timeout=120 -q --junitxml=pytest.xml \
+            > "$results/pytest.log" 2>&1 || pytest_status=$?
+          if [[ -f pytest.xml ]]; then
+            mv -- pytest.xml "$results/"
+          fi
+
+          flake8_status=0
+          if ((${#lint_files[@]})); then
+            flake8 "${lint_files[@]}" > "$results/flake8.log" 2>&1 || flake8_status=$?
+          else
+            printf 'No Python files to lint.\n' > "$results/flake8.log"
+          fi
+
+          footer='ADVISORY: raw results above, no GREEN or RED verdict'
+          python - "$results" "$sha" "$pytest_status" "$flake8_status" "$footer" \
+            > "$results/summary.md" <<'PY'
+          from html import escape
+          from pathlib import Path
+          import sys
+
+          directory, sha, pytest_status, flake8_status, footer = sys.argv[1:]
+          results = Path(directory)
+          print(f"Fork commit `{sha}`")
+          for tool, status in (("pytest", pytest_status), ("flake8", flake8_status)):
+              print(f"\n### {tool} exit code {status}\n")
+              if tool == "pytest":
+                  print((results / "pytest-counts.txt").read_text())
+              # Leave room for HTML escaping within the 1 MiB summary limit.
+              with (results / f"{tool}.log").open("rb") as log:
+                  start = max(0, log.seek(0, 2) - 90_000)
+                  if start:
+                      print("Showing the end of the log. The artifact has the full output.\n")
+                  log.seek(start)
+                  print(f"<pre>{escape(log.read().decode('utf-8', errors='replace'), quote=False)}</pre>")
+          print(f"\n{footer}")
+          PY
+          cat "$results/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          cat "$results/pytest-counts.txt"
+          printf 'pytest exit code %s\nflake8 exit code %s\n%s\n' \
+            "$pytest_status" "$flake8_status" "$footer"
+
+      - name: Upload raw results
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: linux-advisory
+          path: ${{ runner.temp }}/linux-advisory/
+          if-no-files-found: error
