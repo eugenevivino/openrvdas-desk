@@ -1,7 +1,7 @@
 # DeepSignal reference: every feature and its status
 
 **This is the canonical feature list for DeepSignal.** If a feature is not here, it is not tracked.
-Updated 2026-11-18 08:00Z. Keep-current rule: AGENTS.md "Reference doc" (any change to a feature's
+Updated 2026-11-18 08:00Z (ecosystem section 07:55Z). Keep-current rule: AGENTS.md "Reference doc" (any change to a feature's
 status updates this file in the same commit). Check: `python3 tools/reference-check.py`.
 
 Other desk files go deeper: `docs/IDEAS.md` (every idea, one row each), `docs/ROADMAP.md` (ranking and
@@ -151,7 +151,7 @@ an **MCP** server for AI clients. Same engine, same validation, same diff, which
 | #128 Forms for all 75 components | Every reader, writer and transform introspected into a JSON Schema form with plain labels | BUILDING | 12-04 | fork:deepsignal/p2-component-catalog, `briefs/p2/128-component-catalog.md` |
 | #126 Cruise config generation | One acquisition file plus #52 history generates the whole cruise definition with modes | BUILDING | 12-04 | fork:deepsignal/p2-config-from-inventory, `briefs/p2/126-config-from-inventory.md` |
 | #127 Config lint | Ship-sense checks beyond schema: shared ports, loggers missing from modes, nothing feeding the cache | BUILDING | 12-04 | fork:deepsignal/p2-config-lint, `briefs/p2/127-config-lint.md` |
-| Instrument init profiles | Send each instrument its start-up commands on connect (MetAcq parity) | BRIEFED soon (brief being written) | 12-04 | IDEAS number pending |
+| #130 Instrument init profiles | Per-instrument, reviewed start-up command profiles sent on connect (MetAcq parity) | BRIEFED | 12-04 | `briefs/p2/130-instrument-init.md` |
 | Setup MCP | About 5 high-level tools; read-only by default; any write needs approval plus a dry-run diff | DESIGNED | after engine | D-MCP1, #64, #65, `research/2026-11-18-mcp-reference-architecture.md` |
 | Wizard pages | Console pages over #114, #125, #126, #128 | PROPOSED (console follow-up) | after MVP | `briefs/p2/INDEX.md` "What is left" |
 
@@ -177,7 +177,20 @@ every value change. 21 modules over milestones M0 to M5. Pilot: three Revelle GO
 | Pilot cruises | Three Revelle GO-SHIP cruises from R2R | DESIGNED | after v2 | `research/2026-11-18-r2r-pilot-cruises.md` |
 | Legacy archive readers (#59) | Read SCS, MetAcq and R2R files into the same records | PROPOSED | after v2 | `docs/IDEAS.md` |
 
-## 9. Platform, gate and tooling
+## 9. Ecosystem: OceanDataTools integrations
+
+How DeepSignal plugs into the rest of the OceanDataTools stack. Detail: `docs/ECOSYSTEM.md`.
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| #131 OpenVDM bridge | Quality day files plus a Data Dashboard plugin with pass, warning and fail tests | BRIEFED | v2 | `docs/ECOSYSTEM.md` |
+| #132 Cruise context | Cruise id, dates and ports pulled from OpenVDM or Sealog | BRIEFED | v2 | `docs/ECOSYSTEM.md` |
+| #133 Sealog bridge | Quality events, plus the quality state attached to every Sealog event | BRIEFED | v2 | `docs/ECOSYSTEM.md` |
+| #134 Grafana quality pack | Flag colors, freshness and alerts, generated from the cruise definition | BRIEFED | v2 | `docs/ECOSYSTEM.md` |
+| #135 Archive and compression | Lossless zstd or xz with a verified manifest, plus prioritized shore bundles for OpenVDM ship-to-shore | BRIEFED | v2 | `docs/ECOSYSTEM.md` |
+| #136 QA tool adapters | Adapters for external QA tools | PROPOSED (backlog) | later | `docs/ECOSYSTEM.md` |
+
+## 10. Platform, gate and tooling
 
 | Feature | What it does | Status | Target | Link |
 |---|---|---|---|---|
@@ -188,7 +201,7 @@ every value change. 21 modules over milestones M0 to M5. Pilot: three Revelle GO
 | Reference check | Flags IDEAS numbers and briefs missing from this file | DONE | done | `tools/reference-check.py` |
 | ds-codex launcher | RAM-gated Mac launcher, separate Codex home, pinned sub-agents | DONE (desk 2c228e2, not yet on main) | done | D-SEP1, D-SUB1, `docs/CODEX.md` |
 
-## 10. Novel and backlog ideas
+## 11. Novel and backlog ideas
 
 Everything else in `docs/IDEAS.md` that is not yet in a table above. Status from IDEAS. Promote a row into a
 table above when it gets a design, brief or branch.
@@ -273,5 +286,4 @@ table above when it gets a design, brief or branch.
 - #101 Masked multirate ship encoder (PROPOSED)
 - #102 Physics-conditioned representations (PROPOSED)
 - #103 Cross-vessel sensor ontology (PROPOSED)
-- #130 Instrument init profiles (DESIGNED)
 <!-- /backlog-index -->
