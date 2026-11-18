@@ -5,7 +5,9 @@ Updated 2026-11-17 by the setup thread.
 ## Now
 - Desk tree drafted; not yet in a repo. Waiting on Eugene to create
   `eugenevivino/openrvdas-desk`.
-- Mini not set up for OpenRVDAS. Nothing has been run or changed there.
+- Mini set up 2026-11-18 (Eugene's yes): ~/OpenRVDAS-Work with fork clone,
+  venv-3.12 (Python 3.12.13), deps stamp e241119e. Desk clone waits on the
+  desk repo. 102 GB free after; folder is 200 MB.
 
 ## Code
 - Fork `eugenevivino/openrvdas` default branch `master` at 3f3d0c3
@@ -16,8 +18,13 @@ Updated 2026-11-17 by the setup thread.
   Django 47 run, 1 error `TestDjangoServerAPI.test_basic`
   (MultipleObjectsReturned), reproducible, order independent. Verdict RED
   on that row only. Same error on `master` 3f3d0c3.
-- Gate locking test: 20 tests OK.
-- Gate on the Mini: NOT RUN.
+- Gate locking test: 21 tests OK.
+- Mini baseline (Python 3.12.13, macOS, dev 1a6f1ed, by hand, not gate.sh):
+  pytest 4 failed, 627 passed, 59 skipped in 115 s; Django 47 run, 1 error
+  (same test_basic). The 4 pass on Linux: test_udp_reader test_broadcast,
+  test_udp_writer test_binary and test_unicast_with_eol (packets read out of
+  order), test_simulate_data test_use_timestamps (0.310 vs 0.26 timing).
+- Gate on the Mini: NOT RUN (needs the desk clone).
 
 ## Designs ready (all PROPOSED, see DECISIONS)
 - D-SCORE1 scoreboard writer, D-METACQ1 MetAcq gap map, D-CONSOLE1 Cruise
