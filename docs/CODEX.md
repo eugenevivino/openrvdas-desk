@@ -44,9 +44,8 @@ but the rules below apply from the next run on.
    astra id `gpt-6.2-astra` (needs `KALON_ALLOW_ASTRA=1`; set it only for the job
    Eugene approved, D-TEAM5). Luna `gpt-6-luna` passes through; other ids refused.
    We still pass `-m <id>` ourselves (rule 27). Its clean-up now touches only
-   `/private/tmp/kalon*` and skips paths containing `deepsignal`. The Mini runs
-   it with CLI 0.170.0 (plain `codex` there is an older 0.163.0, so always use
-   codex-run). Efforts: low to ultra (Luna: low to max).
+   `/private/tmp/kalon*`, skips `deepsignal` paths. Mini CLI is 0.170.0 via
+   codex-run; its plain `codex` is an older 0.163.0. Efforts: low to ultra.
 2. Read-only (`--sandbox read-only`) for diagnosis and review. Workspace-write
    only for a Builder, never `danger-full-access`. The sandbox blocks `.git`
    writes by design: Codex edits files, the lead (or a script) commits.
