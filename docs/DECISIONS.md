@@ -203,7 +203,7 @@ the console, the MCP server's replies, error messages and docs alike.
 Eugene: new Codex models are out; use Astra 6.2 and Sol 6.2 in place of the
 earlier Astra and Sol picks. Tiers and efforts in `docs/CODEX.md` section 2 are
 unchanged, only the versions. Running jobs finish on their current model.
-Open: the exact id strings and whether `~/bin/codex-run` (Kalon's script, not
-ours) needs its default or allow-list updated. Check on the MacBook and Mini
-before the next job; change nothing on a Mac without Eugene naming it (rule 15).
+Ids verified on the MacBook: `gpt-6.2-sol`, `gpt-6.2-astra`. `~/bin/codex-run`
+(Kalon's script) needs no change: no allow-list, Astra guard matches `astra`.
+Nobody had launched a 6.2 model yet as of 05:12Z. The Mini is unchecked.
 

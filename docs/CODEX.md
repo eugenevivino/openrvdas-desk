@@ -38,13 +38,14 @@ but the rules below apply from the next run on.
    brief names this path. Standing approval: Codex may build in these scratch
    copies and push to `deepsignal/*` fork branches for a module and its fix
    rounds; pull requests still need Eugene.
-1c. Model flag (verified 2026-11-18 from `~/bin/codex-run`): the script has no model
-   list and no `--help`. The model is the explicit `-m` or `-c model=`, else the
-   first `model =` line of `~/.codex/config.toml`, which defaults to `gpt-6-astra`.
-   It refuses any model containing `astra` unless `KALON_ALLOW_ASTRA=1`. So every
-   DeepSignal launch passes `-m <id>` explicitly, never relies on the default, and
-   sets the Astra flag only for the job Eugene approved (D-TEAM5). Exact 6.2 ids:
-   pending, record here once read from the MacBook.
+1c. Model flag and ids (verified 2026-11-18, `~/bin/codex-run` and the CLI model cache):
+   every launch passes `-m <id>` explicitly; the config default is `gpt-6-astra`
+   and `codex-run` refuses any `astra` id unless `KALON_ALLOW_ASTRA=1` (set it
+   only for the Astra job Eugene approved, D-TEAM5). Ids: `gpt-6.2-sol`,
+   `gpt-6.2-astra`, Luna `gpt-6-luna` (no 6.2 Luna). Efforts: low, medium,
+   high, xhigh, max, ultra (Luna: low to max). Never run `codex-run --help` or
+   any probe: it only prunes folders in /private/tmp, then refuses. Do not name
+   a DeepSignal folder with swift, -build, scratch or -tests: the prune can match it.
 2. Read-only (`--sandbox read-only`) for diagnosis and review. Workspace-write
    only for a Builder, never `danger-full-access`. The sandbox blocks `.git`
    writes by design: Codex edits files, the lead (or a script) commits.
@@ -52,11 +53,8 @@ but the rules below apply from the next run on.
    only on Eugene's yes, into an isolated venv, pinned (C1 last line).
 
 **Right-size the model** (C1 rule 2, C2, C3 rule 2)
-Current picks (Eugene 2026-11-18, D-TEAM6): **Sol 6.2** and **Astra 6.2**. Every
-"Sol" and "Astra" in this file means these versions. Luna is unchanged. The
-exact model id string for `codex-run` is unconfirmed: read it from
-`~/bin/codex-run --help` or `codex --help`, then record it here. A job already
-running finishes on its model; new jobs use 6.2.
+Current picks (Eugene 2026-11-18, D-TEAM6): **Sol 6.2** and **Astra 6.2** (ids in
+1c). Every "Sol" and "Astra" below means these. A running job finishes on its model.
 Cheapest model with a good chance of success; a stronger check only where
 risk is high. Mapped to our work:
 

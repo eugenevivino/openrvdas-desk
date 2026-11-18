@@ -43,9 +43,8 @@ prompt, cloud tasks get no internet beyond installing declared dependencies.
 
 Verified: Codex works on the MacBook (2026-11-18 trial). The cloud session
 this desk runs in has no Codex login, so Claude cannot start Codex cloud itself.
-Unverified, check on the MacBook first: `codex cloud --help` for the exact
-subcommands (expected: submit a task with an environment id and a prompt, list
-and status, fetch the diff, apply it locally); which Codex plan limits apply.
+Verified: `codex cloud` has the subcommands exec, status, list, apply and diff.
+Unverified: their exact flags, and which Codex plan limits apply.
 
 Needs Eugene, one time (account settings, rule 10):
 1. In Codex cloud, connect `eugenevivino/openrvdas` and create an environment:
