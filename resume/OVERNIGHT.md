@@ -84,7 +84,6 @@ push only deepsignal/* fork branches and desk branches; two failures of the same
 - docs-journeys: desk docs c217afa; fix round for J-TECH-SETUP-AI-1/MCP-1: task_e_6afd692ea358832f9f86c0448338674f (lead copies to desk)
 - #197 cds-lockdown: task_e_6afd6aacc6c8832fa998754243fe2f80 (CRITICAL security; push only). #189 auth-gateway waits for #197 green and D-SEC2. Console install integration to point at #197 (note for INTEGRATION).
 - #188 vault fix round: task_e_6afd6aecf954832f88d66b060c32e454
-Last sync 2026-11-18T09:44:50Z: fork branches pushed ok; upstream fetched ok (core dev 1a6f1edb, contrib master 3b4b76e6); desk main pushed after this line.
 - 10:15Z CONSOLE MVP: deepsignal/console-mvp faba8fe = core-v2 2ebdf91 + health, chart, auto-pages, stale-banner,
   kiosk-night, install (fix c32b6c9: tests no longer assume root), map, bridge (fix 585ca4c). vitest 116 passed,
   oxlint/tsc clean, dist reproducible (22 files), pytest not-lead_run 7 passed, flake8 clean, lead_run browser tests
@@ -92,3 +91,6 @@ Last sync 2026-11-18T09:44:50Z: fork branches pushed ok; upstream fetched ok (co
   checks (USABILITY 1, 4, 12, Impeccable audit), 24 h soak on the Mini, Astra review of the merged diff.
 - Reviews: gate r4 HOLD (3 rounds red; r5 rewrite queued, Astra high + ultra review); MCP design review FIX FIRST
   (desk research/2026-11-18-mcp-design-review.md); QARTOD BLOCK -> fix1 queued; #78 HOLD -> fix1 queued; #53 HOLD -> cloud fix1.
+- 10:30Z USABILITY 12 on console-mvp faba8fe (vite preview of dist): no horizontal scroll at 400 px, 1366x768, 1920x1080 in Day and Night; only phone Night scrolls vertically (dimmer row). Screenshots /private/tmp/deepsignal/console-mvp-checks/. Pending: cold install timing (needs root on a clean Linux box; GitHub runner via install-clock), D-SEC0 CDS checks (after #197 acceptance), Impeccable audit (polish pass), 24 h soak (needs harness fixture + source-loss).
+- install-clock run 44258836868 hung 3 h at the installer's first prompt; cancelled 10:29Z; fix round task_e_6afd7e3d710c832fa298581752677f9c
+Last sync 2026-11-18T10:44:54Z: fork branches pushed ok; upstream fetched ok (core dev 1a6f1edb, contrib master 3b4b76e6); desk main pushed after this line.
