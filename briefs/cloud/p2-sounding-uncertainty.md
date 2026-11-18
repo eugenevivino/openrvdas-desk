@@ -52,9 +52,9 @@ A tech can see timing dominate on turns and SV dominate at large incidence. Scie
 
 These override anything above or below that conflicts. Each added test is part of "Failing test first".
 
-1. **Detection cross-term (P2).** Total propagated variance is J Sigma_q J^T + Sigma_detect + J C + C^T J^T with C = Cov(q, e_detect). Set C=0 only when independence is documented, and record which. Test `test_detection_cross_term`.
+1. **Detection cross-term (P2).** Total propagated variance is J Sigma_q J^T + Sigma_detect + J C + C^T J^T with C = Cov(q, e_detect). Set C=0 only when zero covariance is documented (by independence or by measurement), and record the source; otherwise estimate C or report the cross-term as an unbounded assumption. Test `test_detection_cross_term`.
 2. **What the conformal check certifies (P2).** The finite-sample conformal guarantee is for disagreement with the crossline reference, not absolute depth. With independent reference SD 0.1 s_z the comparison variance is 1.01 s_z^2; report absolute-depth coverage as approximate and state the reference-variance inflation used.
-3. **Added tests.** `test_heave_sign_convention` (upward-positive heave input converted to positive-down before propagation), `test_deg_to_rad_covariance` (angle covariance converted by (pi/180)^2), `test_invalid_joint_covariance` (valid marginal blocks but non-positive-semidefinite joint matrix rejected with reason), `test_zero_sz_guard` (s_z must be finite and positive before standardization; s^2=0 yields missing value with reason, never divide).
+3. **Added tests.** `test_heave_sign_convention` (upward-positive heave input converted to positive-down before propagation), `test_deg_to_rad_covariance` (angle-angle covariance entries converted by (pi/180)^2, mixed angle-length entries by one factor pi/180, length-length unchanged), `test_invalid_joint_covariance` (valid marginal blocks but non-positive-semidefinite joint matrix rejected with reason), `test_zero_sz_guard` (s_z must be finite and positive before standardization; s^2=0 yields missing value with reason, never divide).
 
 Simulation targets (fault recall, Monte Carlo covariance error, reflector recall, false-repeat rate) are acceptance claims only once the run's realized outputs are pasted in the report; the review could not verify them from the brief.
 
