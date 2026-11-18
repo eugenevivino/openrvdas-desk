@@ -1,5 +1,7 @@
 # Morning queue for Eugene (newest first)
 
+- Linux gate (D-GATE1): r5 review HOLD again (5 new P1s), so the verdict gate is dropped. A small ADVISORY workflow (raw pytest and flake8 output, no GREEN/RED) is on branch gate/linux-advisory once built; it needs a merge to desk main before any dispatch works. Approve that merge, or say stop spending on the Linux gate.
+
 - D-SEC1 adopt the security architecture and its MVP cut (docs/SECURITY-ARCHITECTURE.md section 12). Security code merges wait for you.
 - D-SEC2 login layer: recommended Django accounts plus allauth MFA (this closes the #115 login item).
 - D-SEC3 rename the #115 role "public" to "authenticated viewer".
