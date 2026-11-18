@@ -3,7 +3,7 @@
 - Decision: D-SOII1 (IDEAS #53; Eugene approved 2026-11-18)
 - Risk tier: medium (test tooling that will judge QC modules; wrong scoring misleads)
 - Module: exactly one, fault-injection benchmark. Branch `deepsignal/fault-bench`
-- Base: `OceanDataTools/openrvdas_contrib` `master` at 3b4b76e
+- Base: `OceanDataTools/openrvdas_contrib` `master` at 3b4b76e (fork branch already created at 3b4b76e)
 - Mac scratch path: `/private/tmp/deepsignal/fault-bench/` only (docs/CODEX.md rule 1b)
 - Lane: `cloud` (Sol medium, fixed, so no `-m`; rules 8 and 27, D-TEAM7), fresh task, under 40 turns. Review: fresh `gpt-6.2-astra` high on a Mac, read-only.
 - Upstream home: openrvdas_contrib (Eugene sends the PR)

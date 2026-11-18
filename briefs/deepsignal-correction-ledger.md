@@ -3,7 +3,7 @@
 - Decision: D-SOII1 (IDEAS #56, pairs with #32; Eugene approved 2026-11-18)
 - Risk tier: high (produces corrected data values)
 - Module: exactly one, correction ledger plus apply transform. Branch `deepsignal/correction-ledger`
-- Base: `OceanDataTools/openrvdas_contrib` `master` at 3b4b76e
+- Base: `OceanDataTools/openrvdas_contrib` `master` at 3b4b76e (fork branch already created at 3b4b76e)
 - Mac scratch path: `/private/tmp/deepsignal/correction-ledger/` only (docs/CODEX.md rule 1b)
 - Lane: `mac`. Model id for `-m` (rule 27) and effort: `gpt-6.2-sol`, high, fresh session, under 40 turns. Review: fresh `gpt-6.2-astra` xhigh, read-only (high-risk tier).
 - Upstream home: openrvdas_contrib (Eugene sends the PR)
