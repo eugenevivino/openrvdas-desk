@@ -5,7 +5,7 @@ everything, so nothing raised in a thread is lost. Add a row the day an idea
 comes up. Never delete a row: mark it DROPPED with a reason.
 
 
-**Numbering: the build lead owns IDEAS numbers (next free: 138). Other threads do not
+**Numbering: the build lead owns IDEAS numbers (next free: 173; 161-172 reserved for the sonar-science thread). Other threads do not
 assign numbers. Write ideas as unnumbered drafts in your patch notes and ask the build
 lead for a range, to avoid collisions (three-way collision on 2026-11-18).**
 Status: PROPOSED (idea only), DESIGNED (design doc exists), BUILDING (brief
