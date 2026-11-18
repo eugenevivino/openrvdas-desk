@@ -6,3 +6,4 @@ date	brief	tool	model	effort	wall_s	tok_in	tok_out	tok_cached	note
 2026-11-18	deepsignal-correction-ledger	codex	gpt-6.2-sol	high	1020	2239890	35039	2109696	ds-codex, ~/.codex-deepsignal, MacBook, session 01a1ed59; fork deepsignal/correction-ledger 99c01919; 25 tests OK; flake8 clean
 2026-11-18	deepsignal-correction-ledger (sub-agent)	codex	gpt-6.2-astra	xhigh		1056883	7241	991872	NOT AUTHORIZED: sub-agent 01a1ed60 spawned by the author job via multi_agent; self-review, not independent; ds-codex now disables multi_agent (2ad92c6)
 2026-11-18	gate-linux-r2 review	codex	gpt-6.2-astra	high	201	308570	3175	269824	ds-codex read-only, KALON_ALLOW_ASTRA=1, session 01a1ed6a; verdict HOLD (3 P1, 1 P2); no sub-agent
+2026-11-18	deepsignal-fault-bench	codex	gpt-6.2-sol	high	683	564805	20522	517376	ds-codex, ~/.codex-deepsignal, MacBook, session 01a1ed6d; fork deepsignal/fault-bench 9d87d99a; 17 tests OK (needs PyYAML); flake8 clean; no sub-agents
