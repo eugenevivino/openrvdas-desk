@@ -68,6 +68,12 @@ Changes to this file need Eugene's own message.
 26. Everything user-facing is exceptional and easy for a ship tech who is not a
     software expert. A module is not done until it passes the checklist in
     `docs/USABILITY.md`, and every PR review includes it.
+27. Every Codex job names its model with `-m <id>`. Never rely on the config
+    default (it is Astra). A brief without the model id is rejected; a launch
+    without `-m` is a rule break and goes in `docs/INCIDENTS.md`.
+28. DeepSignal jobs never delete, move or write anything in `/private/tmp` outside
+    `/private/tmp/deepsignal/`, and never touch `/private/tmp/kalon`. Run
+    `codex-run` only for real jobs: its clean-up touches `/private/tmp`.
 
 ## Talking to Eugene
 

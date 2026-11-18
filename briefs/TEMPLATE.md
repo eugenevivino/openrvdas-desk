@@ -9,7 +9,7 @@ stop and ask the lead.
 - Module: exactly one (rule 24). Branch `deepsignal/<module>` for overlay work, `<area>/<slug>` for core fixes
 - Mac scratch path: `/private/tmp/deepsignal/<module>/` only (docs/CODEX.md rule 1b)
 - Base: fork `dev` (core) or `contrib/master` (overlay) at <sha>
-- Model and effort: <tier from docs/CODEX.md section 2, e.g. Sol 6.2 high or Astra 6.2 xhigh>, fresh session, under 40 turns
+- Model id for `-m` (required, rule 27) and effort: <tier from docs/CODEX.md section 2, e.g. Sol 6.2 high or Astra 6.2 xhigh>, fresh session, under 40 turns
 - Upstream home: core | openrvdas_contrib | separate package | fork only
 
 ## Goal
@@ -50,6 +50,7 @@ What input is untrusted here. How stale, missing, and bad values are shown.
 What must never change (timestamps, field names, existing output bytes).
 
 ## Non-goals and banned
+No writes, deletes or moves in `/private/tmp` outside `/private/tmp/deepsignal/`; never `/private/tmp/kalon` (rule 28).
 No refactors, renames, formatting, or default changes. No loosened, skipped or
 deleted tests, no swallowed errors, no sleeps for ordering (docs/CODEX.md rule 13).
 

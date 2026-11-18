@@ -39,12 +39,12 @@ but the rules below apply from the next run on.
    copies and push to `deepsignal/*` fork branches for a module and its fix
    rounds; pull requests still need Eugene.
 1c. Model flag and ids (verified 2026-11-18, `~/bin/codex-run` and the CLI model cache):
-   every launch passes `-m <id>` explicitly; the config default is `gpt-6-astra`
+   every launch passes `-m <id>` explicitly (rule 27); the config default is `gpt-6-astra`
    and `codex-run` refuses any `astra` id unless `KALON_ALLOW_ASTRA=1` (set it
    only for the Astra job Eugene approved, D-TEAM5). Ids: `gpt-6.2-sol`,
    `gpt-6.2-astra`, Luna `gpt-6-luna` (no 6.2 Luna). Efforts: low, medium,
    high, xhigh, max, ultra (Luna: low to max). Never run `codex-run --help` or
-   any probe: it only prunes folders in /private/tmp, then refuses. Do not name
+   any probe (rule 28): it only prunes folders in /private/tmp, then refuses. Do not name
    a DeepSignal folder with swift, -build, scratch or -tests: the prune can match it.
 2. Read-only (`--sandbox read-only`) for diagnosis and review. Workspace-write
    only for a Builder, never `danger-full-access`. The sandbox blocks `.git`
