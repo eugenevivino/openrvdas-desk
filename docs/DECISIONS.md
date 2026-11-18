@@ -444,3 +444,6 @@ Eugene: an API-based model may be better. Provider is pluggable (OpenAI-compatib
 
 ### D-SEC0 CDS exposure noted for the console MVP (2026-11-18, logged by build lead)
 Upstream CachedDataServer binds all interfaces on 8766 with unauthenticated publish (also via nginx /cds-ws). Console MVP install brief (briefs/console/install.md) must bind CDS to localhost and proxy read-only; full lockdown belongs to the security block #189-#198. Console stays LAN-only until then.
+
+### D-GATE1 Gate rewrite, then stop (2026-11-18, build lead under D-NIGHT1)
+r2, r3 and r4 each fixed four findings and the next review found four more (bash evidence handling). Decision: one structural rewrite (r5), verdict logic in a single pure Python function with fail-closed design and mutation tests, built by Astra high. If its ultra review is not PASS, the Linux gate ships as advisory only (raw results, no GREEN/RED) and acceptance stays on the Mac and Mini gates. The console MVP does not wait on the gate.
