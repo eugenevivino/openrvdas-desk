@@ -100,3 +100,6 @@ npx vitest run
 ```
 npm run build && git checkout -- dist && git clean -fdq dist
 ```
+
+## Addendum 2026-11-18 (night-red legibility, Eugene via coordinator)
+In the console-core tokens, raise the night-red MUTED text token so it renders at about R=160 at the default 0.8 dimmer (about 0.63 of the primary red), keeping G and B at most 0.15 times R. Leave the default dimmer at 0.8 (muted text is currently R=120, 1.8:1, too dim for field labels and captions). Add an acceptance check (test) that muted text is at least R=150 at the default dimmer and that G,B <= 0.15 * R for every night-red token.
