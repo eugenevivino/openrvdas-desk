@@ -157,3 +157,5 @@ console module 5, #124 install clock is submitted.
 Real limits: Astra review capacity on the Macs (RAM gate, one job at a time), merge conflicts (disjoint files rule),
 and the Linux gate fix round (r3) landing. If reviews run behind, date moves, review is never skipped.
 
+
+- Design-polish pass 11-22 to 11-24, after integration: one Codex job (Sol 6.2 high, Mac, build-side) running Impeccable critique, typeset, polish, audit, then re-run V1 to V9. Expect a few V3 spacing hits from tasks briefed before the 4 px rule; the polish pass fixes them. The 11-25 MVP report attaches the contact sheet and V5 to V7 numbers.

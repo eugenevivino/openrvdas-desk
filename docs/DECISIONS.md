@@ -386,3 +386,6 @@ available (the soak is light, under 1 GB resident). A Mac-only failure does not 
 SHIPTRACK, OPSUM and PCO2 are dropped from #111 v1 (no public spec found). The SAMOS writer emits the ship text format
 (one `$SAMOS:` key:value line per minute, daily file), not netCDF; the NOAA hourly report is FM-13 BBXX, automated groups only,
 marked UNVERIFIED. KAOU is the Revelle call sign. See `research/2026-11-18-samos-ship-format-and-fm13.md`.
+
+### D-VISUAL1 Gate visual quality how? (2026-11-18, Eugene: "gorgeous and functional")
+Choice: checks V1 to V9 (design/console-VISUAL-GATE.md) plus a lead and Astra 6.2 visual review of the contact sheet before the MVP merge. Lint runs in cloud; screenshots, contrast, motion are lead_run on the MacBook.
