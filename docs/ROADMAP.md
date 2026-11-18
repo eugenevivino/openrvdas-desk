@@ -131,3 +131,29 @@ cloud task running), fault bench (#53, built) as the soak and failure driver, th
 (r3) so the console tests are covered by a real gate. "Added good functionality" list: from the dashboard
 thread, to be approved by Eugene (pending).
 
+## Phase 2: parity build-out, 21 ideas (#104 to #124), approved by Eugene 2026-11-18
+
+Goal (Eugene): close the scorecard gaps to about 98 percent of CORIOLIX and MetAcq features. The
+number comes from the scorecard generator (`tools/target-parity/gen.py`, `docs/TARGET-PARITY.md`),
+not from a claim: every gap valued 12 or more closed, remaining rows scored as covered. Console MVP keeps
+top priority through 2026-11-25: phase 2 may use cloud capacity but must not take merge or review capacity
+from the console. Everything is built on the fork, one branch per item, nothing upstream (D-ARCH6).
+
+**Order (scorecard gap ranking, independent Linux-only items first):** #104 ERDDAP generator, #105 REST API,
+#110 flow tagging, #111 SAMOS and met report writers, #112 formula library (core-fork), #113 vessel geometry,
+#117 standard vocabularies, #120 cruise metadata, #123 shore snapshot, then #106 best-source selector
+(core-fork), #108 routes, #109 cast view, #114 sensor wizard, #115 roles, #116 release policy, #118 document
+store (on #52), #119 host health (console health page), #121 device pack, #122 small core fixes. #107 map is
+console module 5, #124 install clock is submitted.
+
+**Dated estimate (Pacific, estimates, cloud-parallel):**
+| Date | Milestone |
+|---|---|
+| Wed 11-19 to Thu 11-20 | briefs for all 21 written; first batch (9 independent items) submitted to cloud |
+| Fri 11-21 to Mon 11-24 | second batch submitted; acceptance runs batched on the Mac behind the RAM gate; console reviews go first |
+| Tue 11-25 | console MVP candidate (priority 1) |
+| Wed 11-26 to Tue 12-01 | phase 2 reviews (Astra high, one at a time), fix rounds, integration branch `deepsignal/p2-integration` |
+| Fri 12-04 | phase 2 candidate: all items built, each reviewed, Linux gate GREEN, scorecard regenerated |
+Real limits: Astra review capacity on the Macs (RAM gate, one job at a time), merge conflicts (disjoint files rule),
+and the Linux gate fix round (r3) landing. If reviews run behind, date moves, review is never skipped.
+
