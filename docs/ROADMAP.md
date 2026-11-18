@@ -33,7 +33,11 @@ bug-fix PRs (the Django `test_basic` failure is the first candidate).
 10. Night-safe bridge display: huge readouts, relative wind, night mode,
     stale shown as stale.
 11. QC flags as data (QARTOD-style tests emitting flags) (D-AI1).
-12. `openrvdas-mcp` phase 1, read-only (D-MCP1).
+12. MCP, superseding D-MCP1 (see D-MCP2). Design: https://claude.ai/artifact/VtfCM7KR2oRVa1BXiqnbFb
+    - (a) MCP read core in `contrib/deepsignal/mcp/`: tools fields, values (CDS window only), status; proposal store; `setup-client` and `doctor` commands. Codex, Sol medium.
+    - (b) Setup engine facade `contrib/deepsignal/setup/` with detect/propose/diff/validate, after #125, #114, #126, #127, #128 land. Integration work.
+    - (c) MCP setup tools detect, propose, diff, validate on top of (b). Codex, Sol medium.
+    - `apply` (approval, rollback, init commands) is phase 3, after a high-risk review.
 
 ## Phase 3: Cruise Console (D-CONSOLE1)
 

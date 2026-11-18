@@ -389,3 +389,6 @@ marked UNVERIFIED. KAOU is the Revelle call sign. See `research/2026-11-18-samos
 
 ### D-VISUAL1 Gate visual quality how? (2026-11-18, Eugene: "gorgeous and functional")
 Choice: checks V1 to V9 (design/console-VISUAL-GATE.md) plus a lead and Astra 6.2 visual review of the contact sheet before the MVP merge. Lint runs in cloud; screenshots, contrast, motion are lead_run on the MacBook.
+
+### D-MCP2 MCP as DeepSignal modules over one setup engine (2026-11-18, PROPOSED, subject to D-ADOPT1)
+11 high-level tools over one shared setup engine; `apply` is the only write path; read-only by default; DeepSignal modules, not a separate `openrvdas-mcp` package. Supersedes D-MCP1.
