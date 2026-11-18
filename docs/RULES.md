@@ -51,12 +51,10 @@ Changes to this file need Eugene's own message.
 17. Mini: one OpenRVDAS gate at a time, 10 GB disk floor, refuse while a Kalon
     gate is running, `nice -n 10`.
 
-## Who builds (Eugene 2026-11-18, D-TEAM5)
-
-23. Claude manages; Codex does all hands-on work (code, tests, fixes, gate and
-    script changes, long reads), in Codex cloud or on the Macs. Right-size the
-    model; Astra at the effort needed is approved for hard work. See
-    `docs/BUILDERS.md`.
+## Who builds (D-TEAM5)
+23. Claude manages; Codex does all hands-on work (code, tests, fixes, scripts,
+    long reads), cloud or Mac. Right-size the model; Astra approved for hard
+    work. See `docs/BUILDERS.md`.
 
 ## Talking to Eugene
 
