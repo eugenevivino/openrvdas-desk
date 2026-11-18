@@ -32,7 +32,9 @@
 - VERIFIED All nine faults, both traps, both sample layouts and plug-in injection are implemented. Replay reads source files into memory. Its silent departures from the brief include narrowing injector truth by value equality and requiring detector output to retain Python object identity.
 - VERIFIED All 21 file-free tests passed and all 11 supplied scenarios ran in memory. I inspected the seven file-writing tests. Exact assertions cover fault values, labels, latency, misses and ship-day rates, but no test asserts a numeric trap-flags/hour result with positive exposure.
 
-**VERIFIED verdict: HOLD.** The benchmark can award two detections for one alarm and charge a correct clock-recovery alarm as false.## Acceptance (exact commands, from repo root)
+**VERIFIED verdict: HOLD.** The benchmark can award two detections for one alarm and charge a correct clock-recovery alarm as false.
+
+## Acceptance (exact commands, from repo root)
 ```
 python3.12 -m unittest discover -s contrib/deepsignal/test/bench -t . -v
 ```

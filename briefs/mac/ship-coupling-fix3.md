@@ -38,7 +38,9 @@
 - **VERIFIED** All 44 test bodies passed with temporary I/O held in memory. They exercise production code and assert exact effective sizes, rejection sets, seeded resampling results, lag alignment, QC boundaries and raw bytes. Real filesystem publication and locking were unverified. Fault-bench integration remains pending because the bench is absent.
 - **VERIFIED** The hand-vector coverage still lacks a nonperfect Pearson coefficient and an asymmetric Spearman tie case that distinguishes average from dense ranks. The 50-hypothesis null test uses one seed, and the suite misses the reproduced false verdicts above. [test_stats.py:8](/private/tmp/deepsignal/ship-coupling-fix2/repo/contrib/deepsignal/test/coupling/test_stats.py:8) [test_review.py:354](/private/tmp/deepsignal/ship-coupling-fix2/repo/contrib/deepsignal/test/coupling/test_review.py:354)
 
-**4. HOLD (VERIFIED).** Independent noise can confirm, an Earth-fixed field can be labeled ship contamination, and live scoring can issue QC 1 from the wrong sector.## Acceptance (exact commands, from repo root)
+**4. HOLD (VERIFIED).** Independent noise can confirm, an Earth-fixed field can be labeled ship contamination, and live scoring can issue QC 1 from the wrong sector.
+
+## Acceptance (exact commands, from repo root)
 ```
 python3.12 -m unittest discover -s contrib/deepsignal/test/coupling -t . -v
 ```
