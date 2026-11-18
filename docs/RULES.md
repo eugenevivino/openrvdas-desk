@@ -51,6 +51,13 @@ Changes to this file need Eugene's own message.
 17. Mini: one OpenRVDAS gate at a time, 10 GB disk floor, refuse while a Kalon
     gate is running, `nice -n 10`.
 
+## Who builds (Eugene 2026-11-18, D-TEAM5)
+
+23. Claude manages; Codex does all hands-on work (code, tests, fixes, gate and
+    script changes, long reads), in Codex cloud or on the Macs. Right-size the
+    model; Astra at the effort needed is approved for hard work. See
+    `docs/BUILDERS.md`.
+
 ## Talking to Eugene
 
 18. Recommendation first, short, checklists. One command per code block, no
@@ -72,4 +79,3 @@ Changes to this file need Eugene's own message.
 22. Plain-English recap at every phase close, in `docs/recaps/<phase>.md`: what
     changed for a crew member, what was proven (with the check), what is not
     proven, what comes next. Written for Eugene, not for engineers.
-

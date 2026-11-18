@@ -49,8 +49,9 @@ risk is high. Mapped to our work:
 | Hard math and rulings that bind the design: clock-forensics estimator, drift statistics, root causes with no reproduction | Astra | ultra, decision desk only |
 
 Rules: Ultra is never for reviews, briefs, or yes/no questions (C2 "Right-size
-Astra"). A job over 45 minutes at Ultra was mis-tiered. Astra needs Eugene's
-env flag through `codex-run` (C1 rule 2). A Medium result on high-risk code is a
+Astra"). A job over 45 minutes at Ultra was mis-tiered. Eugene approved Astra for
+harder work on 2026-11-18 (D-TEAM5); locally it still goes through `codex-run`,
+which needs its env flag for that job (C1 rule 2). A Medium result on high-risk code is a
 first draft: re-run at xhigh and compare (C2 "What a Medium result means").
 
 **Context hygiene** (C1 rules 4 and 5, C3 rules 2b and 3g, C4 section 0b)
@@ -108,7 +109,7 @@ A concrete example, the fix for the Django bug, on a topic branch:
 1. Lead writes `briefs/fix-django-logger-config.md` from the template: goal,
    failing test first, files in scope (`django_gui/django_server_api.py`, its
    test file), acceptance commands, stop rule. Tier: normal code, Sol high.
-2. On the MacBook: `~/bin/codex-run` with Sol, workspace-write, fresh session,
+2. On the MacBook (or in Codex cloud, see `docs/BUILDERS.md`): `~/bin/codex-run` with Sol, workspace-write, fresh session,
    one job, the brief piped in, output capped to a diff plus the test result.
 3. Lead commits, pushes the topic branch, runs `gate/remote.sh`.
 4. A fresh Astra high review reads the diff and the gate receipt.

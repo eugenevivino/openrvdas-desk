@@ -16,6 +16,7 @@ Start with `AGENTS.md`, then `docs/OPERATING-SYSTEM.md`.
 | `docs/DECISIONS.md` | Decision log, one entry per decision, IDs `D-<AREA><n>` | append only |
 | `docs/ROADMAP.md` | Ranked work, phases, bold bets | 150 lines |
 | `docs/CODEX.md` | How we use Codex: codex-run, model tiers, context hygiene, caps | 150 lines |
+| `docs/BUILDERS.md` | Claude manages, Codex builds: split, models, local and cloud paths | 100 lines |
 | `docs/IDEAS.md` | Master list of every idea: status, phase, source | one row per idea |
 | `docs/STATE.md` | Where things stand now. Rewritten, never appended | 60 lines |
 | `docs/WORKLOG.md` | One line per finished item | append only |

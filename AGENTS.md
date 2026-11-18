@@ -41,6 +41,12 @@ Python 3.11 or newer; the team standard is Homebrew Python 3.12.
 - Django tests need `python manage.py test test.django_gui`; plain pytest
   cannot create their database. Settings come from the `.dist` templates.
 
+## Who builds
+
+Claude manages (briefs, plans, routing, desk docs). Codex does all hands-on work,
+local or cloud, right-sized model, Astra approved for hard work. A Claude session
+writes no production code, tests or gate code. Read `docs/BUILDERS.md`.
+
 ## Codex
 
 Codex jobs follow `docs/CODEX.md`: launch through `~/bin/codex-run`, right-size

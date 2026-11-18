@@ -28,8 +28,8 @@ One person, several agents. Each role is a kind of session, not a person.
 | Role | Who fills it | Owns | Never |
 |---|---|---|---|
 | Owner | Eugene | Goals, priorities, every rule-10 approval, final say on upstream contact | |
-| Lead (coordinator) | The project chat session | Priorities, turning asks into briefs, assigning threads, reading results, keeping `docs/STATE.md` true | Writes production code itself on a large unit; merges without a gate receipt |
-| Builder | A thread or Codex job per brief (Codex on the Macs launches through Kalon's `~/bin/codex-run`, Sol low by default, one bounded task per job) | One unit: code plus its locking test on one fork branch | Touches files outside the brief; reviews its own work |
+| Lead (coordinator) | The project chat session | Priorities, turning asks into briefs, assigning threads, reading results, keeping `docs/STATE.md` true | Writes production code, tests or gate code itself (rule 23); merges without a gate receipt |
+| Builder | A Codex job per brief, local through `~/bin/codex-run` or in Codex cloud (`docs/BUILDERS.md`, rule 23). Claude does not write code | One unit: code plus its locking test on one fork branch | Touches files outside the brief; reviews its own work |
 | Reviewer | A fresh session, stronger model than the builder for medium and high risk | Reads diff plus gate receipt, checks the brief's acceptance list, trust boundaries, and data-integrity rules | Edits the code it reviews |
 | Decision desk | A fresh high-reasoning session per question | Architecture and design rulings, answers to blockers, logged as `D-` entries | Implements its own ruling |
 | Research desk | A thread per question | Dated findings in `research/`, verified separate from inferred, sources listed | Makes product decisions |

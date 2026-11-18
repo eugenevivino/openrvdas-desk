@@ -153,3 +153,15 @@ OpenRouter (code and prompts leave the machine on a new key); its planner/expert
 loop (we already have briefs, gate and review tiers). Revisit the statusline
 only as our own small script over local logs.
 See `research/2026-11-18-projectarchitect.md`.
+
+### D-TEAM5 Claude manages, Codex builds (2026-11-18, DECIDED)
+Eugene: "Codex can run in the cloud and on my Macs. I only want Claude to do
+management mainly, Codex for all the work work. Use an appropriately scoped
+model, can use Astra with whatever thinking we need for harder stuff."
+Effect: rule 23, `docs/BUILDERS.md`, role table and `docs/CODEX.md` updated.
+Claude writes briefs, plans, desk docs and routes reviews; Codex writes code,
+tests and scripts. Astra at any needed effort is approved (it still goes through
+`codex-run` locally). Cloud path needs one-time Eugene setup (connect the fork,
+create an environment); until then local `codex-run` is the path. The Django
+fix ad10eb1 was written by Claude before this rule and is the last such change.
+
