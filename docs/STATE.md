@@ -1,46 +1,43 @@
 # State (rewritten each session, 60 lines max)
 
-Updated 2026-11-18 by the DeepSignal wind thread (Code section only).
+Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the DeepSignal thread.
 
 ## Now
-- Desk tree drafted; not yet in a repo. Waiting on Eugene to create
-  `eugenevivino/openrvdas-desk`.
-- Mini set up 2026-11-18 (Eugene's yes): ~/OpenRVDAS-Work with fork clone,
-  venv-3.12 (Python 3.12.13), deps stamp e241119e. Desk clone waits on the
-  desk repo. 102 GB free after; folder is 200 MB.
+- Desk repo `eugenevivino/openrvdas-desk` is live (public, `main`). Rules 1 to 28,
+  decisions through D-TEAM7, briefs, gate scripts and ideas 1 to 62 are in it.
+- Mini set up (2026-11-18): ~/OpenRVDAS-Work, venv-3.12, deps stamp e241119e.
+  Desk clone on the Mini and the first real `gate/remote.sh` run: NOT DONE.
+- Team method: Claude manages, Codex builds (rule 23). Cloud is the default lane,
+  always Sol medium; Astra and Sol-high work on a Mac (rule 8). Mac jobs pass `-m`
+  (rule 27) and use only /private/tmp/deepsignal/ (rule 28).
 
 ## Code
-- Fork `eugenevivino/openrvdas` default branch `master` at 3f3d0c3
-  (v2.7.2).
-- DeepSignal (D-NAME1): fork branch `claude/project-thread-un3kq6` at
-  558e45b, based on openrvdas_contrib `master` 3b4b76e. Adds
-  `contrib/deepsignal/` with VectorWindAverageTransform. 23 tests pass on
-  contrib master and on core master, flake8 clean. Gate NOT RUN (gate.sh
-  does not run contrib tests yet, IDEAS #49). PR draft in
-  `pr/deepsignal-vector-wind.md`; Eugene sends it.
+- Django fix PR: fork branch `django-gui/shared-config-names` ad10eb1 (on dev 1a6f1ed).
+  Django 48 OK, pytest 631 passed, flake8 clean on changed lines. Gate NOT RUN.
+  PR text in `pr/`. NOT opened: this cloud session cannot reach upstream; Eugene sends it.
+- DeepSignal wind: fork branch `claude/project-thread-un3kq6` 558e45b, based on
+  contrib master 3b4b76e. VectorWindAverageTransform, 23 tests pass, gate NOT RUN.
+  PR draft `pr/deepsignal-vector-wind.md`; Eugene sends it.
+- Contrib: branches on the existing fork, PRs to openrvdas_contrib `master`,
+  folder `contrib/deepsignal/` (D-ARCH3, D-ARCH4).
+
+## In flight
+- gate-linux (briefs/gate-linux.md): Codex job on the MacBook, lane mac, waiting
+  for Kalon's Codex count to drop. Clone ready at /private/tmp/deepsignal/gate-linux.
+- Briefs ready, not launched: #52 history and #53 fault bench (lane cloud), #56 ledger
+  and #54 drift (lane mac), QARTOD flags.
 
 ## Baseline (cloud dry run of gate.sh, Python 3.13, NOT the Mini gate)
-- Fork `dev` 1a6f1ed: pytest 631 passed, 59 skipped (4630 subtests);
-  Django 47 run, 1 error `TestDjangoServerAPI.test_basic`
-  (MultipleObjectsReturned), reproducible, order independent. Verdict RED
-  on that row only. Same error on `master` 3f3d0c3.
-- Gate locking test: 21 tests OK.
-- Mini baseline (Python 3.12.13, macOS, dev 1a6f1ed, by hand, not gate.sh):
-  pytest 4 failed, 627 passed, 59 skipped in 115 s; Django 47 run, 1 error
-  (same test_basic). The 4 pass on Linux: test_udp_reader test_broadcast,
-  test_udp_writer test_binary and test_unicast_with_eol (packets read out of
-  order), test_simulate_data test_use_timestamps (0.310 vs 0.26 timing).
-- Gate on the Mini: NOT RUN (needs the desk clone).
-
-## Designs ready (all PROPOSED, see DECISIONS)
-- D-SCORE1 scoreboard writer, D-METACQ1 MetAcq gap map, D-CONSOLE1 Cruise
-  Console, D-MCP1 MCP server, D-AI1 AI methods.
+- Fork `dev` 1a6f1ed: pytest 631 passed, 59 skipped; Django 47 run, 1 error
+  `TestDjangoServerAPI.test_basic` (fixed on the branch above).
+- Mini baseline (3.12.13, macOS, by hand): 4 macOS-only pytest failures that pass
+  on Linux (UDP ordering and timing). macOS failures never block (rule 25).
 
 ## Open asks for Eugene
-- Create the desk repo (public or private).
-- Yes for the Mini setup in mini/SETUP.md.
+- Codex cloud setup: connect the fork, create the environment (Python 3.12, deps,
+  internet off after setup), send the environment id.
+- Send the Django PR (and later the wind PR) to OceanDataTools.
 - First scoreboard make, model, protocol; stale threshold.
-- OK to contact upstream (drafts first).
 
 ## Next bounded task
-- Mini setup, then `gate/remote.sh` on fork `dev` head.
+- Linux gate built by Codex, then desk clone on the Mini and the first real gate.
