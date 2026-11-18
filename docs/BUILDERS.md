@@ -27,38 +27,43 @@ Cheapest model that is likely to succeed. Current picks: Sol 6.2 and Astra 6.2
 xhigh, ultra per `docs/CODEX.md` section 2). Say the model and effort in the
 brief and record them in `docs/COST-LEDGER.tsv`.
 
-## Two places Codex runs
+## Two places Codex runs (cloud first, D-TEAM7)
 
-| | Local (Mac, via `~/bin/codex-run`) | Cloud (Codex web or `codex cloud`) |
+| | Codex cloud (default lane) | Macs via `~/bin/codex-run` |
 |---|---|---|
-| Good for | macOS-only checks, serial and USB, work needing the Mini, anything that must match the gate machine | Linux-safe Python work: core fixes, overlay modules, tests, mechanical sweeps, several jobs at once |
-| Guard | `codex-run`: model flag, sandbox, launch log | None of ours. The brief, an explicit model and effort, and the ledger row replace it |
-| Output | Files in the workspace; lead commits and pushes | A task diff, or a branch or PR on the connected GitHub repo |
-| Gate | Mini gate on the exact sha | Same. A cloud pass is a fast check, never the gate |
+| Good for | Linux-safe Python: modules, tests, fixes, sweeps; many jobs at once | macOS-only checks, serial and USB, the Mini, anything near the gate machine |
+| Guard | None of ours: the brief, `-m` model, effort and a ledger row | `codex-run`: model refusal, Astra flag, launch log |
+| Output | A task diff or branch on the connected fork | Files in `/private/tmp/deepsignal/<module>/` |
+| Gate | Linux gate on the exact sha (a cloud pass is only a quick check) | Same |
 
-Either way: one bounded brief per fresh task, output capped, no secrets in the
-prompt, cloud tasks get no internet beyond installing declared dependencies.
+Cloud always runs Sol at medium effort (Eugene). So cloud takes standard,
+well-specified code modules, in parallel, one brief per task. Astra work (math,
+reviews) and anything needing Sol high stays on a Mac (rule 8). Every brief
+names its lane. Nobody types code either way.
 
-## Practical path (what exists, what is unverified)
+## Exact cloud invocation (DRAFT, flags unverified)
 
-Verified: Codex works on the MacBook (2026-11-18 trial). The cloud session
-this desk runs in has no Codex login, so Claude cannot start Codex cloud itself.
-Verified: `codex cloud` has the subcommands exec, status, list, apply and diff.
-Unverified: their exact flags, and which Codex plan limits apply.
+Verified: subcommands exec, status, list, apply, diff. Unverified: flags. Before
+the first job run `codex cloud exec --help` (a plain Codex call, not codex-run)
+and fix this block. Cloud's model is fixed (Sol medium), so a cloud brief says
+"lane: cloud" and there is no `-m` to set (rule 27).
 
-Needs Eugene, one time (account settings, rule 10):
-1. In Codex cloud, connect `eugenevivino/openrvdas` and create an environment:
-   Python 3.12, setup script installs the repo's declared dependencies, agent
-   internet off after setup.
-2. Tell us the environment id.
+```
+codex cloud exec --env <environment id from Eugene> "$(cat /private/tmp/deepsignal/<module>/brief.md)"
+```
+```
+codex cloud status <task id>
+```
+```
+codex cloud diff <task id> > /private/tmp/deepsignal/<module>/patches/<task id>.diff
+```
+```
+codex cloud apply <task id>
+```
+Then the lead pushes the result as `deepsignal/<module>` on the fork, runs the Linux
+gate on the sha, and routes an Astra 6.2 review. First job on a new environment is a
+small Luna smoke test (a one-line change and its test), recorded in the ledger.
 
-Then the loop, with nobody typing code:
-1. Lead writes `briefs/<area>-<slug>.md` (with model, effort, failing test first).
-2. A MacBook session (Eugene's Remote Control or a terminal he opens) runs
-   `codex cloud` with the brief as the prompt, or `~/bin/codex-run` locally.
-3. The result lands as a diff or a branch on the fork. Lead pushes it as
-   `<area>/<slug>`, runs `gate/remote.sh <sha>`, routes an Astra review.
-4. Eugene sends any upstream PR (rule 10).
-
-Fallback if cloud is not set up: local `codex-run` on the MacBook, one job at a
-time, as in `docs/CODEX.md` section 3.
+Needs Eugene once (account settings): connect `eugenevivino/openrvdas` in Codex
+cloud; environment with Python 3.12, dependencies installed in its setup script,
+agent internet off after setup; then send the environment id.

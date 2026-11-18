@@ -228,3 +228,12 @@ Mini verified 05:2x Z: Codex 0.170.0 via codex-run, lists both 6.2 ids, login
 present, no upgrade needed; 6.2 already runs there. Kalon replaced `codex-run`
 on both Macs at 05:19Z (maps ids to 6.2, refuses no model, narrower clean-up).
 
+### D-TEAM7 Codex cloud is the main build lane (2026-11-18, DECIDED)
+Eugene: use Codex cloud to take load off the Macs; the Macs stay as extra capacity.
+Cloud by default and in parallel for Linux-safe work (rule 8, `docs/BUILDERS.md`).
+Update (Eugene, same day): cloud always runs Sol medium, so cloud takes standard,
+well-specified modules; Astra and Sol-high work stays on the Macs. Briefs name the
+lane; `-m` applies to Mac jobs (rule 27). Unverified: cloud flags. Needs Eugene's
+environment id; first job is a small smoke test on Sol medium (Luna is not
+selectable in cloud).
+

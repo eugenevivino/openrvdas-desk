@@ -53,8 +53,8 @@ but the rules below apply from the next run on.
    only on Eugene's yes, into an isolated venv, pinned (C1 last line).
 
 **Right-size the model** (C1 rule 2, C2, C3 rule 2)
-Current picks (Eugene 2026-11-18, D-TEAM6): **Sol 6.2** and **Astra 6.2** (ids in
-1c). Every "Sol" and "Astra" below means these. A running job finishes on its model.
+Current picks (D-TEAM6): **Sol 6.2**, **Astra 6.2** (ids in 1c); "Sol" and "Astra"
+below mean these. A running job finishes on its model.
 Cheapest model with a good chance of success; a stronger check only where
 risk is high. Mapped to our work:
 
@@ -86,11 +86,12 @@ first draft: re-run at xhigh and compare (C2 "What a Medium result means").
    200k tokens of context (C3 rule 3g).
 
 **Concurrency and cost** (C1 rules 3, 6, 7; C3 rules 3, 3b; C4 section 1)
-8. Kalon's cap: up to 3 bounded Sol-low jobs at once across both Macs, with
-   builds and gates serialized by their locks. **Ours on the Mini: one Codex
-   job at a time, and none while a Kalon gate or heavy build is running**; the
-   Mini is an 8 GB M1. The MacBook: at most one OpenRVDAS Codex job, and only
-   if Kalon's count leaves room.
+8. Lanes (Eugene 2026-11-18, D-TEAM7). Codex cloud always runs Sol at medium. Cloud
+   is the default lane for standard, well-specified code modules, in parallel, to
+   keep load off the Macs. Astra work (math, reviews, root causes) and anything
+   needing Sol high or more runs on a Mac via codex-run with `-m` (rule 27).
+   Every brief names its lane. Kalon's cap is 3 bounded jobs across both Macs; ours
+   on a Mac: one at a time, none on the Mini during a Kalon gate (8 GB M1).
 9. Check real load before launch, counting real Codex processes only. A
    `pgrep codex` count can hit Kalon git commands with `codex/` in a branch
    name (it did on 2026-11-18). Use `pgrep -x codex` and the launch log.

@@ -4,7 +4,7 @@
 - Risk tier: medium (it decides what counts as green)
 - Module: none (desk tooling). Branch in the desk repo: `gate/linux-actions`
 - Base: desk `main`
-- Model and effort: Sol 6.2 high, fresh session, under 40 turns (a Codex builder, rule 23)
+- Lane: mac, `-m gpt-6.2-sol` high, fresh session, under 40 turns (a Codex builder, rule 23)
 - Upstream home: desk repo only
 - Mac scratch path: `/private/tmp/deepsignal/gate-linux/` (clone in `repo/`, brief in `brief.md`, patches in `patches/`). Never touch other `/private/tmp` folders (Kalon uses them). Eugene's ruling, 2026-11-18.
 
