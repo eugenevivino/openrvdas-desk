@@ -45,8 +45,8 @@ Verified 2026-11-18 by reading `OceanDataTools/openrvdas_contrib` (shallow, read
   otherwise, they win.
 - Layout rule (its `contrib/README.md`): code lives in `contrib/<project>/`
   mirroring core (`logger/`, `database/`, `utils/`, plus `test/`) and is loaded
-  with `module: contrib.<project>.<path>`. Project folder name: PROPOSED
-  `openrvdas_overlay`, Eugene to confirm.
+  with `module: contrib.<project>.<path>`. Project folder name: `deepsignal`
+  (decided, see D-ARCH4).
 - Mechanics: fork checkout in a separate folder, remote `contrib` pointing at
   OceanDataTools/openrvdas_contrib, branch from `contrib/master`, push to
   `origin`, PR with base `OceanDataTools/openrvdas_contrib` `master`. Builders
@@ -170,9 +170,9 @@ Eugene: build it module based, tightly scoped. Rule 24. One module per branch
 (`deepsignal/<module>`), PR and brief; own tests, sample config and README
 section; minimal dependencies; usable alone in a stock logger config. This fits
 the contrib layout (`contrib/<project>/logger/...`) and keeps each upstream PR
-small. The contrib project folder name is now PROPOSED `deepsignal` (was
-`openrvdas_overlay` in D-ARCH3); Eugene confirms before the first PR because
-the name is part of every `module:` path.
+small. The contrib project folder is `deepsignal`, DECIDED by Eugene 2026-11-18
+("DeepSignal is fine for the folder"; supersedes the `openrvdas_overlay`
+proposal in D-ARCH3). It is part of every `module:` path, so it does not change.
 
 ### D-ARCH5 Standard interfaces, Linux first (2026-11-18, DECIDED)
 Eugene: modules integrate with the existing codebase and run on Linux "or
