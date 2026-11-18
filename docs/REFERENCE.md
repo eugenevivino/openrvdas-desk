@@ -210,7 +210,7 @@ only. Full design, ranked table, security and risk tables: `docs/SHIP-SYSTEMS.md
 
 | Feature | What it does | Status | Target | Link |
 |---|---|---|---|---|
-| #139 Kongsberg datagram tap | Read-only KMALL and `.all` summaries: nadir depth, ping rate, swath, valid beams, SV applied, clock offset, runtime changes | BRIEFED (mac lane, needs two public format documents) | v2 | `briefs/p2/139-kongsberg-tap.md` |
+| #139 Kongsberg datagram tap | Read-only KMALL and `.all` summaries: nadir depth, ping rate, swath, valid beams, SV applied, clock offset, runtime changes | BRIEFED (mac lane; reads two public format documents, approved) | v2 | `briefs/p2/139-kongsberg-tap.md` |
 | #140 Sound velocity consistency | Probe vs TSG vs sonar-applied vs cast SV; names the odd one out | BRIEFED | v2 | `briefs/p2/140-sv-consistency.md` |
 | #138 IEC 61162-450 bridge reader | Clean NMEA plus source id from bridge multicast, receive only | BRIEFED | v2 | `briefs/p2/138-iec450-bridge.md` |
 | #141 Depth consensus | Multibeam nadir vs single-beam vs grid; lost bottom and step flags | BRIEFED | v2 | `briefs/p2/141-depth-consensus.md` |

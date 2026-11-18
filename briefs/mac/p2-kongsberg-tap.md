@@ -60,7 +60,7 @@ versus the DAS clock, and when someone changed its runtime settings. Summaries o
      STX 0x02, type byte (`X` XYZ88 depth, `P` position, `A` and `n` attitude, `C` clock, `G` surface
      sound speed, `R` runtime, `I` and `i` installation), ETX 0x03, checksum uint16.
   Only fetch these two documents, read-only, into the scratch path; never commit them; no other downloads.
-  If the fetch is blocked, stop and report (the lead queues it in MORNING.md).
+  Approved 2026-11-18 under the standing auto-approve rule (read-only, non-critical). If the fetch is blocked technically, stop and report.
 
 ## Design (lead decisions; flag disagreement in the report)
 Package `contrib/deepsignal/kongsberg_tap/`:
