@@ -37,6 +37,7 @@ Plans written as research files:
 | `2026-11-18-metacq-manual-analysis.md` | 11-18 | MetAcq gap map | What the MetAcq manual implies we must replicate; feeds the parity scorecard. |
 | `2026-11-18-proposal-unbuilt-ideas.md` | 11-18 | Proposal mining | Mines the SOII proposal (IDEAS #52-#62, D-SOII1) and signals of opportunity (T-SIG, #78-#103, D-SIG1) for unbuilt ideas. |
 | `2026-11-18-mcp-design.md` | 11-18 | MCP design | Design body for the MCP: 11 high-level tools over one setup engine, apply as the only write path (D-MCP2). |
+| `2026-11-18-sonar-science.md` (copy of `docs/SONAR-SCIENCE.md` at this commit) | 11-18 | Sonar science (Astra 6.2 high) | Twelve listen-only sonar methods (#170-#181), quality-weighted depth first; #170 and #174 can replay real sample data now, #171/#172 need crossing lines, #173/#181 need an SBP29 SEG-Y export. |
 
 ## Reports that live in docs/ (linked, not copied)
 

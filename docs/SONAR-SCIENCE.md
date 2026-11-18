@@ -160,6 +160,22 @@ Local desk contracts were read at `8699cfe`. Cruise examples follow `docs/SAMPLE
 | P4 | INFERRED, lead to verify. Skarke et al. (2014), Atlantic-margin seeps, Demer et al. (2015), acoustic calibration, Deines (1999), ADCP backscatter | #174/#175 occurrence, band calibration and range-dependent intensity, #178/#179 receiver controls. |
 | P5 | INFERRED, lead to verify. Jackson and Richardson (2007), seafloor acoustics, Lurton and Lamarche (2015), backscatter guidelines | #176/#177/#181 angular response, intensity normalization, scattering and substrate priors. |
 
+## Validation readiness against desk sample data (checked 2026-11-18)
+
+A stdlib datagram census of `/mnt/project-files/sample-data/` (catalog `docs/SAMPLE-DATA.md`) shows what each pilot can test today. It checks only datagram types and ping counters, not field offsets (F1 to F4 still apply).
+
+| File | What is there | Supports | Gap |
+|---|---|---|---|
+| RR2214 EM124 `0578` `.kmall` (88 MB) | 470 `#MRZ` (236 pings, counters 17924 to 18159, two swaths per ping), `#SKM` 3530, `#SPO` 18001, `#SVT` 3651, 1 `#SVP`, 1 `#IIP`, 15 `#IOP` | #170 MB family, #172 propagation inputs, #176 reflectivity fields | One line, one profile: no crossing, so no #171 or #172 crossline test |
+| RR2214 EM124 `0578` `.kmwcd` (27 MB) | 64 `#MWC` (32 pings, 18050 to 18081, all inside the `.kmall` ping range), 1 `#SVP` | #174 geometry replay on 32 matched pings | Snippet only; no repeat pass, no seep label |
+| SKQ202217T EM302 `0027` `.all` + `.wcd` | X, N, Y and water column `k` for the same 12 pings (488 to 499), A/n attitude, P, U, R | Legacy `.all` path for #170, #172, #174 | 12 pings is a reader test, not a science test |
+| SR2213 EK80 `.raw` (73 MB) | 366 RAW3 (305 power/angle, 61 complex), RAW4, FIL1, XML0 PulseForm 0 only | #170 EK family, #175 and #178 CW band summaries | No FM pulse, so no broadband frequency response |
+| AR66-B EK80 `.raw` (0.3 MB) | XML0 PulseForm 0 and 1, one complex RAW3 | FM reader smoke test | One ping |
+| VmDAS `vmdas02_os.ENR` | Ocean Surveyor PD0 ensembles | #170 ADCP bottom-track family, #175 | Anonymous ship and date |
+| SEG-Y `small.sgy`, `small-ps.sgy` | Generic small SEG-Y | #173 reader only | No SBP29 export: #173 and #181 have no real-data test yet |
+
+What this means: #170 and #174 can start real-data replay now. #171 and #172 need a crossing pair; the next pull from the open NOAA bucket `noaa-dcdb-bathymetry-pds` should be two crossing RR2214 lines with their `#SVP` casts. #173 and #181 stay synthetic-only until an SBP29 SEG-Y export is found (V4). Run all of it in the cloud; the Mac gets trimmed snippets under 100 MB only, deleted after each run.
+
 ## Decisions for Eugene
 
 | Decision | Recommended default |

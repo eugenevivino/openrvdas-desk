@@ -302,7 +302,26 @@ Eugene approved acting on the pain-points map recommendations (2026-11-18 08:46Z
 | 169 | Science trust view | Read-only console page: per variable freshness, QC, calibration, source, units, chain root and a plain verdict; never "looks good" without a QC flag. Brief `briefs/p2/169-console-trust.md` | 2/5/4 | DESIGNED | 2 | PAIN-POINTS |
 
 
-## Scoreboard drivers, vendor-agnostic (2026-11-18, scoreboard thread; numbers 174-179 from the build lead)
+## Sonar science (2026-11-18, sonar-science thread; numbers 170-181 from the build lead)
+
+Eugene: extract more from multibeam, SBP29, EK80 and ADCP "using extremely novel math", and "use all available good data within reason". Listen-only (D-SHIP1), fusion per D-FUSE1. Full research, math and validation plans: `docs/SONAR-SCIENCE.md`. Methods labelled NOVEL are untested constructions until the reviews and pilots in that doc pass.
+
+| # | Idea | One line | Value | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| 170 | Quality-weighted depth | NOVEL, live + replay, EM, EK/EA, ADCP, SBP. Robust shared-error fit across MB nadir, single-beam, ADCP bottom track and SBP first return; per-family bias and noise learned from clean overlaps (three-cornered variance); says when a disagreement cannot be attributed. Also hosts the shared observation, ancestry and factor-solver backbone. Replaces the #141 threshold as the depth estimate; #141 stays the baseline. Brief `briefs/p2/170-weighted-depth.md` | 5/5/4 | DESIGNED | 2 | Eugene, T-SONAR |
+| 171 | Observable sound-speed error from crossing swaths | NOVEL, live at crossings + post, EM, SV probe, casts, motion. Ray-derivative test of which part of the sound-speed profile a crossing or repeat swath can actually constrain; tells the watch when outer-beam curl is explained by a profile error and when a cast would settle it. Builds on #161 fused profile prior, does not duplicate it. Brief `briefs/p2/171-swath-refraction.md` | 5/5/5 | DESIGNED | 2 | Eugene, T-SONAR |
+| 172 | Crossline-tested sounding uncertainty | ADAPTED, live + post calibration, EM, motion, SV, timing. Per-beam vertical and horizontal uncertainty from measured inputs, with the dominant term named; interval coverage checked on independent crosslines (difference-only calibration limits stated). Brief `briefs/p2/172-sounding-uncertainty.md` | 5/5/5 | DESIGNED | 2 | Eugene, T-SONAR |
+| 173 | Sub-bottom reflectors with multiple-echo competition | NOVEL, post, SBP29, EM. Path search for coherent shallow reflectors in SBP29 SEG-Y, competing against water-bottom multiple hypotheses so a geologist reviews the right traces. No SBP29 SEG-Y sample yet. Brief `briefs/p2/173-subbottom-reflectors.md` | 4/5/4 | DESIGNED | 2 | Eugene, T-SONAR |
+| 174 | Seabed-anchored flares and repeat-pass strength | NOVEL, post, EM water column, EK, ADCP. Tests whether repeat passes support a flare rising from the same seabed spot and whether its relative strength changed under comparable conditions; no absolute flux claims. Brief `briefs/p2/174-seep-repeatability.md` | 4/5/5 | DESIGNED | 2 | Eugene, T-SONAR |
+| 175 | Scattering-layer motion after accounting for advection | NOVEL, post, EK/EA, EM water column, ADCP. Diel and layer motion with ADCP current advection removed; current shear folded in here. | 3/5/5 | PROPOSED | 3 | Eugene, T-SONAR |
+| 176 | Relative backscatter drift on repeat ground | NOVEL, post, EM124/712/2040. Gain and calibration drift between surveys from repeat ground, kept separate from facies so calibration stays identifiable. | 4/5/5 | PROPOSED | 3 | Eugene, T-SONAR |
+| 177 | Acoustic facies across frequency and incidence | ADAPTED, post, EM, SBP, seabed samples. Angular-response and multi-frequency seafloor classes with physics priors, anchored to grabs and cores. | 3/5/5 | PROPOSED | 3 | Eugene, T-SONAR |
+| 178 | Excess receiver noise conditioned on transmit timing | NOVEL, live + replay, EK/EA, EM, SBP, ADCP. Self-noise and interference map from the sonars themselves, conditioned on who was transmitting. | 5/4/3 | PROPOSED | 3 | Eugene, T-SONAR |
+| 179 | Hull aeration versus widespread echo loss | NOVEL, live + replay, EM, EK, ADCP, met. Separates bubble sweep-down (weather, heading, speed) from system faults when echoes drop out across sonars. | 4/4/3 | PROPOSED | 3 | Eugene, T-SONAR |
+| 180 | Opportunistic patch-test evidence | ADAPTED, post, EM, motion, navigation. Roll, pitch, heading and latency bias evidence from ordinary survey lines, advice only; formal patch test still decides. | 4/4/4 | PROPOSED | 3 | Eugene, T-SONAR |
+| 181 | Relative sediment attenuation tied to acoustic facies | NOVEL, post, SBP29, EM, cores. Relative attenuation from SBP29 spectra, tied to facies; no unanchored impedance claims. | 2/5/4 | PROPOSED | 3 | Eugene, T-SONAR |
+
+## Scoreboard drivers, vendor-agnostic (2026-11-18, scoreboard thread; numbers 182-187 from the build lead)
 
 D-SCORE2. Outdoor deck LED scoreboards; a new board is a profile file, not code. Shared interface `briefs/scoreboard/contract.py`. #5 (the ScoreboardWriter: cache, layout, render loop) consumes these and still needs its own brief.
 

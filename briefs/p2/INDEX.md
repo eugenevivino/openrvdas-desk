@@ -90,3 +90,15 @@ Wave 1 runs in parallel (disjoint files; `contract.py` byte-identical on every b
 | 49 | #188 | [AI watch assistant: event-triggered triage](188-ai-triage.md), prompt `briefs/cloud/p2-ai-triage.md` | `deepsignal/p2-ai-triage` | `3b4b76e` contrib tree | cloud | py | 10 | #162, #167, #168 formats (reads files only) | no; API path on by default with caps (Eugene 2026-11-18) |
 | 50 | #197 | [CDS lockdown (loopback read-only relay)](197-cds-lockdown.md) | `deepsignal/sec-cds-lockdown` | `3b4b76e` contrib tree | cloud | py | 11 | none | no; merges only on Eugene's approval |
 | 51 | #189 | [Auth gateway](189-auth-gateway.md) | see brief | see brief | cloud | py | 11 | #197 green and Eugene's D-SEC2 login decision | no; merges only on Eugene's approval |
+
+## Sonar science (IDEAS #170-#174, T-SONAR)
+
+Two owners per task, in order: cloud Sol medium writes record scaffolding, synthetic-truth fixtures and RED tests on the branch; then mac Astra 6.2 high writes the estimator against that RED receipt. A separate read-only Astra review re-derives the math before merge. Listen-only (D-SHIP1). #170 lands first: it owns the shared observation, ancestry and factor-solver code the others reuse.
+
+| Rank | IDEAS | Task | Branch | Base | Lane | Kind | Batch | Depends on | Needs Eugene |
+|---|---|---|---|---|---|---|---|---|---|
+| 52 | #170 | [Quality-weighted depth](170-weighted-depth.md), prompts `briefs/cloud/p2-weighted-depth.md` then `briefs/mac/p2-weighted-depth.md` | `deepsignal/p2-weighted-depth` | `3b4b76e` contrib tree | cloud then mac | py | 12 | none to build; uses #139 #141 #142 #145 #113 fields in use | no |
+| 53 | #171 | [Observable sound-speed error from crossing swaths](171-swath-refraction.md), prompts `briefs/cloud/p2-swath-refraction.md` then `briefs/mac/p2-swath-refraction.md` | `deepsignal/p2-swath-refraction` | `3b4b76e` contrib tree | cloud then mac | py | 12 | #170 solver when integrated; #161 prior in use | no |
+| 54 | #172 | [Crossline-tested sounding uncertainty](172-sounding-uncertainty.md), prompts `briefs/cloud/p2-sounding-uncertainty.md` then `briefs/mac/p2-sounding-uncertainty.md` | `deepsignal/p2-sounding-uncertainty` | `3b4b76e` contrib tree | cloud then mac | py | 12 | none to build; #57 #142 #146 #147 in use | no |
+| 55 | #173 | [Sub-bottom reflectors with multiple-echo competition](173-subbottom-reflectors.md), prompts `briefs/cloud/p2-subbottom-reflectors.md` then `briefs/mac/p2-subbottom-reflectors.md` | `deepsignal/p2-subbottom-reflectors` | `3b4b76e` contrib tree | cloud then mac | py | 12 | none to build; real-data check needs an SBP29 SEG-Y export (none in sample-data yet) | no |
+| 56 | #174 | [Seabed-anchored flares and repeat-pass strength](174-seep-repeatability.md), prompts `briefs/cloud/p2-seep-repeatability.md` then `briefs/mac/p2-seep-repeatability.md` | `deepsignal/p2-seep-repeatability` | `3b4b76e` contrib tree | cloud then mac | py | 12 | none to build; #91 #139 #142 in use | no |

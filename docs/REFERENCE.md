@@ -242,6 +242,25 @@ only. Full design, ranked table, security and risk tables: `docs/SHIP-SYSTEMS.md
 | #155 Scoped SSH access kit | Forced-command keys or short-lived certificates, full logging | PROPOSED | later | same |
 | Sonar, bridge, DP, motion control, engine, winch writes | Never built (D-SHIP1) | BANNED | never | same |
 
+### Sonar science (#170 to #181, T-SONAR)
+
+More science and QC from the multibeam (bathymetry, backscatter, water column), SBP29, EK80 and ADCP, listen-only. Ranked research, math, validation plans and decisions: `docs/SONAR-SCIENCE.md`.
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| #170 Quality-weighted depth | Robust shared-error fit across MB nadir, single-beam, ADCP bottom track and SBP first return (NOVEL, live + replay) | BRIEFED | v2 | `briefs/p2/170-weighted-depth.md` |
+| #171 Observable sound-speed error from crossing swaths | Ray-derivative test of which part of the sound-speed profile a crossing or repeat swath can actually constrain (NOVEL, live at crossings + post) | BRIEFED | v2 | `briefs/p2/171-swath-refraction.md` |
+| #172 Crossline-tested sounding uncertainty | Per-beam vertical and horizontal uncertainty from measured inputs, with the dominant term named (ADAPTED, live + post calibration) | BRIEFED | v2 | `briefs/p2/172-sounding-uncertainty.md` |
+| #173 Sub-bottom reflectors with multiple-echo competition | Path search for coherent shallow reflectors in SBP29 SEG-Y, competing against water-bottom multiple hypotheses so a geologist reviews the right traces (NOVEL, post) | BRIEFED | v2 | `briefs/p2/173-subbottom-reflectors.md` |
+| #174 Seabed-anchored flares and repeat-pass strength | Tests whether repeat passes support a flare rising from the same seabed spot and whether its relative strength changed under comparable conditions (NOVEL, post) | BRIEFED | v2 | `briefs/p2/174-seep-repeatability.md` |
+| #175 Scattering-layer motion after accounting for advection | Diel and layer motion with ADCP current advection removed (NOVEL, post) | PROPOSED | later | `docs/SONAR-SCIENCE.md` |
+| #176 Relative backscatter drift on repeat ground | Gain and calibration drift between surveys from repeat ground, kept separate from facies so calibration stays identifiable (NOVEL, post) | PROPOSED | later | `docs/SONAR-SCIENCE.md` |
+| #177 Acoustic facies across frequency and incidence | Angular-response and multi-frequency seafloor classes with physics priors, anchored to grabs and cores (ADAPTED, post) | PROPOSED | later | `docs/SONAR-SCIENCE.md` |
+| #178 Excess receiver noise conditioned on transmit timing | Self-noise and interference map from the sonars themselves, conditioned on who was transmitting (NOVEL, live + replay) | PROPOSED | later | `docs/SONAR-SCIENCE.md` |
+| #179 Hull aeration versus widespread echo loss | Separates bubble sweep-down (weather, heading, speed) from system faults when echoes drop out across sonars (NOVEL, live + replay) | PROPOSED | later | `docs/SONAR-SCIENCE.md` |
+| #180 Opportunistic patch-test evidence | Roll, pitch, heading and latency bias evidence from ordinary survey lines, advice only (ADAPTED, post) | PROPOSED | later | `docs/SONAR-SCIENCE.md` |
+| #181 Relative sediment attenuation tied to acoustic facies | Relative attenuation from SBP29 spectra, tied to facies (NOVEL, post) | PROPOSED | later | `docs/SONAR-SCIENCE.md` |
+
 ## 12. Operational truth layer (pain-points study)
 
 From the RVTEC pain-points study. Ranked, phase 2 first. Sources: `docs/PAIN-POINTS-MAP.md`, `research/RVTEC-SURVEY.md`.
