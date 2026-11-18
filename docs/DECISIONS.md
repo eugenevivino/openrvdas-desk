@@ -334,3 +334,14 @@ needs the parent job's own opt-in, and depth, thread and token caps exist. A sub
 author; it never counts as the independent review (fresh session, rule 21). If the pin cannot be
 enforced in codex-cli 0.169.0, sub-agents stay off. Every job is audited afterward for
 `thread_spawn` sessions and their models.
+
+### D-LEDGER1 Correction ledger: reviewer allowlist and trusted checkpoint (2026-11-18, DECIDED by build lead under Eugene's "take the recommended option" rule)
+Codex's two open questions on #56. Authorized reviewers: an allowlist file (`reviewers.yaml`:
+id, display name, role) kept OUTSIDE the ledger file and owned by the cruise lead; an approve or
+roll-back entry by an id not on the list is refused and shown plainly. Trusted checkpoint: a
+small separate file holding the ledger's head hash and entry count, rewritten on every append;
+at startup the ledger is compared to it, and a mismatch (truncation, full rehash) is a loud
+REFUSED to apply, never silent. Default checkpoint path is next to the config, and the docs
+recommend syncing a copy to shore with the cruise data. This detects accidents and casual edits,
+not a hostile root user (said plainly in the docs). Follow-up fix round on #56 after its independent
+review; no change to the pushed branch yet. Eugene can overrule.

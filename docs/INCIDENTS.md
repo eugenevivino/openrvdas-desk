@@ -20,3 +20,9 @@ multi_agent_v2, multi_agent_v2_dynamic_tools, multi_agent_mode, enable_fanout an
 runtime_agent_instances and refuses `--enable` for them (desk 2ad92c6). Kalon's codex-run has the
 same gap; reported to Eugene, not edited. Code kept (tests and flake8 pass) and still gets an
 independent fresh review. Check each job's session folder for `thread_spawn` sessions.
+
+Carry-over for Kalon (Eugene's hard separation: this desk does not edit Kalon's files): `~/bin/codex-run`'s
+connector guard has no `multi_agent`, `multi_agent_v2`, `multi_agent_v2_dynamic_tools`,
+`multi_agent_mode`, `enable_fanout` or `runtime_agent_instances` entries, so a Kalon job can also
+spawn a sub-agent on any model. The fix we used is the same list added to the guard's disable set and
+its `--enable` refusals (see `tools/ds-codex.sh`). Eugene decides whether Kalon wants sub-agents off.
