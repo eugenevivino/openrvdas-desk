@@ -26,7 +26,7 @@ df -h ~ | tail -1
 ```
 
 ```
-ls -d ~/KalonWork/lock-w* 2>/dev/null; pgrep -fl mini-gate-suite.sh; echo "(empty above means Kalon is idle)"
+ls -d ~/KalonWork/lock-w0 ~/KalonWork/lock-w1 ~/KalonWork/lock-w2 2>/dev/null; pgrep -fl mini-gate-suite.sh; echo "(empty above means Kalon is idle; lock-w0.retained-* leftovers do not count)"
 ```
 
 If `python3.12` is missing, stop and tell the lead. Installing it with

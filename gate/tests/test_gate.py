@@ -131,6 +131,13 @@ class RefusalTest(unittest.TestCase):
         os.makedirs(os.path.join(work, "lock-w0"))
         self.assertRefused(self.run_gate(ORV_KALON_HOME=work), "Kalon")
 
+    def test_retained_kalon_lock_is_not_live(self):
+        work = tempfile.mkdtemp()
+        os.makedirs(os.path.join(work, "lock-w0.retained-mg-6b00dfd5-1794550478"))
+        rc, out, _ = self.run_gate(ORV_KALON_HOME=work)
+        self.assertNotIn("Kalon", out)
+        self.assertIn("no clone", out)
+
     def test_disk_floor(self):
         self.assertRefused(self.run_gate(ORV_MIN_FREE_KB=str(10 ** 15)), "floor")
 

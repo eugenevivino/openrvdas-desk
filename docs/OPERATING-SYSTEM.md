@@ -170,7 +170,7 @@ logged. No gate is relaxed either way.
 Kalon owns the Mini first. OpenRVDAS stays in `~/OpenRVDAS-Work/` and never
 reads, writes, or locks anything under `~/L2Audio-Work`, `~/KalonWork`, or
 `~/Projects/l2audio`. The gate refuses while a Kalon gate is active (it checks
-for Kalon's worker lock directories `~/KalonWork/lock-w*` and a running
+for Kalon's live worker locks `~/KalonWork/lock-w0` to `lock-w2` and a running
 `mini-gate-suite.sh`), runs under `nice -n 10`, and is light (about two
 minutes of Python on the cloud baseline). If Kalon's disk floor is at risk the
 gate refuses first.

@@ -44,7 +44,11 @@ fi
 [ "$name" = "$GATE_HOST" ] || refuse "WRONG MACHINE: LocalHostName=$name, gate host is $GATE_HOST"
 
 # 2. Kalon has priority on the Mini.
-if ls -d "$KALON_HOME"/lock-w* >/dev/null 2>&1; then refuse "Kalon gate holds the Mini ($KALON_HOME/lock-w*)"; fi
+# Kalon's live worker locks are exactly lock-w0..lock-w2 (mkdir "$K/lock-w$i" in gh-gate-full.sh).
+# Renamed leftovers such as lock-w0.retained-mg-<sha>-<epoch> are evidence Kalon keeps, not live locks.
+for i in 0 1 2; do
+  if [ -d "$KALON_HOME/lock-w$i" ]; then refuse "Kalon gate holds the Mini ($KALON_HOME/lock-w$i)"; fi
+done
 if [ -z "${ORV_SKIP_PGREP:-}" ] && pgrep -f 'mini-gate-suite\.sh' >/dev/null 2>&1; then refuse "Kalon mini-gate-suite.sh is running"; fi
 
 # 3. Disk floor.
