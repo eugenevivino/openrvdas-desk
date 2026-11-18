@@ -1,0 +1,31 @@
+**VERIFIED at `aa74676` under D-P1DEF1.** Eight findings are MUST-FIX. Only 3 and 4 are critical. The Bridge result comes from the recorded browser run. I independently reproduced finding 5 in memory.
+
+| N | Short title | Disposition | CRITICAL | Files to change | One-sentence reason |
+|---|---|---|---|---|---|
+| 1 | Bridge scroll | MUST-FIX (a) | no | [index.css](/private/tmp/deepsignal/console-unit-rr3/contrib/deepsignal/console/src/index.css:149) | VERIFIED: With live temperature visible at 1366×768, the recorded run failed the viewport-height assertion, which blocks by decision. |
+| 2 | False Depth alarm | MUST-FIX (a) | no | [cds.ts](/private/tmp/deepsignal/console-unit-rr3/contrib/deepsignal/console/src/cds.ts:117) | VERIFIED: Catalog mode retains Depth after a page switch unsubscribes it, so the banner ages its timestamp into an A2 outage. |
+| 3 | Relay install gate | MUST-FIX (b) | yes | `install/install.sh`, `install/test_nginx_site.py`, #197 `security/check_cds.py` | VERIFIED: A missing checker fails closed, but the positive test stubs its exit code and never establishes that the selected nginx `/cds-ws` refuses publish. |
+| 4 | Installer privileges | MUST-FIX (b) | yes | `install/install.sh`, `README.md`, `docs/install.md` | VERIFIED: The documented `sudo` command runs the installer, its AWK helper and the Python checker from a checkout the stock installer assigns to `rvdas`. |
+| 5 | Expired last-good reading | MUST-FIX (a) | no | [field-data.ts](/private/tmp/deepsignal/console-unit-rr3/contrib/deepsignal/console/src/field-data.ts:60) | VERIFIED: A FAIL at 100.5 cleared the reading at 100 before eviction but left the identical reading marked good after the 21-sample window rolled over. |
+| 6 | Number trend includes FAIL | MUST-FIX (a) | no | [NumberTile.tsx](/private/tmp/deepsignal/console-unit-rr3/contrib/deepsignal/console/src/modules/number/NumberTile.tsx:28) | VERIFIED: History masks flag 9 only, so a failed 999 becomes the trend baseline for a passing 10. |
+| 7 | Bridge wind units | MUST-FIX (a) | no | [bridge/components.tsx](/private/tmp/deepsignal/console-unit-rr3/contrib/deepsignal/console/src/modules/bridge/components.tsx:123), `bridge/preset.yaml` | VERIFIED: The contract feed declares the averaged speed in kt, but the preset labels its unchanged value of 18.1 as m/s. |
+| 8 | Map hides position FAIL | MUST-FIX (a) | no | [MapTile.tsx](/private/tmp/deepsignal/console-unit-rr3/contrib/deepsignal/console/src/modules/map/MapTile.tsx:104) | VERIFIED: The STALE branch returns before checking quality, so the position notice omits a simultaneous FAIL. |
+| 9 | Self-test misses manifest 404 | TICKET | no | [pages.ts](/private/tmp/deepsignal/console-unit-rr3/contrib/deepsignal/console/src/pages.ts:110) | VERIFIED: With `pages: []`, a manifest 404 disappears before Self-test counts failures, and making manifest-listed fetches required is a one-line fix. |
+| 10 | Mutable registered page | TICKET | no | [context.ts](/private/tmp/deepsignal/console-unit-rr3/contrib/deepsignal/console/src/context.ts:47) | VERIFIED: Mutating a plugin’s previously registered object bypasses validation through a shared reference, which a one-line defensive copy at registration fixes for this case. |
+| 11 | Auto Night latitude range | TICKET | no | [autoNight.ts](/private/tmp/deepsignal/console-unit-rr3/contrib/deepsignal/console/src/modules/kiosk-night/autoNight.ts:22) | VERIFIED: A fresh latitude of 99° passes the finite-number check, and a one-line latitude/longitude bounds check can reuse the existing pause path. |
+| 12 | Raster tile loop | TICKET | no | [MapTile.tsx](/private/tmp/deepsignal/console-unit-rr3/contrib/deepsignal/console/src/modules/map/MapTile.tsx:26) | INFERRED: An extreme invalid longitude can make the raster index too large for `x += 1` to advance, and a one-line bounds check in `pairTrack` prevents it. |
+
+**Numbered fix plan and regression tests (INFERRED)**
+
+1. **#4:** Run the installer and helpers from a trusted location outside service-writable directories. In `test_nginx_site.py`, verify that a service-writable checker or helper cannot run with privilege or authorize an nginx change.
+2. **#3:** Wire the real #197 checker to the selected virtual host. Test both Django and React nginx configurations through `/cds-ws`: subscription succeeds, publish is refused, the cache stays unchanged, and a writable endpoint fails the gate.
+3. **#1:** Fit every Bridge tile within the viewport. In `test_bridge_browser.py`, keep the live `19.1 °C` assertion and verify the last tile is in view as well as `scrollHeight <= innerHeight`.
+4. **#2:** Remove unsubscribed readings from the live snapshot in catalog mode. In `staleAlerts.test.tsx`, switch away from Depth and advance past the no-data threshold. Assert that only a still-subscribed silent field alarms.
+5. **#5:** Retain the timestamp boundary needed to associate delayed QC with an evicted reading. In `quality.test.ts`, deliver FAIL at 100.5 before and after rollover and require the same `lastGood`, while preserving the existing unrelated-flag case.
+6. **#6:** Exclude failed historical samples from trend endpoints. In `number.test.tsx`, feed FAIL 999 then PASS 10 and require no trend until a second usable reading arrives.
+7. **#7:** Label speed using the selected field’s source units. In `windDial.test.tsx`, assert `18.1 kt` for the contract average and `10.0 m/s` for the replay fallback.
+8. **#8:** Build the position notice from both freshness and quality. In `map.test.tsx`, give one coordinate STALE and FAIL together and assert that both labels and the age are visible.
+
+**Install merge split. INFERRED: Yes, 3 and 4 can merge together independently of the UI fixes.** Include `console/install/{install.sh,nginx-site.awk,test_nginx_site.py}`, `test/console/test_install.py`, the install instructions in `console/{README.md,docs/install.md}`, and the trusted #197 checker dependency.
+
+**VERIFIED dependencies.** No frontend source imports or executes those install files. `App.tsx` displays `install.sh --check`, `App.test.tsx` checks that text, and `pages.ts` requires the deployed `/cds-ws` endpoint. The installer serves the prebuilt `console/dist/`. Preserving the command and endpoint keeps those interfaces compatible.
