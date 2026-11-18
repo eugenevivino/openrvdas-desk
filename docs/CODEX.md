@@ -38,6 +38,13 @@ but the rules below apply from the next run on.
    brief names this path. Standing approval: Codex may build in these scratch
    copies and push to `deepsignal/*` fork branches for a module and its fix
    rounds; pull requests still need Eugene.
+1c. Model flag (verified 2026-11-18 from `~/bin/codex-run`): the script has no model
+   list and no `--help`. The model is the explicit `-m` or `-c model=`, else the
+   first `model =` line of `~/.codex/config.toml`, which defaults to `gpt-6-astra`.
+   It refuses any model containing `astra` unless `KALON_ALLOW_ASTRA=1`. So every
+   DeepSignal launch passes `-m <id>` explicitly, never relies on the default, and
+   sets the Astra flag only for the job Eugene approved (D-TEAM5). Exact 6.2 ids:
+   pending, record here once read from the MacBook.
 2. Read-only (`--sandbox read-only`) for diagnosis and review. Workspace-write
    only for a Builder, never `danger-full-access`. The sandbox blocks `.git`
    writes by design: Codex edits files, the lead (or a script) commits.
