@@ -38,8 +38,14 @@ Package `contrib/deepsignal/bench/`:
   DASRecords, feeds them through the detector in time order, reads
   `<field>_QC`, and scores: detection latency (first 3 or 4 after fault start),
   missed (no flag before fault end), false flags per hour outside faults and
-  on traps, flags during traps. "Flag" threshold configurable (default 3).
-- CLI `python -m contrib.deepsignal.bench run --scenarios <yaml> --detector <module:Class> --kwargs <json>`
+  on traps, flags during traps, and false alarms per ship-day (24 h). "Flag"
+  threshold configurable (default 3). Flag field suffix configurable
+  (`flag_suffix`, default `_QC`) so detectors that write other flag fields
+  (`_DG`, `_SHIP`) can be scored.
+- Plug-in injectors: a scenario may name `injector: <module:function>` with
+  the same signature as `faults.py` functions, so other modules can add
+  their own faults (for example a heading-coupled bias) without editing the bench.
+- CLI `python -m contrib.deepsignal.bench run --scenarios <yaml> --detector <module:Class> --kwargs <json> [--flag-suffix _QC]`
   writes `results.json` and a short `summary.md` table (one row per scenario).
 - Include `StubThresholdDetector` in `bench/stub.py` (flags value outside a
   range) so the bench is testable with no other module.
@@ -48,7 +54,7 @@ Package `contrib/deepsignal/bench/`:
 `contrib/deepsignal/test/bench/test_faults.py` and `test_run.py`. RED first.
 Cover each fault's exact numbers on a tiny series, same seed gives same
 output, truth labels, trap labels, scoring on hand-built flag sequences
-(latency, missed, false-flag rate, trap flags), the stub end to end, both
+(latency, missed, false-flag rate, false alarms per ship-day, trap flags), custom flag suffix, a plug-in injector, the stub end to end, both
 sample-data paths.
 
 ## Module contract

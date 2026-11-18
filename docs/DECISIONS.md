@@ -311,3 +311,17 @@ Eugene: "I want these two projects utterly separated." DeepSignal uses its own C
 wrapper `~/bin/ds-codex`. Kalon's workspace, `~/.codex` and `~/bin/codex-run` are not edited
 or relied on for identity. See `docs/CODEX.md` section 5. This replaces the earlier plan to
 use the l2audio-listed environments.
+
+### D-SIG1 Signals-of-opportunity report: backlog plus two modules (2026-11-18, DECIDED)
+
+Eugene's Deep Research report #2 added as IDEAS #78 to #103 (scores N/S/F and
+tier R = R2R-reproducible or V = on-vessel telemetry), and strengthened #9,
+#39, #42, #43. Report citations are leads to verify, not facts. Two modules
+briefed, both cloud lane (Sol medium, formulas pinned in the brief), Astra
+xhigh review on a Mac, each a live transform plus an offline runner, both
+scored on the fault bench (#53, now with configurable flag suffix and plug-in
+injectors):
+1. #78 ship-coupling discovery engine (`briefs/deepsignal-ship-coupling.md`).
+2. #79 dependency-graph fault detector (`briefs/deepsignal-dependency-graph.md`).
+Order: after #53 so bench numbers are real; they may build before #53 lands
+and report the bench run as pending. Nothing deletes or corrects data.

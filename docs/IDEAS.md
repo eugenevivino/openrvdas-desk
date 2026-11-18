@@ -43,7 +43,7 @@ own message, T-SOII Eugene's Oct 2026 SOII/DeepSignal leadership proposal, T-REA
 | # | Idea | One line | Status | Phase | Source |
 |---|---|---|---|---|---|
 | 8 | QARTOD-style QC flags | Range, spike, flat-line, rate-of-change tests emit flags that travel with values, never delete data | DESIGNED | 2 | T-AI, T-METACQ |
-| 9 | State-aware alarms with watch verdicts | Alarms that know ship state (on station, transit, CTD in water), and a watch stander marks each real or false so thresholds improve | PROPOSED | 2 | T-COMP, T-AI |
+| 9 | State-aware alarms with watch verdicts | Alarms that know ship state (on station, transit, CTD in water), and a watch stander marks each real or false so thresholds improve T-SIG adds: an alert needs a high score, persistence or corroboration, and a plain explanation naming the supporting streams (IMO bridge alert management style) | PROPOSED | 2 | T-COMP, T-AI |
 | 10 | Redundant-sensor CUSUM drift | CUSUM on the difference between paired sensors finds steps and slow drift between them | DESIGNED | 2 | T-AI |
 | 11 | Drift vs independent references | Compare sensors with CTD casts, bottle samples and ERA5 reanalysis to find drift that redundancy cannot | DESIGNED | 2 | T-AI |
 
@@ -88,11 +88,11 @@ own message, T-SOII Eugene's Oct 2026 SOII/DeepSignal leadership proposal, T-REA
 | # | Idea | One line | Status | Phase | Source |
 |---|---|---|---|---|---|
 | 38 | Roll and heave cross-correlation | Shared ship motion seen by many sensors gives clock offset and response time per sensor (feeds 31) | PROPOSED | N | T-AI, T-DESK |
-| 39 | Ship turns for flow distortion | Each turn sweeps relative wind across the bow; compare anemometers to map and correct the superstructure's flow distortion | PROPOSED | N | T-AI |
+| 39 | Ship turns for flow distortion | Each turn sweeps relative wind across the bow; compare anemometers to map and correct the superstructure's flow distortion T-SIG: fit residual vs relative wind angle only in short stationary windows on reciprocal or circular maneuvers; N3/S5/F5, tier R | PROPOSED | N | T-AI |
 | 40 | Diurnal solar heating bias | Separate radiative heating of air temperature and SST sensors from real signal using solar elevation and wind | PROPOSED | N | T-AI |
 | 41 | Tides and ADCP bottom track | Use bottom track and known tides to check ADCP alignment and speed log calibration | PROPOSED | N | T-AI |
-| 42 | GNSS reflectometry | Estimate significant wave height from sea-reflected GNSS signals already reaching the antennas | PROPOSED | N | T-AI |
-| 43 | Engine and pump vibration health | Spot developing machinery faults from vibration in motion and acoustic sensors | PROPOSED | N | T-AI |
+| 42 | GNSS reflectometry | Estimate significant wave height from sea-reflected GNSS signals already reaching the antennas T-SIG: N3/S5/F3; needs raw 10-20 Hz SNR, rarely archived, so tier R only where raw GNSS exists, else a cheap raw-GNSS sidecar | PROPOSED | N | T-AI |
+| 43 | Engine and pump vibration health | Spot developing machinery faults from vibration in motion and acoustic sensors T-SIG: see #92 (echosounder noise floor) and #99 (environment-conditioned machinery model) | PROPOSED | N | T-AI |
 
 ## Kept for later
 
@@ -142,3 +142,44 @@ suggest and show evidence, never silently rewrite data or command the ship.
 | 75 | Public sparse-reference drift benchmark | Publish raw shipboard streams plus maintenance logs, swaps, bottle and reference checks, pre and post cals and injected faults as an open benchmark; seed with the Revelle pilot (paper candidate) | PROPOSED | N | EUG (drift report), T-REAN |
 | 76 | Front-versus-drift competing hypotheses | Bayesian model weighing drift, front, rain lens, plume, upwelling and fouling using spatial coherence, T-C-S physics, weather and maintenance events (paper candidate) | PROPOSED | N | EUG (drift report) |
 | 77 | Cross-vessel calibration priors | Hierarchical priors for drift rates, cleaning effects and heating by sensor model and installation, learned from R2R and SAMOS archives | PROPOSED | later | EUG (drift report) |
+
+## From the signals-of-opportunity report (Deep Research #2, 2026-11-18)
+
+Source T-SIG: Eugene's report "High-Value Signals of Opportunity in Routine
+Research-Vessel Data". Scores are the report's own, subjective: N novelty,
+S science value, F real-time feasibility on modest Linux, 1 to 5. Tier R =
+reproducible from R2R archive streams (nav, MET, TSG, ADCP, sonar); tier V =
+needs on-vessel telemetry (machinery, DP, modem, hydrophone, raw GNSS) that
+R2R normally lacks. **Every citation in the report is a lead to verify, not a
+fact.** Rule from the report: a contaminant is an observation; output a
+probability and an explanation, never delete data.
+
+| # | Idea | One line | N/S/F, tier | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| 78 | Ship-coupling discovery engine | Cross-stream lagged dependency atlas with effective sample size, block bootstrap, BH/BY false-discovery control per family, cross-cruise replication and a ship-coordinate invariance negative control; finds sensors that "measure the ship"; live transform applies the frozen atlas as a contamination score with explanation. Report rank 1. Brief `briefs/deepsignal-ship-coupling.md` | 5/5/5, R | DESIGNED | N | T-SIG |
+| 79 | Dependency-graph fault detector | Learn normal relationships between sensors on healthy data per regime; flag a sensor when its relationships break even though its values look plausible. Report rank 3. Brief `briefs/deepsignal-dependency-graph.md` | 5/5/5, R | DESIGNED | N | T-SIG |
+| 80 | Directional wave spectrum from motion | Hs, period and direction from IMU/MRU motion through response-amplitude operators (RAOs). Report rank 2 | 3/5/5, R if MRU logged | PROPOSED | N | T-SIG |
+| 81 | Self-calibrating ship wave buoy | Learn slowly varying RAO corrections across cruises against buoys or wave radar, hold out whole cruises | 4/5/4, R | PROPOSED | N | T-SIG |
+| 82 | Current from SOG minus STW | GNSS velocity minus speed-log velocity gives near-surface current, checked against top-bin ADCP; later infer STW from propulsion when the log drifts | 3/5/5 R; 4/5/4 V | PROPOSED | N | T-SIG |
+| 83 | GNSS precipitable water vapor | Kinematic PPP wet delay plus pressure and temperature gives PWV over the ocean; check against radiosondes. Needs raw GNSS | 2/5/3, R only with RINEX | PROPOSED | N | T-SIG |
+| 84 | GNSS reflectometry for sea ice | Reflected-signal power and interference patterns map ice concentration and edges on polar cruises | 3/5/3, R with raw GNSS | PROPOSED | N | T-SIG |
+| 85 | Ionosphere TEC and scintillation | Dual-frequency GNSS on the ship as a moving ionosphere probe; ship-fixed azimuth dependence as negative control | 3/4/3, R with raw GNSS | PROPOSED | N | T-SIG |
+| 86 | GNSS interference sentinel | Common-mode C/N0 drops, PPP residuals and GNSS vs INS/DVL disagreement, cross-checked with nearby AIS ships, give a GNSS integrity score for the bridge. Report rank 6 | 3/5/5, R plus AIS | PROPOSED | N | T-SIG |
+| 87 | Satellite-link rain gauge | VSAT or LEO modem signal loss beyond a dry-link baseline becomes along-track rain rate; also explains link outages. Report rank 10, paper candidate | 5/4/5, V | PROPOSED | N | T-SIG |
+| 88 | Joint environmental inversion | One vessel model in which GNSS, DVL, IMU, apparent wind and propulsion all observe latent current, wind and waves; prove identifiability on synthetic data first | not scored, R/V | PROPOSED | N | T-SIG |
+| 89 | Scattering-layer and migration atlas | Detect layers in ADCP or echosounder backscatter and track dawn and dusk vertical migration; random solar phase as control | 2/5/5, R | PROPOSED | N | T-SIG |
+| 90 | Acoustic mixed-layer depth | Echosounder interfaces plus ADCP shear give continuous MLD, scored only at independent CTD casts | 2/5/5, R | PROPOSED | N | T-SIG |
+| 91 | Gas-seep discovery | Vertically coherent bubble flares in multibeam or split-beam water column, georeferenced and clustered; blind test on known seeps | 3/5/3, R | PROPOSED | N | T-SIG |
+| 92 | Echosounder noise floor as machinery monitor | Track sonar background noise against speed, heading, thruster and RPM as a cavitation and drivetrain health signature. Report rank 4, paper candidate | 5/4/5, R discovery, V proof | PROPOSED | N | T-SIG |
+| 93 | Rain and wind from underwater sound | Five-minute noise spectra from a hydrophone or passive sonar mode; separate stopped, DP and underway states | 3/4/3, V | PROPOSED | N | T-SIG |
+| 94 | Incidental marine-mammal detection | Only with a real passive hydrophone; active sonar disturbs animals so is context only | 2/4/2 active, 3/5/4 passive, V | PROPOSED | later | T-SIG |
+| 95 | Live air-sea bulk fluxes | COARE-class latent, sensible and momentum flux from 1-min MET and TSG, validated by recreating SAMOS fluxes; value is live QC and wind-bias correction | 1/5/5, R | PROPOSED | 2 | T-SIG |
+| 96 | Mixing-state product | Acoustic MLD plus buoyancy flux, wind stress and ADCP shear say when the mixed layer deepens or restratifies | 4/5/4, R | PROPOSED | N | T-SIG |
+| 97 | Submesoscale front detector | Sharp T, S and fluorescence gradients confirmed by ADCP shear; separates real fronts from intake lag artifacts; event catalog over decades. Feeds #55 and #54 trap logic. Report rank 7 | 3/5/5, R | PROPOSED | N | T-SIG |
+| 98 | Vessel-performance digital twin | Expected SOG, STW, power and motion per operating regime; residual is the anomaly; proxy version on R2R | 3/4/5, R proxy, V full | PROPOSED | N | T-SIG |
+| 99 | Environment-conditioned machinery health | Machinery signatures modeled against sea state, current and load, so weather is not mistaken for wear (extends #43) | 3/4/4, V | PROPOSED | N | T-SIG |
+| 100 | Fuel and route counterfactual | "What would this leg have burned at another speed or heading"; beware captains slowing for weather | 2/3/4, V | PROPOSED | later | T-SIG |
+| 101 | Masked multirate ship encoder | Self-supervised model over 50 Hz motion, 1 Hz nav, 1 min MET; hide a stream and reconstruct it; failure to reconstruct is an anomaly. Only after physical baselines. Report rank 9 | 4/5/4, R | PROPOSED | later | T-SIG |
+| 102 | Physics-conditioned representations | Train embeddings to ignore heading for the same sea state, so heading artifacts stand out; pairs from real reciprocal tracks | 5/5/3, R | PROPOSED | later | T-SIG |
+| 103 | Cross-vessel sensor ontology | Map each ship's field names to semantic roles (attitude.roll, seawater.temperature.intake) so models transfer between ships; feeds #29 and #45 | 5/5/3, R | PROPOSED | later | T-SIG |
+
