@@ -16,6 +16,9 @@ CX="${DS_CODEX_BIN:-/opt/homebrew/bin/codex}"
 astra_ok="${KALON_ALLOW_ASTRA:-0}"
 for v in $(compgen -e); do case "$v" in KALON_*|CODEX_RUN_*|CODEX_HOME) unset "$v";; esac; done
 export CODEX_HOME="$DS_HOME"
+# D-UPSTREAM0 (2026-11-18): nothing goes to OceanDataTools. Every git run inside the job uses the shared pre-push hook
+# that refuses OceanDataTools URLs; gh and git may touch OceanDataTools only for a read-only fetch by URL.
+export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/private/tmp/deepsignal/hooks
 LOG="$DS_HOME/launch-log.txt"
 
 die() { echo "ds-codex: REFUSED: $2" >&2; exit "$1"; }
