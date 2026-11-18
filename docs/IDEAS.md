@@ -4,6 +4,10 @@ Every idea in one place. ROADMAP.md ranks what is next; this file keeps
 everything, so nothing raised in a thread is lost. Add a row the day an idea
 comes up. Never delete a row: mark it DROPPED with a reason.
 
+
+**Numbering: the build lead owns IDEAS numbers (next free: 104). Other threads do not
+assign numbers. Write ideas as unnumbered drafts in your patch notes and ask the build
+lead for a range, to avoid collisions (three-way collision on 2026-11-18).**
 Status: PROPOSED (idea only), DESIGNED (design doc exists), BUILDING (brief
 and branch exist), DONE, DROPPED. Phase matches ROADMAP.md (N = novel, not
 yet phased). Every new capability is an overlay module (D-ARCH1) unless the
