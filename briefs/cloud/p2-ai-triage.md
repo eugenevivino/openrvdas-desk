@@ -113,9 +113,19 @@ Every item carries a ref id. No raw data streams, and no credentials or tokens, 
 
 **Shared guard** (`contrib/deepsignal/ai_guard/`, owned by this task; the MCP gateway imports it later):
 - `redact.py`: the redaction described under Privacy, below.
-- `budget.py`: the meter, the daily and monthly caps, and the per-call limits. It persists to a small JSON
-  file, and its method is `check_and_reserve(cost_estimate)`.
-- `audit.py`: an append-only JSONL with timeline export to #168.
+- `budget.py`: the meter, caps per period (day and month) and per-call limits, with a generic unit.
+  - `check_and_reserve(cost, unit="usd", scope="default") -> bool` and `settle(reservation, actual)`.
+  - Units are any string (`usd`, `tokens`, `requests`, `bytes`), each with its own caps, so the MCP gateway
+    can reuse it for request counts and reply byte caps.
+  - It persists to a small JSON file, with atomic writes.
+- `audit.py`: append-only JSONL, exported to the #168 timeline, and tamper-evident.
+  - Each record has a `prev_hash`: the SHA-256 of the previous line's exact bytes. The first record uses
+    64 zeros.
+  - `verify(path) -> {ok, records, first_break}`, where `first_break` is the line number of the first
+    break.
+  - Optional `sig`: an HMAC-SHA256 of the line without `sig`, keyed by a key loaded through
+    `ai_guard.secrets` when `sign_key` is configured. `verify` checks the signatures too when it is given
+    the key. The MCP gateway signs its apply records this way.
 - `secrets.py`: `store_key(name, value)` and `load_key(name)`.
   - The key is encrypted at rest with `systemd-creds encrypt` when the host has it (systemd 250 or newer,
     for example Ubuntu 24.04 or RHEL 9). It is stored under `/etc/deepsignal/credentials/` with mode
@@ -123,6 +133,9 @@ Every item carries a ref id. No raw data streams, and no credentials or tokens, 
   - Without systemd-creds it writes a 0600 root-only file and returns a warning. The self-test then says
     "AI key stored without encryption on this host". It never silently pretends.
   - Keys are never accepted on the command line (shell history). They are read from stdin or the wizard.
+  - `hash_token(token) -> str` and `check_token(token, stored) -> bool`: PBKDF2-HMAC-SHA256 from stdlib
+    `hashlib`, at least 200000 iterations, with a random salt and a constant-time compare. Bearer tokens
+    such as MCP access tokens are stored only this way, never in plaintext.
   - Both `store_key` and `load_key` run the commands behind an injectable runner for tests.
 
 **Guided setup** (setup engine functions in `ai_triage/setup.py`, pure or behind injectable I/O, which the
@@ -191,6 +204,10 @@ it removes EEZ hold-back fields and rounds positions as #116 does. A ship can tu
 - systemd-creds present gives an encrypted store; absent gives the warning path (fake runner both ways).
 - `test_call` maps a fake 401, a DNS failure and the budget-exceeded case to plain messages.
 - `preview` shows removal counts.
+- Audit hash chain: verify passes; editing, deleting or reordering a line reports the first break.
+- HMAC signatures verify, and a wrong key fails.
+- The budget works with units `usd`, `tokens` and `bytes` independently, and `settle` corrects reservations.
+- Token hash round trip, a wrong token fails, and the stored form contains no plaintext.
 - Both provider adapters build the right request shape.
 - The fallback briefing is correct and labeled.
 - Timeline entries are written.
