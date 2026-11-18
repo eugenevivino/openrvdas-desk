@@ -13,18 +13,28 @@ push only deepsignal/* fork branches and desk branches; two failures of the same
   --wait-ram, --sub-agents pin, multi-agent off). Installed copy on the MacBook is older (b8f4c53 logic); the new one is
   installed atomically once no DeepSignal job is running.
 
+## Pushed since 07:30Z (cloud builds, lead acceptance passed)
+- p2: flow-state 2df7bd5, rest-api 8756fed, erddap a4f8e4c, best-source 090e208 (a1 of 2), shore-snapshot 159240c,
+  vocab 9749bdb, release-policy 6b19de4 (a1 of 2). Console: auto-pages 62b0ded (a1 of 2).
+- desk gate/linux-actions: r3 da72a75 (48 tests OK; RED 10 failures verified), ledger 85f1f37.
+- onboard-wizard: failed acceptance (1 test, E501); fix round 1 resubmitted task_e_6afd55dd6ddc832f8b1d0e7dad41f5ce.
+- core-v2 came back EMPTY again; diag task task_e_6afd55550514832f98087af3583aa4de on deepsignal/console-core.
+- Automation: autopilot.sh polls every 3 min and runs accept.sh (RAM gated, one at a time); results in
+  accept-results.log; the lead pushes with push-accepted.sh (only paths in the diff).
+
 ## Running
 - MacBook: gate-linux-r3 (ds-codex pid 89102, gpt-6.2-sol high), started 07:25:57Z.
 - Cloud (env deepsignal), resubmitted 07:29Z after Eugene's Node 22 fix: auto-pages, bridge (3), charts, health, install,
   kiosk-night, map, stale-banner, p2 cast-view, console core-v2 (3). Ids: console-cloud/submitted.tsv (*-r2 rows).
+- Cloud batch 4/5: stream-discovery, config-from-inventory, config-lint, component-catalog; visual-gate (2).
 - Cloud: fixture (python), p2 erddap, flow-state, rest-api, best-source (2), met-reports, release-policy (2),
   onboard-wizard, vocab, shore-snapshot. Ids: console-cloud/submitted.tsv and p2-cloud/submitted.tsv.
 
 ## MacBook queue (one Codex job at a time)
 1. gate-linux-r3 (running) -> tests, commit, push. 2. r3 review (Astra ultra, read-only).
 3. #78 ship-coupling review (Astra ultra, read-only; MacBook because the Mini has no DeepSignal login).
-4. qartod-flags review (Astra high). 5. #112 met-formulas build (Astra high). 6. #53 review. 7. #108 route-eta build.
-8. #56 review. Console acceptance checks run between jobs as cloud tasks finish (gate only, no lock).
+(qartod-flags review: run by another thread, pid 24840.) 4. #112 met-formulas build (Astra high). 5. #53 review.
+6. #108 route-eta build. 7. #113 geometry (Astra high). 8. #121 device-pack (Sol high, needs network). 9. #56 review. Console acceptance checks run between jobs as cloud tasks finish (gate only, no lock).
 
 ## Open items / blocked
 - Mini: ~/.codex-deepsignal does not exist there (only Kalon's ~/.codex); not logged in. mini-finish.sh not run.
