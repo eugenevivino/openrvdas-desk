@@ -341,3 +341,11 @@ table above when it gets a design, brief or branch.
 - #102 Physics-conditioned representations (PROPOSED)
 - #103 Cross-vessel sensor ontology (PROPOSED)
 <!-- /backlog-index -->
+
+| Scoreboard writer (#5) | Latest-value boards: cache, layout, render loop; uses #182-#186 | WAITING: brief after #182-#186 land; stale threshold (Eugene) | after inputs | D-SCORE1, D-SCORE2 |
+| Scoreboard profiles (#182) | YAML profile per board model, strict schema, starter profiles | BRIEFED, wave 1 | p2 | fork:deepsignal/p2-scoreboard-profiles, `briefs/p2/182-scoreboard-profiles.md`, D-SCORE2 |
+| Scoreboard transports (#183) | Serial, RS-485, TCP, UDP, Modbus RTU and TCP | BRIEFED, wave 1 | p2 | fork:deepsignal/p2-scoreboard-transports, `briefs/p2/183-scoreboard-transports.md` |
+| Scoreboard text codec (#184) | Templated frames with address and checksum | BRIEFED, wave 1 | p2 | fork:deepsignal/p2-scoreboard-text-codec, `briefs/p2/184-scoreboard-text-codec.md` |
+| Scoreboard Alpha codec (#185) | Alpha Protocol LED signs | BRIEFED, wave 1 | p2 | fork:deepsignal/p2-scoreboard-alpha-codec, `briefs/p2/185-scoreboard-alpha-codec.md` |
+| Scoreboard Modbus codec (#186) | Register writes for Modbus-only large displays | BRIEFED, wave 1 | p2 | fork:deepsignal/p2-scoreboard-modbus-codec, `briefs/p2/186-scoreboard-modbus-codec.md` |
+| Scoreboard bench tool (#187) | Check a profile's bytes, send a test frame | BRIEFED, wave 2 (after #182-#186 merge to `deepsignal/scoreboard-integ`) | p2 | fork:deepsignal/p2-scoreboard-bench, `briefs/p2/187-scoreboard-bench.md` |

@@ -424,3 +424,14 @@ Its second "failure" was the paho-mqtt NameError on the Mac (contrib mqtt_reader
 
 ### D-POSITION1 DeepSignal is the vessel's operational truth layer (2026-11-18, Eugene approved the pain-points recommendations)
 Interoperate with UHDAS, SIS and SCS, do not replace them. Freshness and staleness already in the MVP, nothing moves; console chain v0 (#162) is an MVP stretch that joins console-mvp only if green by Fri 11-21. Phase 2 order after the MVP: truth-layer core (#162, #164, #165, #163, #168, #167, #166, #169), then ecosystem (#133, #131, #134, #132), then setup assist, then parity. Seismic #158 and #159 held from merge-priority until interviews (evidence rated insufficient); #158 may finish but is not prioritized.
+
+### D-SCORE2 Vendor-agnostic scoreboard output (2026-11-18, ACCEPTED by Eugene)
+Target is outdoor deck LED scoreboards (Eugene: "not the LCI-90i, the outside LED scoreboards").
+Ships differ and public sources name no deck board brands, so the writer knows no vendors (Eugene:
+"let's make it agnostic since various ships probably have various methods"). Three layers: transport
+(serial, rs485, tcp, udp, modbus_rtu, modbus_tcp), codec (text, alpha, modbus), profile (YAML data
+per board model; ship profiles in `local/scoreboard_profiles/` shadow packaged ones). New board =
+new profile, no code. Transports are written on pyserial and sockets, not by wrapping OpenRVDAS
+writers, because the contrib base tree's writers differ from current core. Shared interface
+`briefs/scoreboard/contract.py`. Briefs #182 to #187. Eugene gathers board models himself.
+

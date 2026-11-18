@@ -71,3 +71,18 @@ Written 2026-11-18 by the parity thread, ranked by value from docs/TARGET-PARITY
 File ownership is disjoint: Python modules own `contrib/deepsignal/<module>/`, its test folder, one docs file and `configs/<module>_*.yaml`; console modules own `src/modules/<id>/**` and one docs file; core tasks own only their new files. Empty `__init__.py` files are byte-identical across branches.
 
 Environments: py and core tasks need Python 3.12 plus OpenRVDAS requirements, pytest and flake8. node tasks need the console environment (Node 22, `npm ci` in `contrib/deepsignal/console`). mac tasks run through `~/bin/ds-codex` with Astra high.
+
+
+## Scoreboard drivers (IDEAS #182-#187, D-SCORE2)
+
+Wave 1 runs in parallel (disjoint files; `contract.py` byte-identical on every branch, sha256 in each brief). Then the build lead merges #182 to #186 into `deepsignal/scoreboard-integ` and launches wave 2.
+
+| IDEAS | Task | Branch | Base | Lane | Wave | Depends on |
+|---|---|---|---|---|---|---|
+| #182 | [Profile schema and loader](182-scoreboard-profiles.md), prompt `briefs/cloud/p2-scoreboard-profiles.md` | `deepsignal/p2-scoreboard-profiles` | `3b4b76e` | cloud | 1 | none |
+| #183 | [Transports](183-scoreboard-transports.md), prompt `briefs/cloud/p2-scoreboard-transports.md` | `deepsignal/p2-scoreboard-transports` | `3b4b76e` | cloud | 1 | none |
+| #184 | [Text codec](184-scoreboard-text-codec.md), prompt `briefs/cloud/p2-scoreboard-text-codec.md` | `deepsignal/p2-scoreboard-text-codec` | `3b4b76e` | cloud | 1 | none |
+| #185 | [Alpha codec](185-scoreboard-alpha-codec.md), prompt `briefs/cloud/p2-scoreboard-alpha-codec.md` | `deepsignal/p2-scoreboard-alpha-codec` | `3b4b76e` | cloud | 1 | none |
+| #186 | [Modbus codec](186-scoreboard-modbus-codec.md), prompt `briefs/cloud/p2-scoreboard-modbus-codec.md` | `deepsignal/p2-scoreboard-modbus-codec` | `3b4b76e` | cloud | 1 | none |
+| #187 | [Bench tool](187-scoreboard-bench.md), prompt `briefs/cloud/p2-scoreboard-bench.md` | `deepsignal/p2-scoreboard-bench` | `deepsignal/scoreboard-integ` | cloud | 2 | #182-#186 merged |
+

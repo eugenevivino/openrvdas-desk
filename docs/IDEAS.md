@@ -5,7 +5,7 @@ everything, so nothing raised in a thread is lost. Add a row the day an idea
 comes up. Never delete a row: mark it DROPPED with a reason.
 
 
-**Numbering: the build lead owns IDEAS numbers (next free: 182; 161 fusion, 162-169 operational truth layer, 170-181 reserved for the sonar-science thread); 162-173 reserved for the sonar-science thread). Other threads do not
+**Numbering: the build lead owns IDEAS numbers (next free: 188; 161 fusion, 162-169 operational truth layer, 170-181 sonar-science, 182-187 scoreboard drivers; threads request a block from the build lead before writing briefs). Other threads do not
 assign numbers. Write ideas as unnumbered drafts in your patch notes and ask the build
 lead for a range, to avoid collisions (three-way collision on 2026-11-18).**
 Status: PROPOSED (idea only), DESIGNED (design doc exists), BUILDING (brief
@@ -300,3 +300,17 @@ Eugene approved acting on the pain-points map recommendations (2026-11-18 08:46Z
 | 167 | Alarm-linked runbooks | Per-stream vessel runbooks (wiring, endpoint, power, spares, causes by stage, escalation) opened from alarms, with recorded fixes. Brief `briefs/p2/167-runbooks.md` | 5/2/2 | DESIGNED | 2 | PAIN-POINTS |
 | 168 | Unified event timeline | One timeline of config changes, transitions, init, EEZ, overrides, fixes, Sealog events and notes; "what changed before this" query and daily digest. Brief `briefs/p2/168-event-timeline.md` | 4/5/4 | DESIGNED | 2 | PAIN-POINTS |
 | 169 | Science trust view | Read-only console page: per variable freshness, QC, calibration, source, units, chain root and a plain verdict; never "looks good" without a QC flag. Brief `briefs/p2/169-console-trust.md` | 2/5/4 | DESIGNED | 2 | PAIN-POINTS |
+
+
+## Scoreboard drivers, vendor-agnostic (2026-11-18, scoreboard thread; numbers 174-179 from the build lead)
+
+D-SCORE2. Outdoor deck LED scoreboards; a new board is a profile file, not code. Shared interface `briefs/scoreboard/contract.py`. #5 (the ScoreboardWriter: cache, layout, render loop) consumes these and still needs its own brief.
+
+| # | Idea | One line | Value | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| 182 | Scoreboard profile schema and loader | YAML profile per board model, strict schema, local profiles shadow packaged ones, four starter profiles (generic ASCII, Alpha, two labelled examples). Brief `briefs/p2/182-scoreboard-profiles.md` | 4/2/1 | BUILDING | 1 | Eugene, T-SCORE |
+| 183 | Scoreboard transports | Serial, RS-485, TCP, UDP, Modbus RTU and Modbus TCP (function 16 framed by hand, no new dependency). Brief `briefs/p2/183-scoreboard-transports.md` | 4/2/1 | BUILDING | 1 | Eugene, T-SCORE |
+| 184 | Templated text codec | Prefix, address, terminator and named checksum from the profile template; never truncates a number. Brief `briefs/p2/184-scoreboard-text-codec.md` | 4/2/1 | BUILDING | 1 | Eugene, T-SCORE |
+| 185 | Alpha Protocol codec | Alpha Communications Protocol Rev D Write TEXT frames with checksum; cell text cannot inject control bytes. Brief `briefs/p2/185-scoreboard-alpha-codec.md` | 3/2/1 | BUILDING | 1 | Eugene, T-SCORE |
+| 186 | Modbus register codec | Cells to register writes (int16 to float32, scale, word order), explicit stale value, never clamps or wraps. Brief `briefs/p2/186-scoreboard-modbus-codec.md` | 3/2/1 | BUILDING | 1 | Eugene, T-SCORE |
+| 187 | Scoreboard bench tool | `list`, `check` (shows exact bytes) and `send` (dry run unless `--yes`) for a profile on the bench. Wave 2 after 182-#186 merge. Brief `briefs/p2/187-scoreboard-bench.md` | 5/1/1 | DESIGNED | 1 | Eugene, T-SCORE |
