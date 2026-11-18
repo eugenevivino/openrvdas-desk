@@ -154,13 +154,16 @@ login, workspace, cloud environments or config.
   Every DeepSignal `codex` and `codex cloud` command runs with `CODEX_HOME=$HOME/.codex-deepsignal`.
 - Cloud: `CODEX_HOME=$HOME/.codex-deepsignal codex cloud exec --env <ENV_ID> ...`. The env id
   must come from that home's picker. The l2audio and SoftwareDACSystem envs are never used.
-- Mac jobs: DeepSignal-owned wrapper `~/bin/ds-codex` (not Kalon's file): sets that
-  CODEX_HOME, refuses no `-m`, refuses any cwd outside `/private/tmp/deepsignal/`, then calls
-  `~/bin/codex-run`. Kalon's script is never edited.
+- Mac jobs: DeepSignal-owned wrapper `~/bin/ds-codex` calls `codex exec` directly under
+  `CODEX_HOME=$HOME/.codex-deepsignal` and writes its own log
+  `~/.codex-deepsignal/launch-log.txt`. It enforces: `-m` required, cwd under
+  `/private/tmp/deepsignal/`, one DeepSignal job at a time, `KALON_ALLOW_ASTRA=1`-style
+  Astra opt-in (rule 27), connector/plugin/MCP guard, `writable_roots=[]`. It does not call
+  `codex-run`, so DeepSignal leaves no trace in `~/.codex` (coordinator call, 2026-11-18).
+  Kalon's script is never edited.
 - VERIFIED 2026-11-18: codex-run never mentions CODEX_HOME and passes the environment
   through (exec), so an inherited CODEX_HOME reaches codex and its connector guard. Its one
-  hardcoded path is `LOG=~/.codex/launch-log.txt`, so launches are still logged in Kalon's
-  home (Eugene decides: accept, or have ds-codex call `codex exec` directly).
+  hardcoded path is `LOG=~/.codex/launch-log.txt`, so it is not used for DeepSignal.
 - Leak until the new home is live: DeepSignal jobs load Kalon's `~/.codex/AGENTS.md`,
   memories and sessions. New home is empty (no auth, no config yet).
 - New home config.toml: copy `service_tier = "default"` and `[features] js_repl = false`;
