@@ -9,7 +9,7 @@ stop and ask the lead.
 - Module: exactly one (rule 24). Branch `deepsignal/<module>` for overlay work, `<area>/<slug>` for core fixes
 - Mac scratch path: `/private/tmp/deepsignal/<module>/` only (docs/CODEX.md rule 1b)
 - Base: fork `dev` (core) or `contrib/master` (overlay) at <sha>
-- Model and effort: <tier from docs/CODEX.md section 2>, fresh session, under 40 turns
+- Model and effort: <tier from docs/CODEX.md section 2, e.g. Sol 6.2 high or Astra 6.2 xhigh>, fresh session, under 40 turns
 - Upstream home: core | openrvdas_contrib | separate package | fork only
 
 ## Goal

@@ -199,3 +199,11 @@ missing shown honestly, night-safe screens, no hidden actions, 15-minute
 enable test). Every review answers it; a FAIL blocks. Applies to the scoreboard,
 the console, the MCP server's replies, error messages and docs alike.
 
+### D-TEAM6 Codex models: Sol 6.2 and Astra 6.2 (2026-11-18, DECIDED)
+Eugene: new Codex models are out; use Astra 6.2 and Sol 6.2 in place of the
+earlier Astra and Sol picks. Tiers and efforts in `docs/CODEX.md` section 2 are
+unchanged, only the versions. Running jobs finish on their current model.
+Open: the exact id strings and whether `~/bin/codex-run` (Kalon's script, not
+ours) needs its default or allow-list updated. Check on the MacBook and Mini
+before the next job; change nothing on a Mac without Eugene naming it (rule 15).
+

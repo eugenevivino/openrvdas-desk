@@ -45,6 +45,11 @@ but the rules below apply from the next run on.
    only on Eugene's yes, into an isolated venv, pinned (C1 last line).
 
 **Right-size the model** (C1 rule 2, C2, C3 rule 2)
+Current picks (Eugene 2026-11-18, D-TEAM6): **Sol 6.2** and **Astra 6.2**. Every
+"Sol" and "Astra" in this file means these versions. Luna is unchanged. The
+exact model id string for `codex-run` is unconfirmed: read it from
+`~/bin/codex-run --help` or `codex --help`, then record it here. A job already
+running finishes on its model; new jobs use 6.2.
 Cheapest model with a good chance of success; a stronger check only where
 risk is high. Mapped to our work:
 

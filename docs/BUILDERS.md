@@ -21,7 +21,8 @@ and independently reviewed; it is the last exception.
 
 ## Models (Eugene, 2026-11-18)
 
-Cheapest model that is likely to succeed. Astra is approved for harder work
+Cheapest model that is likely to succeed. Current picks: Sol 6.2 and Astra 6.2
+(D-TEAM6). Astra is approved for harder work
 (reviews, high-risk tier, root causes, design) at the effort it needs (high,
 xhigh, ultra per `docs/CODEX.md` section 2). Say the model and effort in the
 brief and record them in `docs/COST-LEDGER.tsv`.
