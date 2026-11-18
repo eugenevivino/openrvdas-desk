@@ -19,9 +19,10 @@ LOG="$DS_HOME/launch-log.txt"
 die() { echo "ds-codex: REFUSED: $2" >&2; exit "$1"; }
 
 # Parse our own flag and the model; copy everything else through.
-dry=0; model=""; effort="default"; prev=""; args=(); cds=()
+dry=0; subs=0; model=""; effort="default"; prev=""; args=(); cds=()
 for a in "$@"; do
   if [ "$a" = "--dry-run" ]; then dry=1; prev="$a"; continue; fi
+  if [ "$a" = "--sub-agents" ]; then subs=1; prev="$a"; continue; fi
   case "$prev" in
     -m|--model) model="$a";;
     -C|--cd) cds+=("$a");;
@@ -51,7 +52,7 @@ GUARD_FEATURES=(apps plugins remote_plugin plugin_sharing enable_mcp_apps codex_
 check_cfg() {
   local v="$1" k f g; k="${v%%=*}"; k="${k// /}"
   case "$k" in
-    mcp_servers*|apps|apps.*|profile|profiles*|features) die 8 "config key '$k' is not allowed";;
+    mcp_servers*|apps|apps.*|profile|profiles*|features|agents|agents.*|model_catalog_json) die 8 "config key '$k' is not allowed (ds-codex sets it)";;
     sandbox_workspace_write*|sandbox_mode|approval_policy) die 4 "config key '$k' is set by ds-codex, not the caller";;
   esac
   if [[ "$k" == features.* ]]; then
@@ -81,7 +82,43 @@ done
 # (e) Connector guard, fail closed (logic copied from Kalon's codex-run, run against our own home).
 feats=$("$CX" features list 2>/dev/null | awk '{print $1}')
 for need in apps plugins; do printf '%s\n' "$feats" | grep -qx "$need" || die 8 "the installed CLI has no '$need' switch, so the connector guard cannot be applied"; done
-dis=(); for f in "${GUARD_FEATURES[@]}"; do printf '%s\n' "$feats" | grep -qx "$f" && dis+=(--disable "$f"); done
+dis=(); for f in "${GUARD_FEATURES[@]}"; do
+  [ "$subs" = 1 ] && [ "$f" = multi_agent ] && continue   # --sub-agents re-enables only the v1 switch; v2 and the rest stay off
+  printf '%s\n' "$feats" | grep -qx "$f" && dis+=(--disable "$f")
+done
+
+# --sub-agents (opt-in, default OFF; Eugene 2026-11-18): spawn_agent takes its own model and reasoning_effort and the
+# [agents] defaults do not bind it, so the pin is a per-job model catalog (model_catalog_json): only the parent's model and
+# the cheaper gpt-6-luna, each limited to efforts no higher than the parent's. Astra is in it only when the parent is Astra
+# (which already needs KALON_ALLOW_ASTRA=1). Depth 1, at most 2 sub-agents at once, 15 min per sub-agent job.
+# A sub-agent never counts as the independent review. After the job, every sub-agent session is audited and logged.
+subcfg=()
+if [ "$subs" = 1 ]; then
+  CATDIR="$SCRATCH/.ds-codex-catalogs"; mkdir -p "$CATDIR"; CAT="$CATDIR/$(date -u +%Y%m%dT%H%M%SZ)-$$.json"
+  cap=$(python3 -I - "$DS_HOME/models_cache.json" "$CAT" "$model" "$effort" <<'PY'
+import json, sys
+src, out, parent, eff = sys.argv[1:5]
+order = ["minimal", "low", "medium", "high", "xhigh", "max", "ultra"]
+ms = {m["slug"]: m for m in json.load(open(src))["models"]}
+if parent not in ms: sys.exit("parent model not in the CLI model cache")
+if eff == "default": eff = ms[parent].get("default_reasoning_level") or "medium"
+if eff not in order: sys.exit("unknown effort " + eff)
+keep = []
+for slug in dict.fromkeys([parent, "gpt-6-luna"]):
+    if slug not in ms: continue
+    m = dict(ms[slug])
+    m["supported_reasoning_levels"] = [l for l in m["supported_reasoning_levels"] if order.index(l["effort"]) <= order.index(eff)]
+    if not m["supported_reasoning_levels"]: continue
+    if m.get("default_reasoning_level") not in [l["effort"] for l in m["supported_reasoning_levels"]]:
+        m["default_reasoning_level"] = m["supported_reasoning_levels"][-1]["effort"]
+    keep.append(m)
+json.dump({"models": keep}, open(out, "w"))
+print(eff)
+PY
+  ) || die 8 "could not build the sub-agent model catalog (fail closed)"
+  subcfg=(-c "model_catalog_json=\"$CAT\"" -c "agents.max_depth=1" -c "agents.max_concurrent_threads_per_session=2"
+          -c "agents.default_subagent_model=\"$model\"" -c "agents.default_subagent_reasoning_effort=\"$cap\"" -c "agents.job_max_runtime_seconds=900")
+fi
 mcp_names() { "$CX" "$@" mcp list --json 2>/dev/null | python3 -I -c 'import sys,json; print("\n".join(s["name"] for s in json.load(sys.stdin) if s.get("enabled")))'; }
 servers=$(mcp_names "${dis[@]}") || die 8 "MCP server list unreadable (fail closed)"
 off=(); while IFS= read -r n; do [ -n "$n" ] && off+=(-c "mcp_servers.$n.enabled=false"); done <<< "$servers"
@@ -89,7 +126,7 @@ still=$(mcp_names "${dis[@]}" "${off[@]+"${off[@]}"}") || die 8 "MCP server list
 [ -z "$still" ] || die 8 "MCP servers still enabled after overrides: $still"
 
 sb=(); [[ " ${args[*]+"${args[*]}"} " == *" -s "* || " ${args[*]+"${args[*]}"} " == *" --sandbox "* || " ${args[*]+"${args[*]}"} " == *"--sandbox="* ]] || sb=(--sandbox workspace-write)
-cmd=("$CX" exec "${dis[@]}" "${off[@]+"${off[@]}"}" -c 'approval_policy="never"' -c 'sandbox_workspace_write.writable_roots=[]' "${sb[@]+"${sb[@]}"}" "${args[@]+"${args[@]}"}")
+cmd=("$CX" exec "${dis[@]}" "${off[@]+"${off[@]}"}" "${subcfg[@]+"${subcfg[@]}"}" -c 'approval_policy="never"' -c 'sandbox_workspace_write.writable_roots=[]' "${sb[@]+"${sb[@]}"}" "${args[@]+"${args[@]}"}")
 
 # (d) One DeepSignal job at a time: lock dir holding the owner PID; a lock whose PID is gone is stale and removed.
 lock_held() { [ -d "$LOCK" ] || return 1; local p; p=$(cat "$LOCK/pid" 2>/dev/null); [ -n "$p" ] && kill -0 "$p" 2>/dev/null && { echo "$p"; return 0; }; return 1; }
@@ -102,9 +139,33 @@ if [ "$dry" = 1 ]; then printf 'CODEX_HOME=%q' "$CODEX_HOME"; printf ' %q' "${cm
 mkdir "$LOCK" 2>/dev/null || die 10 "another DeepSignal Codex job took $LOCK just now"
 echo $$ > "$LOCK/pid"
 child=""
-cleanup() { rm -rf "$LOCK"; }
+cleanup() { rm -rf "$LOCK"; rm -f "$SCRATCH/.ds-codex-start-$$"; }
 on_signal() { [ -n "$child" ] && kill -TERM "$child" 2>/dev/null; wait "$child" 2>/dev/null; rc=$((128 + $1)); log_line "$rc"; cleanup; exit "$rc"; }
-log_line() { printf '%s\tmodel=%s\teffort=%s\tsandbox=%s\tcwd=%s\texit=%s\n' "$(date -u +%FT%TZ)" "$model" "$effort" "$sandbox" "$(pwd -P)" "$1" >> "$LOG"; }
+START_MARK="$SCRATCH/.ds-codex-start-$$"; : > "$START_MARK"
+# Post-job audit: every session file written since launch that came from a sub-agent spawn, with the models and efforts it ran.
+audit_subagents() {
+  find "$DS_HOME/sessions" -name '*.jsonl' -newer "$START_MARK" 2>/dev/null | python3 -I -c '
+import json, sys, collections
+out = []
+for f in sys.stdin.read().split():
+    meta = {}; seen = collections.Counter()
+    for l in open(f, errors="replace"):
+        try: d = json.loads(l)
+        except ValueError: continue
+        p = d.get("payload", {})
+        if d.get("type") == "session_meta" and not meta: meta = p
+        elif d.get("type") == "turn_context": seen[(p.get("model"), p.get("effort"))] += 1
+    if isinstance(meta.get("source"), dict) and "subagent" in meta["source"]:
+        out.append(",".join("%s/%s" % k for k in seen) or "unknown")
+print(";".join(out) or "none")'
+}
+log_line() {
+  local sa; sa=$(audit_subagents)
+  printf '%s\tmodel=%s\teffort=%s\tsandbox=%s\tsub_agents=%s\tsub_agent_models=%s\tcwd=%s\texit=%s\n' "$(date -u +%FT%TZ)" "$model" "$effort" "$sandbox" "$([ "$subs" = 1 ] && echo on || echo off)" "$sa" "$(pwd -P)" "$1" >> "$LOG"
+  case "$sa" in none) ;; *) for x in ${sa//;/ }; do for y in ${x//,/ }; do
+    case "${y%%/*}" in "$model"|gpt-6-luna) [ "$subs" = 1 ] || echo "ds-codex: WARNING: sub-agent ran ($y) although --sub-agents was off" >&2;;
+      *) echo "ds-codex: WARNING: sub-agent ran on ${y%%/*}, not the parent model $model or gpt-6-luna" >&2;; esac; done; done;; esac
+}
 trap 'on_signal 14' ALRM; trap 'on_signal 15' TERM; trap 'on_signal 2' INT; trap 'on_signal 1' HUP
 
 # (h) Run codex exec as a child (not exec) so the exit code is logged (f) and the lock is released.
