@@ -5,7 +5,7 @@ everything, so nothing raised in a thread is lost. Add a row the day an idea
 comes up. Never delete a row: mark it DROPPED with a reason.
 
 
-**Numbering: the build lead owns IDEAS numbers (next free: 199; 189-198 reserved for the security architecture thread; 188 ai-triage (ship-pain thread); 161 fusion, 162-169 operational truth layer, 170-181 sonar-science, 182-187 scoreboard drivers; threads request a block from the build lead before writing briefs). Other threads do not
+**Numbering: the build lead owns IDEAS numbers (next free: 200; 199 MCP read-filtered CDS broker; 189-198 reserved for the security architecture thread; 188 ai-triage (ship-pain thread); 161 fusion, 162-169 operational truth layer, 170-181 sonar-science, 182-187 scoreboard drivers; threads request a block from the build lead before writing briefs). Other threads do not
 assign numbers. Write ideas as unnumbered drafts in your patch notes and ask the build
 lead for a range, to avoid collisions (three-way collision on 2026-11-18).**
 Status: PROPOSED (idea only), DESIGNED (design doc exists), BUILDING (brief
@@ -335,3 +335,4 @@ D-SCORE2. Outdoor deck LED scoreboards; a new board is a profile file, not code.
 | 196 | STIG-aligned policy profile | standard vs stig profiles: banner, idle/absolute timeouts, lockout, password rules, concurrent sessions; v3 CKL self-assessment | 2/2/5 | DESIGNED | 2/3 | T-SEC |
 | 197 | Trust zones and CDS lockdown | CDS on 127.0.0.1, authenticated read-only /cds-ws, publish refused from browsers, supervisord UI off, security headers, nftables zone templates (D-SEC0) | 5/5/5 | DESIGNED | MVP | T-SEC |
 | 198 | Supply chain | Hash-pinned locks, CycloneDX SBOM, pip-audit/npm audit with shipped offline snapshot, ECDSA-signed releases verified offline, signed tags; v3 SLSA provenance | 3/2/5 | DESIGNED | 2 | T-SEC |
+| 199 | MCP read-filtered CDS broker | Broker in front of the CDS for MCP and remote readers: field filtering, host-wide admission limits, artifact quotas, reserved logging disk; required before any remote MCP use (review F3, F5). Design: `research/2026-11-18-mcp-design.md` | 4/5/5 | DESIGNED | 3 | MCP review |

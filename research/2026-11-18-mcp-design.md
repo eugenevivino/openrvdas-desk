@@ -1,4 +1,4 @@
-<!-- Source: Claude Doc https://claude.ai/artifact/VtfCM7KR2oRVa1BXiqnbFb, exported 2026-11-18 (rev 40). The architecture diagram is a placeholder here; see the doc. -->
+<!-- Source: Claude Doc https://claude.ai/artifact/VtfCM7KR2oRVa1BXiqnbFb, exported 2026-11-18 after folding in the Astra review (8699cfe). The architecture diagram is a placeholder here; see the doc. -->
 
 # OpenRVDAS MCP Server Design
 
@@ -247,7 +247,7 @@ The tech reads the summary, and either loads it in the console or says "apply it
 {"tool": "apply", "arguments": {"proposal_id": "p-0042"}}
 ```
 
-`apply` exists only when the server was started with `--enable-control`. Before doing anything it asks the human through MCP elicitation (an on-screen form the client shows): "Add logger gps2 and switch it to net+log? Diff: +38 lines. Confirm / Cancel." Only Confirm proceeds. The server then saves rollback proposal `p-0043`, applies the change, checks that `GPSLatitude` reaches the cache within 30 s, and logs it with source `mcp` and the user's name. A client that cannot show the form gets a one-time code instead, which the tech confirms with `deepsignal approve <code>` at the console. A mode change or instrument init command follows the same path.
+`apply` exists only when the server was started with `--enable-control`, and it never trusts the MCP client to confirm. It returns "waiting for approval" and a code. The tech opens the trusted approval screen in the console, reauthenticates, reads the impact statement generated from the frozen plan ("adds logger gps2 on /dev/ttyUSB2, writes /data/gps2, no instrument sends"), and approves. The executor then writes durable intent, checks the base revision and proposal digest atomically, applies, saves rollback proposal `p-0043`, verifies `GPSLatitude` from the new logger within 30 s and stability for 60 s, and records the outcome in the witnessed audit chain. A retry with the same approval returns that recorded outcome, never a second commit.
 
 **6. "Is the TSG salinity drifting, and what should the new calibration be?"**
 
@@ -280,7 +280,7 @@ The server enforces safety itself. A client's "read-only" setting or a well-beha
 Rules:
 
 - [ ] **Not listed means not callable.** The apply tool is not registered unless `--enable-control` is set, so a model cannot discover or attempt it; proposals are still loaded by a person in the console or CLI.
-- [ ] **Human confirms every control call** through MCP elicitation, showing the diff and impact. If the client cannot show elicitation forms, control calls fail closed.
+- [ ] **Human confirms every control call** on the trusted approval screen in the console, never inside the MCP client (review F1).
 - [ ] **Real identity.** Control goes through Django REST with the operator's own token, so OpenRVDAS permissions and logs apply. No shared service account for writes.
 - [ ] **Audit.** Every call (tool, arguments, caller, result size) goes to a JSONL audit log; every control call also goes to the OpenRVDAS message log and state journal.
 - [ ] **Secrets never leave.** Reuse `config_snapshot`'s redaction for any config the AI sees. InfluxDB tokens and DB passwords stay in server settings.
@@ -321,6 +321,29 @@ Designed in from the start: the server assumes every input can be hostile and ev
 **Mapping (kept light):** IMO MSC-FAL.1/Circ.3 and NIST CSF use the same five functions. Identify: field, component and proposal catalogs. Protect: roles (viewer, tech, admin), tokens, TLS, default-deny writes, pinned dependencies. Detect: audit log, rate-limit and new-address alerts, `analyze` quality checks. Respond: token revocation, the `--enable-control` off switch. Recover: rollback proposals, config snapshots, backup journey.
 
 **Users:** techs are the primary users and most evals target their tasks. Science party journeys (data quality now, event and station logging, downloads and end-of-cruise package, custom plots and derived fields, marking contaminated intervals, plain-language questions) are covered at lower priority, all through Read tools plus `propose` for anything that changes a config.
+
+### Changes from the independent security review (18 Nov)
+
+An Astra review rated the design FIX FIRST: 2 critical and 5 high findings, 1 medium ([review](https://github.com/eugenevivino/openrvdas-desk/blob/8699cfe/research/2026-11-18-mcp-design-review.md)). All are adopted. Where this table disagrees with text above, this table wins.
+
+| ID | Finding | Design change |
+| --- | --- | --- |
+| F1 critical | A client can answer "Confirm" itself; a line count can hide a mode change or future instrument sends | Approval moves off the MCP client entirely, onto one **trusted approval screen** (console, local reauthentication plus the security thread's MFA). It shows an impact statement generated from the frozen plan the executor will commit: before and after values, destinations, affected loggers, send triggers. Elicitation becomes a notice only. The approval code is random, single-use, bound to vessel, operator, proposal digest and nonce, expires in 2 minutes, and allows only a few guesses. |
+| F2 critical | An approved reader can re-send after reconnect; YAML rollback cannot undo a persistent device command | Approval binds to device identity (port plus serial number or reply signature), profile digest, exact byte templates and bounded triggers (on open, after silence, on reconnect, max per hour). Readers never send persist steps. Persistent commands need a separate local approval and a written recovery procedure, and are flagged irreversible before approval. Exclusive port ownership; stop on the first unexpected reply and quarantine the outcome. |
+| F3 high | The CDS accepts WebSocket writes and binds to all interfaces; ServerAPI setters take no caller identity | MCP never connects clients to the CDS. A read-filtered broker adapter sits in front of it; only the control executor reaches backend writes, through operator-authenticated calls. |
+| F4 high | Role overlap; binding and credential lifetime lack enforceable defaults | Roles viewer, tech, admin only. Tech control always needs ship approval; remote admin control is off by default and needs a step-up approval when on. Enrolled per-user, vessel-scoped credentials: 15-minute access tokens, rotating single-use refresh tokens capped at one shift, stored in the shore OS keychain. Refresh reuse, loss or role change revokes the whole family, open streams and pending grants. Listener binds one approved interface and address, refuses wildcard and public IPv4 and IPv6, stops on interface loss or change, checks Host and Origin against exact allowlists, ignores forwarding headers, checks token audience per request. |
+| F5 high | Per-process limits leave host-wide load and disk unbounded | One host-wide broker with fixed field ids and bounded subscriptions; caps on expanded fields, input bytes, scan time and rows before dispatch; cancellable workers with per-user and global CPU, memory and concurrency ceilings; reserved logging disk; artifact quotas by bytes and count with expiry; admissions stop at low free space. History routing follows actual cache coverage (2,880 records at 1 Hz is about 48 minutes, not 24 hours). |
+| F6 high | Validation accepts paths; errors, resources and exports can carry instructions or secrets across users | Owner-scoped object ids instead of paths; validation confined (paths, includes, classes, destinations, arguments checked before loading); one disclosure policy applied to every output, including diffs, errors, links, exports, audit and cloud-bound replies. Raw instrument text only behind a deliberate inspect step; errors become stable codes plus crew actions; config comments are stripped from approval text; labels are escaped. |
+| F7 high | A local signed chain can lose its tail; rollback leaves recovery unverified | Signing key held outside the gateway; chain heads witnessed on an independent ship system; continuity verified on restart. Durable intent is written before any control action; interrupted attempts are reconciled before retry; approvals are consumed once with an idempotency key, so a retry returns the recorded outcome. |
+| F8 medium | Eleven names hide incompatible kinds, large results and long waits | Keep the 11 entry points but publish typed variants per kind with prerequisites and one canonical name each. Per-tool reply budgets (table below). Scans, fits, exports, long detection and apply verification run as resumable, owner-scoped jobs. Release is gated on replay evals and novice time tests. |
+
+**Reply budgets** (typical / max, KiB and tokens): fields, status, validate, detect 1/300 to 4/1,200; values, analyze, calibrate, propose, diff 2/600 to 8/2,000; export and apply 0.5/150 to 2/600. Plots stay behind authorized links (a 60 KB PNG is about 80 KB as base64).
+
+**Eval release gate:** the review's 20 cases (E01 to E20: live, history, health, parser, clock, calibration, disk, GPS setup, revert, init, shore repair, crash, spare swap, handoff resume, NMEA injection, stderr injection, role denial, expired token, stale approval, secret canaries) replace the draft list. Pass rule: every safety check passes, at least 18 of 20 correct, at least 18 of 20 within token budget, median extra human actions at most 1. E01, E04, E05, E08, E09 run on both Claude and Codex; E03, E11, E14 run over 64 kbit/s HTTPS.
+
+**Setup targets** (from review Q14): GPS from plug-in to live data in 600 s or less, 3 human actions or fewer (request, optional port pick, approval), zero YAML, new logger verified fresh within 30 s and stable for 60 s. MCP client enrollment tested separately: under 5 minutes, 5 actions or fewer. Neither is demonstrated yet.
+
+**Governance:** a named shipboard owner signs off any remote-control exception (NIST CSF 2.0 Govern). Before hardware control is enabled, drill offline token revocation and recovery from an interrupted init (IMO Respond and Recover).
 
 ## Live vs historical, offline and shore
 
@@ -378,6 +401,8 @@ python -m contrib.deepsignal.mcp --enable-control       # only when apply is wan
 
 The client starts the server itself over stdio. Add `--http :8800` for shore (Read only).
 
+**Guided MCP setup** (journey J-TECH-SETUP-MCP-1, in the wizard, console and CLI): 1) create a per-user token, 2) pick a role, viewer by default, 3) copy the config snippet for Claude Desktop, Claude Code or Codex, 4) test the connection, 5) the wizard checks the bind address and refuses to finish if the server is reachable beyond the VPN or LAN. MCP is the inbound direction (an AI client asks the ship); the outbound AI-assist feature (#188) calls a model API. Both share one guard layer, `contrib/deepsignal/ai_guard/` (redaction, budgets, hash-chained audit, encrypted secrets), so tokens are stored hashed and every reply passes the same redaction.
+
 **Client setup** (same server, one config entry each):
 
 | Client | How it connects |
@@ -392,7 +417,7 @@ The test suite runs each phase through the SDK's own client, and a release is ch
 
 - [ ] **1. Read core (ROADMAP phase 2):** `fields`, `values` (CDS window only), `status`, the proposal store, `setup-client` and `doctor`. Done when Claude and Codex both answer "is everything logging?" on simulated NBP1406.
 - [ ] **2. Setup tools (ROADMAP phase 2, after #125, #114, #126, #127, #128 land):** the `setup` facade plus `detect`, `propose`, `diff`, `validate`. Done when a simulated GPS on a virtual serial port goes from unknown to a validated proposal in 3 tool calls.
-- [ ] **3. Apply:** `apply` with elicitation, approval-code fallback, rollback and verification; init profiles once the MetAcq parity brief lands. Done after a high-risk review of the write path.
+- [ ] **3. Apply:** `apply` with the trusted approval screen (shared with the security thread), bound single-use receipts, durable intent, witnessed audit, rollback and verification; init profiles once the MetAcq parity brief lands. Done after a high-risk review of the write path.
 - [ ] **4. History and analysis:** `values` over InfluxDB and log files, `analyze`, `export`, prompts.
 - [ ] **5. Sensor health and calibration:** `calibrate` kinds, including signals of opportunity. Done when planted clock lag and salinity drift are found and the fit recovers planted coefficients within their 95% interval.
 - [ ] **6. Shore:** streamable HTTP with auth, Read only.

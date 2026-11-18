@@ -161,3 +161,6 @@ No code change needed: stop and report. Two fix rounds still red: stop and repor
 - RED receipt:
 - Acceptance tails:
 - Open questions:
+
+## Addendum 2026-11-18 (MCP design review F2)
+Approval must bind device identity, profile digest, exact bytes and bounded triggers, so an approved reader cannot re-transmit after a reconnect. Persistent (non-volatile) commands need a separate local approval. Applies to the #130 fix round or any resubmission; the running task is not restarted for this.

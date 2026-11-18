@@ -368,4 +368,4 @@ Security-first design for the console, CDS, REST and MCP. Full design: `docs/SEC
 | #196 STIG-aligned policy profile | Standard versus STIG profile | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
 | #197 Trust zones and CDS write lockdown | Bind CDS to localhost, refuse unauthenticated publish | DESIGNED | MVP | `docs/SECURITY-ARCHITECTURE.md`, D-SEC0 |
 | #198 Supply chain | Pinned dependencies, signed releases | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
-
+| #199 MCP read-filtered CDS broker | Field filtering, admission limits, quotas, reserved logging disk before any remote MCP use | DESIGNED | later | `research/2026-11-18-mcp-design.md`, `research/2026-11-18-mcp-design-review.md` |
