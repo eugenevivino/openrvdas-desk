@@ -19,6 +19,16 @@ needs a core change must say why the overlay cannot do it, and that change
 goes upstream as its own small PR first. Working name for the package:
 `openrvdas-overlay` (rename is cheap until the first release).
 
+### D-ARCH2 Overlay lives in OceanDataTools `openrvdas_contrib` (2026-11-18, DECIDED, Eugene)
+New modules go to upstream's `openrvdas_contrib` repo, not core. Supersedes
+the working name `openrvdas-overlay` in D-ARCH1: the package layout, tests and
+release rules follow contrib's conventions, and our gate runs contrib's tests
+plus ours against a pinned OpenRVDAS core. Work happens on a fork of
+`openrvdas_contrib` (to be created by Eugene), same topic-branch rules as the
+core fork. First step: read contrib's layout and CONTRIBUTING and write the
+brief for the skeleton. Separate packages with their own life (the MCP server)
+stay separate unless contrib's maintainer prefers otherwise.
+
 ## Team and process
 
 ### D-TEAM1 Kalon-style desk structure (2026-11-17, PROPOSED)
@@ -79,9 +89,10 @@ appendices before the $WICOR writer.
 CORIOLIX already uses OpenRVDAS for acquisition; its value is the layer on
 top (sensor registry, event log, QC flags, binned downloads, alerts,
 ship-to-shore sync), with no public license found. Plan: three phases
-starting with a health board and a night-safe bridge display. Gate: talk to
-OSU and David Cohn first; if CORIOLIX is going open source, contribute
-instead of compete. Outreach is Eugene-only (rule 14).
+starting with a health board and a night-safe bridge display. Update
+2026-11-18 (Eugene): the upstream developer is already well aware of
+CORIOLIX, so the "talk to OSU first" gate is dropped. Outreach is still
+Eugene-only (rule 14).
 
 ## MCP server
 

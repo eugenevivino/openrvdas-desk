@@ -11,8 +11,8 @@ support person can use.
 2. Mini setup and first green gate receipt on fork `dev` (mini/SETUP.md).
 3. Confirm the Django `test_basic` failure on `dev` under 3.12. If real,
    draft an upstream issue with a failing test (Eugene sends).
-4. Tell upstream about the overlay (D-ARCH1) and ask which pieces they would
-   want in core later. Draft only; Eugene sends.
+4. Fork `openrvdas_contrib` (Eugene), read its layout and rules, and plan the
+   overlay package and gate around it (D-ARCH2).
 
 ## Phase 1: the overlay package, first modules (D-ARCH1)
 
@@ -35,7 +35,7 @@ bug-fix PRs (the Django `test_basic` failure is the first candidate).
 11. QC flags as data (QARTOD-style tests emitting flags) (D-AI1).
 12. `openrvdas-mcp` phase 1, read-only (D-MCP1).
 
-## Phase 3: Cruise Console (gated on the OSU conversation, D-CONSOLE1)
+## Phase 3: Cruise Console (D-CONSOLE1)
 
 13. Sensor registry and event log.
 14. Binned downloads and ship-to-shore snapshots sized for the satellite link.
