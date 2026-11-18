@@ -7,3 +7,6 @@ date	brief	tool	model	effort	wall_s	tok_in	tok_out	tok_cached	note
 2026-11-18	deepsignal-correction-ledger (sub-agent)	codex	gpt-6.2-astra	xhigh		1056883	7241	991872	NOT AUTHORIZED: sub-agent 01a1ed60 spawned by the author job via multi_agent; self-review, not independent; ds-codex now disables multi_agent (2ad92c6)
 2026-11-18	gate-linux-r2 review	codex	gpt-6.2-astra	high	201	308570	3175	269824	ds-codex read-only, KALON_ALLOW_ASTRA=1, session 01a1ed6a; verdict HOLD (3 P1, 1 P2); no sub-agent
 2026-11-18	deepsignal-fault-bench	codex	gpt-6.2-sol	high	683	564805	20522	517376	ds-codex, ~/.codex-deepsignal, MacBook, session 01a1ed6d; fork deepsignal/fault-bench 9d87d99a; 17 tests OK (needs PyYAML); flake8 clean; no sub-agents
+2026-11-18	gate-linux-r3	codex	gpt-6.2-sol	high	381	664487	10069	616320	ds-codex, MacBook; 48 tests OK; peak RSS 231 MB
+2026-11-18	deepsignal-p2-met-reports (old)	codex-cloud	sol	medium					IGNORED: task_e_6afd53403908 superseded by the rewritten #111 task task_e_6afd54d87630 (D-111A); only the new diff is used
+2026-11-18	ci-install-clock	codex-cloud	sol	medium					fork ci/install-clock f3b7437; review note: actions/checkout@v6 unpinned (fork-only timing workflow), Astra review to decide
