@@ -169,3 +169,8 @@ login, workspace, cloud environments or config.
 - New home config.toml: copy `service_tier = "default"` and `[features] js_repl = false`;
   set `memories = false`, `hooks = false`; no plugins, mcp_servers or l2audio projects.
 - Never copy Kalon's auth files.
+
+## 6. Reasoning effort values (VERIFIED on codex-cli 0.170.0, 2026-11-18)
+- Sol and Astra (gpt-6.2-*, gpt-6.1-sol, gpt-6-*): low, medium, high, xhigh, max, **ultra** (top). Luna stops at max.
+- Defaults: gpt-6.2-sol and gpt-6.2-astra low, gpt-6-luna medium. A bad value is refused at job start, per model.
+- Eugene's rule (2026-11-18): when a decision needs elevated judgment, consult Astra at `ultra`, read-only, one job at a time.
