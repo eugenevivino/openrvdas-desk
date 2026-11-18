@@ -187,3 +187,34 @@ probability and an explanation, never delete data.
 | 102 | Physics-conditioned representations | Train embeddings to ignore heading for the same sea state, so heading artifacts stand out; pairs from real reciprocal tracks | 5/5/3, R | PROPOSED | later | T-SIG |
 | 103 | Cross-vessel sensor ontology | Map each ship's field names to semantic roles (attitude.roll, seawater.temperature.intake) so models transfer between ships; feeds #29 and #45 | 5/5/3, R | PROPOSED | later | T-SIG |
 
+
+## Drafts from the parity scorecard (2026-11-18, numbers pending)
+
+Unnumbered drafts from `docs/TARGET-PARITY.md` section 7. Each closes a
+CORIOLIX or MetAcq row that no numbered idea covers. Build lead: assign 21
+numbers and replace the draft ids. Source T-PARITY (the parity thread). Value
+is techs/science/shore, 1 to 5 each, from the scorecard.
+
+| Draft | Idea | One line | Value | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| P-ERDDAP | ERDDAP generator | Build ERDDAP `datasets.xml` from the registry and database so ERDDAP serves subsets, every file format and OGC; matches CORIOLIX's whole download stack cheaply | 2/5/5 | PROPOSED | 3 | T-PARITY |
+| P-REST | Read-only REST data API | Data and metadata over plain REST for MATLAB, R and scripts, reading the same tables as the MCP gateway (#64) | 2/4/5 | PROPOSED | 3 | T-PARITY |
+| P-BEST | Best-source selector (core fix) | Primary sensor per role by model and location, automatic failover (MetAcq ONEGPS2FILE), and ancillary source assignment for derived values | 4/4/3 | PROPOSED | 2 | T-PARITY |
+| P-MAP | Console map | Offline map: track, clickable points, underway data colored on track, events, cached OSM, GMRT and NOAA ENC basemaps, SST and Chl layers; console module 5 | 3/5/5 | PROPOSED | 3 | T-PARITY |
+| P-ROUTE | Routes and waypoints | Draw a route, distance, ETA at speed, time to go, bearing, off-course warning (MetAcq CHK WPT) | 3/4/3 | PROPOSED | 3 | T-PARITY |
+| P-CAST | Winch and CTD cast view | Wire out, speed, tension with safe-working-load bands, CTD depth and altimeter on one night-safe page; CTD package config | 5/4/2 | PROPOSED | 3 | T-PARITY |
+| P-FLOW | Flowthrough state tagging | Valve schedule tags every underway value with what was flowing (seawater, filtered, calibration, off); QC and #55 use it to avoid false flags | 4/5/3 | PROPOSED | 2 | T-PARITY |
+| P-SAMOS | SAMOS and met report writers | SAMOS daily file plus NOAA hourly ship weather, OPSUM, SHIPTRACK and PCO2 formats, byte-checked against real samples | 3/4/4 | PROPOSED | 2 | T-PARITY |
+| P-METLIB | Met and seawater formula library (core fix) | Named functions for dew point, wet bulb, sea-level pressure, PSS-78 and TEOS-10, sigma, sound speed, usable from `ComputedFieldsTransform` | 3/4/3 | PROPOSED | 1 | T-PARITY |
+| P-GEOM | Vessel geometry and lever arms | Sensor positions, survey monuments and heights in the registry; small core transform corrects positions for antenna lever arm | 2/3/2 | PROPOSED | 2 | T-PARITY |
+| P-WIZARD | Sensor onboarding wizard | Identify stream, pick device, map CF names and limits, attach calibration, preview the config diff, deploy with one button; no YAML typed (extends #29) | 5/2/3 | PROPOSED | 3 | T-PARITY |
+| P-ROLES | Roles and accounts | Public, science, tech and admin roles; ship and shore share accounts | 3/3/4 | PROPOSED | 3 | T-PARITY |
+| P-RELEASE | Data release policy | Privacy level, restricted fields, EEZ hold-back driven by core `GeofenceTransform`, retention durations | 3/4/4 | PROPOSED | 3 | T-PARITY |
+| P-VOCAB | Standard vocabularies | CF names, SeaVoX L22, L35, EL1, EL2, R2R device types, ICES ship codes, UN/LOCODE in the registry and event log (pairs with #103) | 2/4/4 | PROPOSED | 3 | T-PARITY |
+| P-DOCS | Instrument document store | Manuals and calibration certificates attached to instruments in #52 | 4/2/3 | PROPOSED | 3 | T-PARITY |
+| P-HOST | Host health | Disk, CPU, RAM, NTP offset and process restarts on the health board | 4/1/4 | PROPOSED | 3 | T-PARITY |
+| P-CRUISE | Cruise metadata | Dates, ports and participants page, optional UNOLS schedule, MFP and MOMS import | 2/3/4 | PROPOSED | 3 | T-PARITY |
+| P-DEVPACK | UNOLS met device pack (core fix) | Device definitions for the MetSpecs list: RM Young 05103 and 85106, Vaisala HMP155 and PTB, Eppley PSP and PIR, SBE45, SBE43, QSR, LCI90 | 4/2/1 | PROPOSED | 1 | T-PARITY |
+| P-CORESMALL | Small core fixes | RS485 round-robin polling with per-device timeout, ADAM ASCII reader, header on each new log file, "emulated" flag from simulators | 3/2/1 | PROPOSED | 1 | T-PARITY |
+| P-SNAP | Low-bandwidth shore snapshot | Static image plus compact JSON every N seconds for slow links (MetAcq 10 s PNGs) | 2/3/5 | PROPOSED | 3 | T-PARITY |
+| P-INSTALL | Zero-prompt installer plus install clock | `--defaults` install to live data in 10 minutes and 3 actions; CI measures it on clean runners (`briefs/install-clock.md`) | 4/2/3 | PROPOSED | 0 | T-PARITY |
