@@ -25,8 +25,9 @@ Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the Deep
   folder `contrib/deepsignal/` (D-ARCH3, D-ARCH4).
 
 ## In flight
-- gate-linux (briefs/gate-linux.md): Codex job on the MacBook, lane mac, waiting
-  for Kalon's Codex count to drop. Clone ready at /private/tmp/deepsignal/gate-linux.
+- gate-linux (briefs/gate-linux.md): Codex job RUNNING on the MacBook since 05:33:59Z
+  (gpt-6.2-sol high, 45 min cap), /private/tmp/deepsignal/gate-linux. DeepSignal has
+  one guaranteed MacBook slot (rule 8, D-TEAM8); queue: gate, QARTOD build, Mac briefs.
 - Briefs ready, not launched: #52 history and #53 fault bench (lane cloud), #56 ledger
   and #54 drift (lane mac), QARTOD flags.
 
@@ -40,7 +41,6 @@ Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the Deep
 - Codex cloud setup: connect the fork, create the environment (Python 3.12, deps,
   internet off after setup), send the environment id.
 - Nothing goes upstream until you say the set is ready (D-ARCH6).
-- Codex capacity: which way to go for DeepSignal jobs (hold stands until you answer).
 - First scoreboard make, model, protocol; stale threshold.
 
 ## Next bounded task
