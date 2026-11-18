@@ -381,3 +381,8 @@ GitHub Actions jobs cap at 6 hours, so: a 5.5 h soak on Linux via the desk Actio
 plus the real 24 h soak on the Mini when Kalon is idle, and on the MacBook under the memory gate if the Mini is not
 available (the soak is light, under 1 GB resident). A Mac-only failure does not block the gate (rule 25). Starting by
 11-22 stays the target. Kalon yields first on any conflict.
+
+### D-111A #111 met reports narrowed to what is publicly specified (2026-11-18, DECIDED by the parity thread, logged by the build lead)
+SHIPTRACK, OPSUM and PCO2 are dropped from #111 v1 (no public spec found). The SAMOS writer emits the ship text format
+(one `$SAMOS:` key:value line per minute, daily file), not netCDF; the NOAA hourly report is FM-13 BBXX, automated groups only,
+marked UNVERIFIED. KAOU is the Revelle call sign. See `research/2026-11-18-samos-ship-format-and-fm13.md`.

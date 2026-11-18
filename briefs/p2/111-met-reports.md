@@ -8,7 +8,7 @@
 - Upstream home: openrvdas_contrib tree, fork only for now
 - Value (techs/science/shore): 3/4/4
 - Depends on: none; feeds from 1-minute averages (vector wind #4 for wind)
-- Needs Eugene: Byte-exact formats need real samples: one SAMOS daily file the ship sent, and one each of any NOAA, OPSUM, SHIPTRACK or PCO2 message the ship really sends. Until Eugene drops them in, templates ship marked UNVERIFIED and only structure is tested.
+- Needs Eugene: No full SAMOS daily file or real FM-13 message is public that we could fetch. SAMOS line form is verified against one real record line; FM-13 stays UNVERIFIED. SHIPTRACK, OPSUM, PCO2 are dropped from v1 (no spec). A hand-downloaded KAOU day from the NCEI SAMOS folder would let shore-side validation (#95) start.
 
 ## Goal
 The ship produces the daily SAMOS file and the routine met messages from OpenRVDAS data, so MetAcq is not
@@ -36,9 +36,25 @@ Package `contrib/deepsignal/met_reports/`:
 - `ReportWriter` (an OpenRVDAS Writer) collects records, writes one file per period into a directory, and
   closes the file at the period boundary using record time, never the wall clock. A missing field writes
   the template's missing text, never a guess or a zero.
-- Ship templates: `samos_daily.yaml` and `noaa_hourly.yaml`, both with `status: UNVERIFIED` and a comment
-  saying which public description was used. Do NOT invent field order or codes you cannot cite from a
-  file in this repository; leave a `TODO(sample)` line instead and list it in the report.
+- Ship templates (read desk `research/2026-11-18-samos-ship-format-and-fm13.md`, pasted facts below):
+  - `samos_daily.yaml`: the ship-to-SAMOS TEXT file (not netCDF; SAMOS makes the netCDF). One record per
+    minute, 1440 per UTC day, each value a 60 s average of at least 12 samples. Line form, verbatim
+    sample from NOAA's SCS SAMOS procedure (2013, page 9):
+    `$SAMOS:001, CS:WTDM, YMD:20070301, HMS:143450, LAT:55.47518, LON:-160.41834, GYRO:64.1, COG:, SOG:, RWDIR:225.25, RWSPD:5.95, TWDIR:, TWSPD:, RELHUM:59.3, TSGTEMP:, TSGSAL:30.48, ATEMP:12.05`
+    Missing value = empty text after the colon. Designators come from config: the procedure's table says
+    CS LAT LON GYRO SOG(kn) COG ATEMP(degC) BARO(hPa, not sea-level) RELH(%) RWSPD(kn) RWDIR TWSPD(kn)
+    TWDIR TSGWT(degC) TSGS(psu) TSGC(S/m) TSGSV(m/s), but its sample line spells RELHUM, TSGTEMP, TSGSAL;
+    ship both spellings as config options and default to the table. Daily file zipped, named by call sign
+    and date (Revelle is KAOU). `status: VERIFIED-STRUCTURE` (line form checked against the sample);
+    field spelling still to confirm with SAMOS. Add the sample line as a test fixture and verify that the
+    template reproduces it byte for byte from its own parsed values.
+  - `noaa_hourly.yaml`: WMO FM-13 SHIP (BBXX), NWS Observing Handbook No. 1 (2010), pages 2-1 and 2-2:
+    `BBXX D.....D YYGGiw 99LaLaLa QcLoLoLoLo iRixhVV Nddff 00fff 1snTTT 2snTdTdTd 4PPPP 5appp 7wwW1W2 8NhCLCMCH 222Dsvs 0ssTwTwTw ...`
+    Fill automated groups only (position, time, wind, 1snTTT, 2snTdTdTd, 4PPPP, 5appp, 222Dsvs,
+    0ssTwTwTw); visual groups are "/" or omitted, never invented. `status: UNVERIFIED` (no complete
+    real message found). Encoding rules per group you cannot cite exactly from the handbook text pasted
+    here: leave `TODO(sample)` and list them in the report.
+  - SHIPTRACK, OPSUM, PCO2: no public spec. Do not build them.
 - `verify.py`: `python -m contrib.deepsignal.met_reports verify <template> <sample_file>` renders the
   template from the sample's own values when a parser is defined in the template (`parse:` section) and
   prints a byte diff. Exit 0 only on an exact match. This is how a template moves to `status: VERIFIED`.

@@ -16,8 +16,13 @@ Written 2026-11-18 by the parity thread, ranked by value from docs/TARGET-PARITY
 | 10 | #114 | [Sensor onboarding wizard (engine and CLI)](114-onboard-wizard.md), prompt `briefs/cloud/p2-onboard-wizard.md` | `deepsignal/p2-onboard-wizard` | `3b4b76e` contrib tree | cloud | py | 2 | none; the console wizard page is a later console module that calls this engine; extends #29 | no |
 | 11 | #117 | [Standard vocabularies (CF, SeaVoX, R2R, ICES, UN/LOCODE)](117-vocab.md), prompt `briefs/cloud/p2-vocab.md` | `deepsignal/p2-vocab` | `3b4b76e` contrib tree | cloud | py | 2 | none; #104 erddap, #52 registry and #120 cruise metadata read its files later | no |
 | 12 | #123 | [Low-bandwidth shore snapshot](123-shore-snapshot.md), prompt `briefs/cloud/p2-shore-snapshot.md` | `deepsignal/p2-shore-snapshot` | `3b4b76e` contrib tree | cloud | py | 2 | none; #116 release policy goes in front of it for public use | no |
+| 13 | #115 | [Roles and access policy (engine only)](115-roles.md), prompt `briefs/cloud/p2-roles.md` | `deepsignal/p2-roles` | `3b4b76e` contrib tree | cloud | py | 3 | none to build; #105 REST, #116 release policy and console pages adopt it later | yes |
+| 14 | #118 | [Instrument document store](118-doc-store.md), prompt `briefs/cloud/p2-doc-store.md` | `deepsignal/p2-doc-store` | `3b4b76e` contrib tree | cloud | py | 3 | #52 instrument history for instrument ids and cal ids: reads its YAML file by path, does not import its code, so it builds in parallel | no |
+| 15 | #119 | [Host health reader](119-host-health.md), prompt `briefs/cloud/p2-host-health.md` | `deepsignal/p2-host-health` | `3b4b76e` contrib tree | cloud | py | 3 | display is the console `health` module: the build lead routes a small follow-up there; this task only publishes fields | no |
+| 16 | #120 | [Cruise metadata](120-cruise-meta.md), prompt `briefs/cloud/p2-cruise-meta.md` | `deepsignal/p2-cruise-meta` | `3b4b76e` contrib tree | cloud | py | 3 | none; uses #117 vocab files for port codes if present (optional) | yes |
+| 17 | #124 | [Installer `--defaults` (zero-prompt install, core fix)](124-install-defaults.md), prompt `briefs/cloud/p2-install-defaults.md` | `deepsignal/p2-install-defaults` | `1a6f1ed` fork dev | cloud | core | 3 | validated on real runners by `ci/install-clock` (briefs/install-clock.md); rerun that workflow on this branch | yes |
 
-Not written yet: #115, #118, #119, #120, #124, #113, #121, #122.
+Not written yet: #113, #121, #122.
 
 File ownership is disjoint: Python modules own `contrib/deepsignal/<module>/`, its test folder, one docs file and `configs/<module>_*.yaml`; console modules own `src/modules/<id>/**` and one docs file; core tasks own only their new files. Empty `__init__.py` files are byte-identical across branches.
 
