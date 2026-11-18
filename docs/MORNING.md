@@ -1,5 +1,7 @@
 # Morning queue for Eugene (newest first)
 
+- #188 AI watch assistant: enabling cloud AI and its budget is your call (off by default, local model only). Also a lead check with a real local model, and #69 should measure latency.
+
 - CRITICAL security package, offline first: signed audit (#32), local identity, trust zones (#115, #151, #155). Needs your review before anything is enabled.
 - #164 CalibrationTransform must NOT be enabled on any live config until you approve.
 

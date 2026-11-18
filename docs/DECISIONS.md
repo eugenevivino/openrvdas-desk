@@ -435,3 +435,6 @@ new profile, no code. Transports are written on pyserial and sockets, not by wra
 writers, because the contrib base tree's writers differ from current core. Shared interface
 `briefs/scoreboard/contract.py`. Briefs #182 to #187. Eugene gathers board models himself.
 
+
+### D-AI188 #188 cloud escalation default off (2026-11-18, logged by build lead)
+Local model only until Eugene enables cloud AI and sets its budget. AI is advise-only; write steps become #65 or #154 proposals and are never executed.

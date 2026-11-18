@@ -314,3 +314,9 @@ D-SCORE2. Outdoor deck LED scoreboards; a new board is a profile file, not code.
 | 185 | Alpha Protocol codec | Alpha Communications Protocol Rev D Write TEXT frames with checksum; cell text cannot inject control bytes. Brief `briefs/p2/185-scoreboard-alpha-codec.md` | 3/2/1 | BUILDING | 1 | Eugene, T-SCORE |
 | 186 | Modbus register codec | Cells to register writes (int16 to float32, scale, word order), explicit stale value, never clamps or wraps. Brief `briefs/p2/186-scoreboard-modbus-codec.md` | 3/2/1 | BUILDING | 1 | Eugene, T-SCORE |
 | 187 | Scoreboard bench tool | `list`, `check` (shows exact bytes) and `send` (dry run unless `--yes`) for a profile on the bench. Wave 2 after 182-#186 merge. Brief `briefs/p2/187-scoreboard-bench.md` | 5/1/1 | DESIGNED | 1 | Eugene, T-SCORE |
+
+## AI assist (2026-11-18, ship-pain thread; number 188 from the build lead)
+
+| # | Idea | One line | Value | Status | Phase | Source |
+|---|---|---|---|---|---|---|
+| 188 | AI watch assistant | Event-triggered triage (held transitions, alerts, "Explain", end-of-watch digest), never a stream: deterministic context pack (chain, timeline, time health, runbook, prior incidents), small local model by default (llama.cpp or Ollama, offline), budgeted cloud second opinion via MCP, cached by signature, evidence-checked JSON, advise only (writes become #65/#154 proposals), outcomes logged to #168 to improve runbooks. Brief `briefs/p2/188-ai-triage.md`. Eugene 2026-11-18 | 5/3/3 | DESIGNED | 2 | Eugene |

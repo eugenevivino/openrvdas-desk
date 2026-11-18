@@ -169,7 +169,7 @@ an **MCP** server for AI clients. Same engine, same validation, same diff, which
 | Provenance on every answer (#66) and query budgets (#67) | Each result carries source ids, bounds, counts, units, flags, computation; capped per call | PROPOSED | after v2 | `docs/IDEAS.md` |
 | AI audit trail (#62) | Every AI question, tool call and answer logged with the data it read | PROPOSED | after v2 | `docs/IDEAS.md` |
 | Console AI help | Ask for a view; works with no key, key server-side, provider-pluggable | DESIGNED | after MVP | `design/console-DESIGN.md` |
-| #188 AI watch assistant (AI triage) | Runs only on events, never continuously (cost near zero); small on-ship model by default, works offline; optional capped cloud second opinion via MCP, off by default; evidence-linked causes and next checks; advises only, fixes go through approval; outcomes feed the runbooks (#167) | BRIEFED | 12-04 | `briefs/p2/170-ai-triage.md` |
+| #188 AI watch assistant (AI triage) | Runs only on events, never continuously (cost near zero); small on-ship model by default, works offline; optional capped cloud second opinion via MCP, off by default; evidence-linked causes and next checks; advises only, fixes go through approval; outcomes feed the runbooks (#167) | BRIEFED | 12-04 | `briefs/p2/188-ai-triage.md` |
 
 ## 8. Reanalysis of old cruise data (D-REAN1, D-REAN2)
 

@@ -86,3 +86,5 @@ Wave 1 runs in parallel (disjoint files; `contract.py` byte-identical on every b
 | #186 | [Modbus codec](186-scoreboard-modbus-codec.md), prompt `briefs/cloud/p2-scoreboard-modbus-codec.md` | `deepsignal/p2-scoreboard-modbus-codec` | `3b4b76e` | cloud | 1 | none |
 | #187 | [Bench tool](187-scoreboard-bench.md), prompt `briefs/cloud/p2-scoreboard-bench.md` | `deepsignal/p2-scoreboard-bench` | `deepsignal/scoreboard-integ` | cloud | 2 | #182-#186 merged |
 
+
+| 49 | #188 | [AI watch assistant: event-triggered triage](188-ai-triage.md), prompt `briefs/cloud/p2-ai-triage.md` | `deepsignal/p2-ai-triage` | `3b4b76e` contrib tree | cloud | py | 10 | #162, #167, #168 formats (reads files only) | no; cloud escalation stays off until Eugene enables it |
