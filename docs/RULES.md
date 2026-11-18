@@ -59,12 +59,12 @@ Changes to this file need Eugene's own message.
     (`deepsignal/<module>`), per PR and per brief, each with its own tests, a
     sample logger config and a short README section, few dependencies between
     modules, each usable alone in a stock OpenRVDAS logger config.
-25. Fit the codebase and run on Linux. A module uses OpenRVDAS's own interfaces
-    (Reader, Transform, Writer, DASRecord, logger YAML, CachedDataServer), is pure
-    Python, and adds no dependency beyond OpenRVDAS requirements unless Eugene
-    approves it. Linux first (Ubuntu, Rocky, Raspberry Pi OS), macOS second. No PR
-    before its tests pass on Linux; the Mini gate is macOS, so a Linux run (Codex
-    cloud or a Linux VM) is also required.
+25. Linux only. DeepSignal targets Linux (Ubuntu 22.04+, Debian 12+ and Raspberry
+    Pi OS, Rocky 9+). macOS is a dev convenience: a macOS-only test failure never
+    blocks. A module uses OpenRVDAS's own interfaces (Reader, Transform, Writer,
+    DASRecord, logger YAML, CachedDataServer), is pure Python, and adds no
+    dependency beyond OpenRVDAS requirements unless Eugene approves. No PR before
+    its tests pass in a real Linux run on Python 3.12 (`gate/gate-linux`).
 
 ## Talking to Eugene
 

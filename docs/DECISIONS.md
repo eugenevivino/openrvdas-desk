@@ -174,12 +174,18 @@ small. The contrib project folder is `deepsignal`, DECIDED by Eugene 2026-11-18
 ("DeepSignal is fine for the folder"; supersedes the `openrvdas_overlay`
 proposal in D-ARCH3). It is part of every `module:` path, so it does not change.
 
-### D-ARCH5 Standard interfaces, Linux first (2026-11-18, DECIDED)
-Eugene: modules integrate with the existing codebase and run on Linux "or
-whatever". Rule 25. Standard OpenRVDAS interfaces only, pure Python, no new
-dependencies without his approval, Linux first (ships), macOS second. Our Mini
-gate is macOS and cannot prove Linux behavior (the 4 Mini-only baseline failures
-are an example), so every PR also needs a Linux run: Codex cloud environment
-(`docs/BUILDERS.md`) or a Linux VM. The cloud session's Linux baseline
-(Python 3.13) does not replace a run on the target Python 3.11 or 3.12.
-
+### D-ARCH5 Standard interfaces, Linux only (2026-11-18, DECIDED)
+Eugene: modules integrate with the existing codebase, standard interfaces, and
+"I doubt there will be Mac support. This is for Linux." Rule 25. Note: upstream's
+install script and README do list macOS as supported; Linux-only is our target
+for DeepSignal by Eugene's choice, not a claim about upstream. macOS stays a dev
+convenience and its failures never block (the 4 Mini-only baseline failures are
+exactly that class: UDP ordering and timing).
+The Mini gate is macOS, so the authoritative gate becomes a Linux gate. Options,
+cheapest first (Linux gate, PROPOSED to Eugene, see `briefs/gate-linux.md`):
+1. GitHub Actions workflow in the public desk repo, input sha, checks out the
+   fork, Ubuntu 22.04 runner, Python 3.12, same pytest, Django and flake8
+   steps. Free for public repos, no Mini load, no Kalon contention. Preferred.
+2. Linux container (Docker or Colima) on the Mini. Real, local, offline, but the
+   Mini is an 8 GB M1 shared with Kalon (rule 17), so it queues behind Kalon.
+3. Codex cloud environment. Fast check only: no receipt we control.
