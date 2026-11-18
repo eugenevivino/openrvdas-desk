@@ -14,7 +14,8 @@ Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the Deep
 ## Code
 - Django fix PR: fork branch `django-gui/shared-config-names` ad10eb1 (on dev 1a6f1ed).
   Django 48 OK, pytest 631 passed, flake8 clean on changed lines. Gate NOT RUN.
-  PR text in `pr/`. NOT opened: this cloud session cannot reach upstream; Eugene sends it.
+  PR text in `pr/`. ON HOLD: Eugene filed the upstream issue; wait for the developer's
+  reply, then open the PR with "Fixes #N" (Eugene sends it; this session cannot reach upstream).
 - DeepSignal wind: fork branch `claude/project-thread-un3kq6` 558e45b, based on
   contrib master 3b4b76e. VectorWindAverageTransform, 23 tests pass, gate NOT RUN.
   PR draft `pr/deepsignal-vector-wind.md`; Eugene sends it.
@@ -36,7 +37,8 @@ Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the Deep
 ## Open asks for Eugene
 - Codex cloud setup: connect the fork, create the environment (Python 3.12, deps,
   internet off after setup), send the environment id.
-- Send the Django PR (and later the wind PR) to OceanDataTools.
+- Django PR: waiting on the developer's reply to the issue, then send with "Fixes #N".
+- Wind PR: send when ready.
 - First scoreboard make, model, protocol; stale threshold.
 
 ## Next bounded task
