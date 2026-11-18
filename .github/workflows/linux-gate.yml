@@ -58,3 +58,4 @@ jobs:
             ${{ runner.temp }}/openrvdas-gate/*.txt
             ${{ runner.temp }}/openrvdas-gate/pytest.xml
             ${{ runner.temp }}/openrvdas-gate/receipt.json
+            ${{ runner.temp }}/openrvdas-gate/evidence.json

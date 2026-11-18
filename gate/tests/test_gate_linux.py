@@ -1,4 +1,5 @@
 """Exercise Linux gate receipts without a network or installs."""
+import copy
 import hashlib
 import json
 import os
@@ -15,6 +16,9 @@ from unittest.mock import patch
 
 
 GATE = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(GATE))
+import gate_lib  # noqa: E402
+
 SHA = "a" * 40
 MAC_FAILURE = (
     "pytest::test.logger.readers.test_udp_reader.TestUDPReader::test_broadcast"
@@ -26,7 +30,7 @@ DJANGO_FAILURE = (
 LINT_CLEAN = "test/clean file.py"
 LINT_CHANGED = "test/changed.py"
 
-# Substitute the runner's system file and simulate a lost final write.
+# Substitute the runner's system file.
 BASH_FIXTURE = r'''
 source() {
     if [[ "$1" == /etc/os-release ]]; then
@@ -34,12 +38,6 @@ source() {
     else
         builtin source "$@"
     fi
-}
-printf() {
-    if [[ ${OMIT_END:-0} == 1 && "$1" == *'__END__\tPASS\n' ]]; then
-        set -- "${1%__END__\\tPASS\\n}" "${@:2}"
-    fi
-    builtin printf "$@"
 }
 '''
 
@@ -51,6 +49,7 @@ import os
 from pathlib import Path
 import sys
 import tarfile
+import json
 
 
 def object_id(kind, content):
@@ -62,6 +61,10 @@ def git_tree(snapshot, clean, changed, change_type, old):
     directory = "test"
     clean_content = b"old\n" if old else (snapshot / clean).read_bytes()
     leaves = {clean: ("100644", clean_content)}
+    for extra in (".flake8", "test/test_receipt.py", "test/test_extra.py",
+                  "test/logger/readers/test_udp_reader.py"):
+        if (snapshot / extra).is_file():
+            leaves[extra] = ("100644", (snapshot / extra).read_bytes())
     mode = "100644"
     node = snapshot / changed
     if old and change_type == "T":
@@ -93,7 +96,9 @@ elif tool == "git":
     clean = os.environ["LINT_CLEAN"]
     changed = os.environ["LINT_CHANGED"]
     change_type = os.environ.get("LINT_CHANGE_TYPE", "M")
-    if args[2:] == ["rev-parse", "--verify", "HEAD"]:
+    if args[2:] == ["remote", "get-url", "origin"]:
+        print("https://github.com/eugenevivino/openrvdas")
+    elif args[2:] == ["rev-parse", "--verify", "HEAD"]:
         print(os.environ["CHECKOUT_SHA"])
     elif args[2:] == ["for-each-ref", "--contains", os.environ["CHECKOUT_SHA"],
                       "--count=1", "--format=%(refname)",
@@ -107,7 +112,7 @@ elif tool == "git":
         if garbage is not None:
             sys.stdout.buffer.write(bytes.fromhex(garbage))
             sys.exit(0)
-        paths = [clean, changed]
+        paths = [] if os.getenv("EMPTY_DIFF") else [clean, changed]
         if change_type == "D" and (snapshot / changed).is_dir():
             paths.append(changed + "/child.txt")
         for path in paths:
@@ -118,10 +123,13 @@ elif tool == "git":
     elif args[2:] == ["ls-files", "-s", "-z"]:
         print("fixture index")
     elif args[2] == "ls-tree":
-        git_tree(snapshot, clean, changed, change_type, args[-1] == "b" * 40)
+        old = args[-1] == "b" * 40 and not os.getenv("EMPTY_DIFF")
+        git_tree(snapshot, clean, changed, change_type, old)
     elif args[2] == "archive":
         with tarfile.open(fileobj=sys.stdout.buffer, mode="w|") as archive:
             archive.add(snapshot / "test", arcname="test")
+            if (snapshot / ".flake8").exists():
+                archive.add(snapshot / ".flake8", arcname=".flake8")
     else:
         sys.exit("unexpected git call: " + repr(args))
 elif args[:2] == ["-I", "-c"]:
@@ -136,7 +144,7 @@ elif args[:3] == ["-m", "pip", "install"]:
     print(" ".join(args[3:]))
     sys.exit(int(os.environ.get("PIP_STATUS", "0")))
 elif args == ["-m", "pip", "freeze"]:
-    print("pytest-timeout==2.4.0")
+    print("flake8==7.5.0\npytest-timeout==2.4.0")
     sys.exit(int(os.environ.get("PIP_FREEZE_STATUS", "0")))
 elif args[:2] == ["-m", "pytest"]:
     if os.environ.get("REWRITE_DURING_PYTEST"):
@@ -145,13 +153,35 @@ elif args[:2] == ["-m", "pytest"]:
                  if arg.startswith("--junitxml="))
     name = os.environ.get("PYTEST_FAILURE", "")
     outcome = "<failure/>" if name else ""
+    good_case = ('<testcase/>' if os.getenv("UNNAMED_CASE") else
+                 '<testcase classname="test.test_receipt" name="test_ok"/>')
     fixture_class = "test.logger.readers.test_udp_reader.TestUDPReader"
     Path(junit).write_text(
-        '<testsuite tests="2">'
-        f'<testcase classname="{fixture_class}" name="test_ok"/>'
+        '<testsuite tests="2" errors="0" skipped="0" '
+        f'failures="{int(bool(name))}">'
+        f'{good_case}'
         f'<testcase classname="{fixture_class}" name="{name or "test_other"}">'
         f'{outcome}</testcase></testsuite>', encoding="utf-8")
-    print("1 failed, 1 passed in 1s" if name else "2 passed in 1s")
+    deselected = int(os.getenv("DESELECTED", 0))
+    module = "test/logger/readers/test_udp_reader.py"
+    other_id = module + "::TestUDPReader::" + (name or "test_other")
+    items = ["test/test_receipt.py::test_ok", other_id]
+    reports = [dict(id=items[0], outcome="PASS"),
+               dict(id=other_id, outcome="FAIL" if name else "PASS")]
+    if os.getenv("MISSING_OUTCOME"):
+        reports.pop()
+    if "ORV_COLLECTION" in os.environ:
+        Path(os.environ["ORV_COLLECTION"]).write_text(json.dumps(dict(
+            collected=2+deselected, started=2,
+            excluded=1, deselected=deselected,
+            items=items, reports=reports, finished=2,
+            subtests=0, subfailures=0,
+            modules=[module, "test/test_receipt.py"])))
+    if os.getenv("INVALID_COLLECTION"):
+        Path(os.environ["ORV_COLLECTION"]).write_text('{"collected":NaN}')
+    selection = f", {deselected} deselected" if deselected else ""
+    summary = "1 failed, 1 passed" if name else "2 passed"
+    print(summary + selection + " in 1s")
     sys.exit(int(os.environ.get("PYTEST_STATUS", str(int(bool(name))))))
 elif args[:3] == ["manage.py", "test", "test.django_gui"]:
     failure = os.environ.get("DJANGO_FAILURE", "")
@@ -164,12 +194,32 @@ elif args[:3] == ["manage.py", "test", "test.django_gui"]:
     raw = os.environ.get("DJANGO_RAW")
     out.write_bytes(rows.encode() if raw is None else bytes.fromhex(raw))
     sys.exit(int(os.environ.get("DJANGO_STATUS", str(int(bool(failure))))))
-elif args[:2] == ["-m", "flake8"]:
+elif args[:3] == ["-I", "-m", "flake8"] or args[:2] == ["-m", "flake8"]:
+    def benchmark(files=1):
+        if "--benchmark" in args:
+            print("0.01 seconds elapsed")
+            units = ("logical lines", "physical lines", "tokens", "files")
+            for label in units:
+                print(files, "total", label, "processed")
+                print("100", label, "processed per second")
+
     path = args[-1]
+    if path == "--":
+        if Path.cwd().name != "lint-empty" or any(Path.cwd().iterdir()):
+            sys.exit("expected a new empty lint directory")
+        if os.getenv("FLAKE8_STATUS"):
+            sys.exit(int(os.environ["FLAKE8_STATUS"]))
+        benchmark(0)
+        print(0)
+        sys.exit(0)
     if not Path(path).is_file():
         sys.exit("flake8 input does not exist: " + path)
     if Path.cwd().name != "lint-export":
         sys.exit("flake8 input is not in the lint export")
+    if os.getenv("TRUNCATE_RESULTS"):
+        (Path.cwd().parent / "results.tsv").write_bytes(b"")
+        for suite in ("pytest", "django"):
+            (Path.cwd().parent / (suite + ".valid")).write_bytes(b"")
     if path == "./" + os.environ["LINT_CHANGED"]:
         garbage = os.environ.get("FLAKE8_GARBAGE")
         if garbage is not None:
@@ -179,21 +229,44 @@ elif args[:2] == ["-m", "flake8"]:
         status = int(os.environ.get("FLAKE8_STATUS", "0"))
         real_flake8 = os.environ.get("GATE_REAL_FLAKE8")
         if code == "E501" and status == 0 and real_flake8:
-            os.execv(real_flake8, [real_flake8, "-I", *args])
+            os.execv(real_flake8, [real_flake8, *args])
+        if os.getenv("CONFIG_EXCLUDE") and "--isolated" not in args:
+            print(0)
+            sys.exit(0)
         if code.startswith("E9"):
             print(f"{code} {path}:0:0: could not parse input: {path}")
         elif code:
             print(f"{code} {path}:1:1: fixture violation")
         if status == 0:
+            benchmark()
             print(int(bool(code)))
         sys.exit(status)
+    benchmark()
     print(0)
+elif (args[0] == "-I" and args[1].endswith("/gate_linux.py")
+      and os.getenv("OMIT_END")):
+    # Inject the same lost final write at the Python publisher boundary.
+    import runpy
+    module = runpy.run_path(args[1])
+    publish = module["publish"]
+    def drop_end(path, data):
+        if path.name == "rows.pending":
+            data = data.removesuffix(b"__END__\tPASS\n")
+        publish(path, data)
+    module["main"].__globals__["publish"] = drop_end
+    sys.exit(module["main"](args[2:]))
 elif args[0] == "-I":
     real_python = os.environ["REAL_PYTHON"]
     os.execv(real_python, [real_python, *args])
 else:
     sys.exit("unexpected python call: " + repr(args))
 '''
+
+
+def seal(obj):
+    encoded = json.dumps(obj["facts"], sort_keys=True,
+                         separators=(",", ":")).encode()
+    obj["sha256"] = hashlib.sha256(encoded).hexdigest()
 
 
 class LinuxGateTest(unittest.TestCase):
@@ -203,7 +276,8 @@ class LinuxGateTest(unittest.TestCase):
         root = Path(temp.name)
         self.gate = root / "desk" / "gate"
         self.gate.mkdir(parents=True)
-        for name in ("gate-linux.sh", "gate_lib.py"):
+        for name in ("gate-linux.sh", "gate_lib.py", "gate_linux.py",
+                     "orv_pytest.py"):
             if (GATE / name).is_file():
                 shutil.copyfile(GATE / name, self.gate / name)
         (self.gate / "expected-failures.txt").write_text(
@@ -211,6 +285,10 @@ class LinuxGateTest(unittest.TestCase):
         )
         self.fork = root / "fork"
         (self.fork / "test").mkdir(parents=True)
+        reader = self.fork / "test/logger/readers/test_udp_reader.py"
+        reader.parent.mkdir(parents=True)
+        reader.write_text("class TestUDPReader: pass")
+        (self.fork / "test/test_receipt.py").write_text("def test_ok(): pass")
         for path in (LINT_CLEAN, LINT_CHANGED):
             (self.fork / path).write_text("value = 1\n", encoding="utf-8")
         self.receipts = root / "receipt"
@@ -257,6 +335,12 @@ class LinuxGateTest(unittest.TestCase):
         self.assertEqual(
             receipt["results_sha256"], hashlib.sha256(results).hexdigest()
         )
+        payload = (self.receipts / "evidence.json").read_bytes()
+        self.assertEqual(receipt["evidence_sha256"],
+                         hashlib.sha256(payload).hexdigest())
+        self.assertEqual(gate_lib.decide(json.loads(payload)).label, verdict)
+        self.assertEqual((self.receipts / "evidence.json").stat().st_mode
+                         & 0o222, 0)
         if verdict == "REFUSED":
             self.assertNotIn(b"__END__\tPASS\n", results)
             if refusal is not None:
@@ -265,6 +349,158 @@ class LinuxGateTest(unittest.TestCase):
         else:
             self.assertTrue(results.endswith(b"__END__\tPASS\n"))
         return receipt
+
+    def test_flake8_exclusion_hiding_explicit_file(self):
+        (self.fork / ".flake8").write_text(
+            "[flake8]\nexclude = test/changed.py\n"
+        )
+        (self.fork / LINT_CHANGED).write_text('value = "' + 'x' * 95 + '"\n')
+        receipt = self.run_gate(1, "RED", CONFIG_EXCLUDE="1",
+                                FLAKE8_CODE="E501")
+        self.assertEqual(receipt["unexcused_failures"],
+                         [f"flake8::{LINT_CHANGED}"])
+
+    def test_empty_diff_needs_observed_flake8_completion(self):
+        self.run_gate(2, "REFUSED", EMPTY_DIFF="1", FLAKE8_STATUS="1")
+        self.receipts = self.receipts.with_name("empty-complete")
+        self.run_gate(0, "GREEN", EMPTY_DIFF="1")
+        facts = json.loads((self.receipts / "evidence.json").read_bytes())
+        self.assertEqual(facts["facts"]["lint"][0]["processed"], 0)
+
+    def test_pytest_addopts_deselection(self):
+        (self.fork / "pytest.ini").write_text("[pytest]\naddopts = -k ok\n")
+        self.run_gate(2, "REFUSED", DESELECTED="20")
+
+    def test_pytest_additional_excluded_module(self):
+        (self.fork / "test/test_extra.py").write_text("def test_extra(): pass")
+        self.run_gate(2, "REFUSED", refusal="missing pytest module")
+
+    def test_started_pytest_item_without_outcome(self):
+        self.run_gate(2, "REFUSED", MISSING_OUTCOME="1")
+
+    def test_nonfinite_collection_json_is_refused(self):
+        self.run_gate(2, "REFUSED", INVALID_COLLECTION="1",
+                      refusal="invalid JSON number")
+
+    def test_unnamed_junit_testcase(self):
+        self.run_gate(2, "REFUSED", UNNAMED_CASE="1")
+
+    def test_results_truncated_after_validation(self):
+        receipt = self.run_gate(1, "RED", DJANGO_FAILURE=DJANGO_FAILURE,
+                                TRUNCATE_RESULTS="1")
+        self.assertEqual(receipt["unexcused_failures"], [DJANGO_FAILURE])
+        results = (self.receipts / "results.tsv").read_text()
+        self.assertIn(DJANGO_FAILURE, results)
+
+    def test_resealed_but_inconsistent_proofs(self):
+        self.run_gate(0, "GREEN")
+        good = json.loads((self.receipts / "evidence.json").read_bytes())
+        facts = good["facts"]
+        lint = facts["lint"][0]
+        suite = facts["pytest"]
+        xml = suite["junit"]
+        unnamed = xml.replace('classname="test.test_receipt"', 'classname=""')
+        duplicate = xml.replace("test_other", "test_ok").replace(
+            "test.logger.readers.test_udp_reader.TestUDPReader",
+            "test.test_receipt")
+        no_reason = xml.replace('skipped="0"', 'skipped="1"').replace(
+            'name="test_ok"/>', 'name="test_ok"><skipped/></testcase>')
+        changes = [
+            ((), "unknown", False),
+            (("pytest", "collection"), "unknown", 0),
+            (("pytest", "collection"), "excluded", True),
+            (("pytest", "collection"), "collected", 1),
+            (("pytest",), "argv", suite["argv"] + ["-m", "quick"]),
+            (("pytest",), "junit", unnamed),
+            (("pytest",), "junit", duplicate),
+            (("pytest",), "junit", no_reason),
+            (("lint", 0), "argv", [s for s in lint["argv"]
+                                   if s != "--exclude="]),
+            (("lint", 0), "argv", [s for s in lint["argv"]
+                                   if s != "--isolated"]),
+            (("lint", 0), "processed", 0),
+            (("lint", 0), "count", False),
+            (("lint", 0), "findings", ["E501 ./other.py:1:80: too long"]),
+            (("changed", 0), "old_type", "tree"),
+            ((), "lint", facts["lint"][1:]),
+            ((), "results", "flake8::__COMPLETE__\tPASS\n__END__\tPASS\n"),
+        ]
+        for path, key, value in changes:
+            obj = copy.deepcopy(good)
+            target = obj["facts"]
+            for part in path:
+                target = target[part]
+            target[key] = value
+            seal(obj)
+            self.assertEqual(gate_lib.decide(obj).label, "REFUSED",
+                             (path, key, value))
+
+    def test_single_field_corruption_and_2000_seeded_mutations(self):
+        def locations(node, path=()):
+            if isinstance(node, dict):
+                children = node.items()
+            elif isinstance(node, list):
+                children = enumerate(node)
+            else:
+                return
+            for key, child in children:
+                yield path + (key,)
+                yield from locations(child, path + (key,))
+
+        def damage(original, path, operation):
+            obj = copy.deepcopy(original)
+            parent = obj
+            for key in path[:-1]:
+                parent = parent[key]
+            key = path[-1]
+            if operation == "drop":
+                del parent[key]
+            elif operation == "substitute":
+                was = parent[key]
+                if type(was) is int:
+                    parent[key] = was + 1
+                elif type(was) is str:
+                    parent[key] = was + "?"
+                elif type(was) is list:
+                    was.append("extra")
+                else:
+                    was["extra"] = 1
+            else:
+                parent[key] = {"unexpected": 3}
+            return obj
+
+        self.run_gate(0, "GREEN")
+        green = json.loads((self.receipts / "evidence.json").read_text())
+        self.assertEqual(gate_lib.decide(green).label, "GREEN")
+        for path in locations(green):
+            for operation in ("drop", "wrong type", "substitute"):
+                damaged = damage(green, path, operation)
+                self.assertEqual(gate_lib.decide(damaged).label, "REFUSED",
+                                 path)
+
+        self.receipts = self.receipts.with_name("red")
+        self.run_gate(1, "RED", DJANGO_FAILURE=DJANGO_FAILURE)
+        red = json.loads((self.receipts / "evidence.json").read_text())
+        refused = copy.deepcopy(green)
+        refused["facts"]["tracked"]["after"] = "0" * 64
+        seal(refused)
+        self.assertEqual(gate_lib.decide(red).label, "RED")
+        self.assertEqual(gate_lib.decide(refused).label, "REFUSED")
+        rng = random.Random(51490)
+        seeds = [(obj, list(locations(obj["facts"]))) for obj in
+                 (red, refused)]
+        for index in range(2000):
+            obj, paths = seeds[index % 2]
+            path = ("facts",) + rng.choice(paths)
+            reseal = index % 4 < 2
+            operations = ["drop", "wrong type"]
+            if not reseal:
+                operations.append("substitute")
+            candidate = damage(obj, path, rng.choice(operations))
+            if reseal:
+                seal(candidate)  # Exercise semantic validation independently.
+            self.assertNotEqual(gate_lib.decide(candidate).label, "GREEN",
+                                (index, path))
 
     def test_linux_gate_records_flake8_pass_and_changed_paths(self):
         self.run_gate(0, "GREEN")
@@ -335,7 +571,13 @@ class LinuxGateTest(unittest.TestCase):
         self.run_gate(2, "REFUSED", FLAKE8_STATUS="1",
                       refusal=f"flake8 did not complete for {LINT_CHANGED}")
         self.assertEqual((self.receipts / "flake8.out").read_bytes(), b"")
-        self.assertEqual((self.receipts / "flake8.log").read_bytes(), b"0\n")
+        benchmark = b"0.01 seconds elapsed\n"
+        units = (b"logical lines", b"physical lines", b"tokens", b"files")
+        for label in units:
+            benchmark += b"1 total " + label + b" processed\n"
+            benchmark += b"100 " + label + b" processed per second\n"
+        self.assertEqual((self.receipts / "flake8.log").read_bytes(),
+                         benchmark + b"0\n")
         results = (self.receipts / "results.tsv").read_text()
         self.assertIn(f"flake8::{LINT_CLEAN}\tPASS\n", results)
         self.assertNotIn(f"flake8::{LINT_CHANGED}\t", results)
@@ -402,7 +644,7 @@ class LinuxGateTest(unittest.TestCase):
         self.assertIn("flake8==7.5.0", install)
         self.assertIn("pytest-timeout==2.4.0", install)
         self.assertEqual((self.receipts / "pip-freeze.txt").read_text(),
-                         "pytest-timeout==2.4.0\n")
+                         "flake8==7.5.0\npytest-timeout==2.4.0\n")
 
     def test_linux_gate_refuses_failed_pip_freeze(self):
         self.run_gate(2, "REFUSED", PIP_FREEZE_STATUS="1",
