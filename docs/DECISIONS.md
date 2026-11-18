@@ -370,3 +370,14 @@ question, Astra's answer in one line and the file path of the full answer. Hard 
 (D-ARCH6), Kalon untouched, no deleting outside `/private/tmp/deepsignal/`, no secrets, nothing outward-facing,
 no spending beyond the agreed lanes. Anything that truly needs Eugene goes to `docs/MORNING.md` and work continues
 on everything else. A morning summary is kept in `docs/STATE.md`.
+
+### D-CONSOLE2 Night mode defaults to red while the card is open (2026-11-18, DECIDED by the console thread, logged by the build lead)
+Eugene's night-mode card is unanswered overnight. Default stays red (bridge safe, preserves night vision). Eugene can
+change the default in the morning; it is one token in the lighting config. Low-contrast warnings in red at dim 0.8 (11)
+are accepted until the onboard luminance test decides.
+
+### D-SOAK1 Where the 24-hour soak runs (2026-11-18, DECIDED by the build lead under D-NIGHT1)
+GitHub Actions jobs cap at 6 hours, so: a 5.5 h soak on Linux via the desk Actions workflow (counts toward the gate),
+plus the real 24 h soak on the Mini when Kalon is idle, and on the MacBook under the memory gate if the Mini is not
+available (the soak is light, under 1 GB resident). A Mac-only failure does not block the gate (rule 25). Starting by
+11-22 stays the target. Kalon yields first on any conflict.

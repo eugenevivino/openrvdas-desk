@@ -27,3 +27,5 @@ Cannot run in cloud (lead runs outside the sandbox): every `@pytest.mark.lead_ru
 Integration (lead, after wave 2): merge module branches into core-v2 in any order (disjoint), rebuild dist once, run the full suite plus lead_run tests, Astra 6.2 review of the merged diff, Impeccable audit in all four lighting modes.
 
 D-SETUP1 (first light in 10 minutes or less, 3 or fewer actions): the console's part is the install task (install.sh plus the self-test page). Its docs must show the 3 actions: run install.sh, open /console/, read the self-test page.
+
+Wave 2 briefs are final: soak (`console-soak.md`) and source-loss (`console-source-loss.md`), both based on `deepsignal/console-harness-fixture` once fixture is pushed. Integration plan: `INTEGRATION.md`.
