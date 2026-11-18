@@ -85,3 +85,9 @@ anywhere public.
 - Fleet view: the same overlay on several ships, compared side by side on
   shore (sensor health and calibration across the fleet).
 - Open sensor-fingerprint library shared between ships and institutions.
+
+## Parked: MCP gateway and shadow pilot (not scheduled)
+
+From the 2026-11-18 research notes. MCP v1 is read-only plus proposal-only with a
+separate approval and apply service (#64-#69). Shadow pilot and packaging question: #70,
+#71, D-ADOPT1 (open for Eugene). Nothing here starts until he picks it.

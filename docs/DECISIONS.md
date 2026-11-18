@@ -283,3 +283,11 @@ work promptly, fetch upstream core and contrib into the fork daily and before ea
 new module branch (never push upstream), rebase active branches, apply pending patches
 at once.
 
+
+### D-ADOPT1 Separate versioned package vs contrib code drop (2026-11-18, OPEN for Eugene)
+Adoption research recommends DeepSignal ship as an independently versioned MIT package with
+thin OpenRVDAS adapters, proven first by a read-only shadow pilot on one Scripps vessel.
+This conflicts with D-ARCH3 (modules in `contrib/deepsignal/`, PRs to contrib `master`).
+No change of course. Both can hold: keep building module-by-module on the fork, and decide
+the packaging and upstream shape before Eugene says the set is ready (D-ARCH6).
+Research: `research/2026-11-18-adoption-strategy.md`. Eugene decides.
