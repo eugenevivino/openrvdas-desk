@@ -1,0 +1,277 @@
+# DeepSignal reference: every feature and its status
+
+**This is the canonical feature list for DeepSignal.** If a feature is not here, it is not tracked.
+Updated 2026-11-18 08:00Z. Keep-current rule: AGENTS.md "Reference doc" (any change to a feature's
+status updates this file in the same commit). Check: `python3 tools/reference-check.py`.
+
+Other desk files go deeper: `docs/IDEAS.md` (every idea, one row each), `docs/ROADMAP.md` (ranking and
+dates), `docs/TARGET-PARITY.md` (scorecard), `docs/DECISIONS.md` (why). This file is the index of what
+DeepSignal does, and where each piece stands.
+
+## Status key
+
+| Status | Meaning |
+|---|---|
+| DONE | Built, independently reviewed, gate green on the fork |
+| BUILT | Code pushed to its fork branch and passed lead acceptance (tests, flake8); independent review still owed |
+| BUILDING | Brief written and a Codex task running or queued; branch exists, may still sit at its base commit |
+| BRIEFED | Brief written, not launched yet |
+| DESIGNED | Design or decision exists, no brief yet |
+| PROPOSED | Idea only, kept in IDEAS.md |
+| WAITING | Blocked on an input from Eugene or the outside world (named in the row) |
+
+Links: `fork:<branch>` means `https://github.com/eugenevivino/openrvdas/tree/<branch>`. Brief paths are in this repo.
+
+## 1. What DeepSignal is
+
+DeepSignal is an open-source layer on top of OpenRVDAS (the Open Research Vessel Data Acquisition
+System) that makes a ship's underway data easier to set up, see, trust and fix. OpenRVDAS stays
+unmodified; DeepSignal adds modules that plug in through its standard interfaces.
+
+**Goals (Eugene, 2026-11-17 to 18):**
+1. A console a non-expert tech can run on the bridge and in the lab, better than Grafana on ease (D-UX1).
+2. Parity with MetAcq and most of CORIOLIX, measured by the scorecard, not claimed (D-PARITY1).
+3. Setup measured in minutes and actions, not days (D-SETUP1).
+4. Data you can trust: QC flags, drift detection, reversible corrections with sign-off.
+5. Optional AI (MCP server, user-supplied key) that never touches ship systems without approval.
+6. Reanalysis of old cruise data, and "ULTRA novel" capabilities no shipboard DAS has today.
+
+**Architecture:**
+- Overlay on unmodified OpenRVDAS core (D-ARCH1). Core gets only small bug-fix PRs.
+- Tightly scoped independent modules, one branch each, disjoint files (D-ARCH4).
+- Standard interfaces only: Reader, Transform, Writer, CachedDataServer, configs. Pure Python plus a
+  Node console. Linux is the target (D-ARCH5); the Linux gate is GitHub Actions.
+- Folder `contrib/deepsignal/` on the fork (D-NAME1, D-ARCH3). Everything is MIT-licensed open source.
+- Built on Eugene's fork first; nothing goes upstream until Eugene says (D-ARCH6).
+- **Open:** ship as a separately versioned package, or as a contrib code drop (D-ADOPT1, also
+  called the D-ARCH3 question). Recommendation on file: build module by module now, decide packaging
+  before anything goes upstream.
+
+## 2. Headline numbers
+
+| Measure | Today | Planned (briefed work lands) | Target | Source |
+|---|---|---|---|---|
+| Parity, CORIOLIX plus MetAcq combined | 46% | 72% | 98% | `docs/TARGET-PARITY.md` |
+| Parity, CORIOLIX | 38% | 70% | 98% | same |
+| Parity, MetAcq | 55% | 74% | 98% | same |
+| First light (clean Ubuntu to live data in the console) | about 25 actions, no live display | 10 min or less, 3 actions or fewer | same | D-SETUP1, #124 |
+| First real sensor | not measured | 15 min or less, 10 actions or fewer, no YAML typed | same | D-SETUP1, #114 |
+
+Today's numbers are "core plus built DeepSignal". Re-score with `tools/target-parity/gen.py` when a feature lands.
+
+## 3. MVP #1: the Console (target Tue 2026-11-25, Pacific)
+
+Native console (React, TypeScript, Vite, Tailwind, uPlot) reading CachedDataServer. Quality bar: "gorgeous
+and functional" (D-VISUAL1, checks V1 to V9). "Stable integration" is five tests, all must pass (ROADMAP "MVP #1").
+Rulebook: `design/console-DESIGN.md`. Task table: `briefs/console/INDEX.md`. Integration: `briefs/console/INTEGRATION.md`.
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| Console core (plugin host, data adapter) | App shell, module plugin host, CachedDataServer adapter, page files, freshness LIVE / AGING / STALE / NO DATA | BUILT v1 (82ec7ca, Vitest green, live browser test); v2 BUILDING | 11-20 | fork:deepsignal/console-core, `briefs/console/core-v2.md` |
+| Console contract | Shared types and module interface every console module builds against | BUILT (4bfd755) | done | fork:deepsignal/console-contract |
+| Charts | Time-series charts with uPlot, scrub, multiple fields | BUILDING | 11-19 | fork:deepsignal/console-mod-chart, `briefs/console/charts.md` |
+| Health page | Every sensor: last value, age, QC flag, alarm state (#12) | BUILDING | 11-19 | fork:deepsignal/console-mod-health, `briefs/console/health.md` |
+| Bridge page | Night-safe huge readouts, relative wind, stale shown as stale (#13) | BUILDING | 11-19 | fork:deepsignal/console-mod-bridge, `briefs/console/bridge.md` |
+| Auto pages | Builds starter pages from whatever fields the ship publishes | BUILT a1 (62b0ded); a2 BUILDING | 11-19 | fork:deepsignal/console-mod-auto-pages, `briefs/console/auto-pages.md` |
+| Stale banner | Page-wide banner when a source goes stale or silent | BUILDING | 11-19 | fork:deepsignal/console-mod-stale-banner, `briefs/console/stale-banner.md` |
+| Kiosk with auto night | Locked bridge kiosk; night palette switches automatically, one tap always; red default (D-CONSOLE2) | BUILDING | 11-19 | fork:deepsignal/console-mod-kiosk-night, `briefs/console/kiosk-night.md` |
+| One-command install plus self-test | `install.sh` then open `/console/` then read the self-test page: the 3 actions of D-SETUP1 | BUILDING | 11-19 | fork:deepsignal/console-install, `briefs/console/install.md` |
+| Map (#107) | Offline map, track, data colored on track, events, cached basemaps | BUILDING (stretch: MVP only if green by 11-21) | 11-21 | fork:deepsignal/console-mod-map, `briefs/console/map.md` |
+| Test fixture | Stock OpenRVDAS logger on NBP1406 replay feeding the console | BUILDING | 11-19 | fork:deepsignal/console-harness-fixture, `briefs/console/fixture.md` |
+| 24-hour soak | Real-rate replay, memory sampled every minute; growth under 5% after warm-up | BRIEFED (after fixture) | 11-22 to 11-24 | `briefs/console/soak.md`, D-SOAK1 |
+| Source-loss test | Kill the logger: STALE within 10 s, recover with no restart, garbage input never crashes | BRIEFED (after fixture) | 11-24 | `briefs/console/source-loss.md` |
+| Visual gate | V1 to V9 checks plus contact sheet review before the MVP merge | BUILDING | 11-24 | fork:deepsignal/console-visual-gate, `briefs/console/visual-gate.md`, `design/console-VISUAL-GATE.md` |
+| Design polish pass | Impeccable critique, typeset, polish, audit after integration | BRIEFED | 11-22 to 11-24 | ROADMAP "Design-polish pass" |
+| Integration branch | All modules merged, full suite, Astra review | BRIEFED | 11-20 | `deepsignal/console-mvp`, `briefs/console/INTEGRATION.md` |
+
+Planned console follow-ups (after MVP): calibration view (#52), corrections approve and roll back (#56),
+drift view (#54), host health tiles (#119), emulated badge, routes on the map (#108), setup wizard pages
+(section 6), roles wired into pages (#115).
+
+## 4. Data-quality and science modules
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| Vector wind averaging (#4) | Averages wind as vectors (359 and 1 degrees give 0, not 180); 31 tests | DONE, parked for upstream | done | fork:deepsignal/vector-wind, D-DSWIND1 |
+| QARTOD QC flags (#8) | Range, spike, flat-line, rate-of-change tests emit `<field>_QC` flags; never deletes data | BUILT (2724f07a, 19 tests); review running | review | fork:deepsignal/qartod-flags, `briefs/deepsignal-qartod-flags.md` |
+| "Cannot tell" verdict (#55) | Drift tests answer AMBIGUOUS when data cannot separate sensor change from real ocean change | DESIGNED (QARTOD brief carries it) | v2 | `briefs/deepsignal-qartod-flags.md` |
+| Instrument history (#52) | Per sensor: serial, firmware, calibration, repairs, swaps, mount, clock source, each dated | BUILT (973a87a3, 7 tests); review owed | review | fork:deepsignal/instrument-history, `briefs/deepsignal-instrument-history.md` |
+| Fault-injection bench (#53) | Replays real data with injected drift, steps, lag, clock resets, spikes; scores detectors | BUILT (9d87d99a, 17 tests); review queued | review | fork:deepsignal/fault-bench, `briefs/deepsignal-fault-bench.md` |
+| Correction ledger with sign-off (#56) | Every correction is a reversible, signed layer; reviewer allowlist and trusted checkpoint (D-LEDGER1) | BUILT (99c01919, 25 tests); review plus D-LEDGER1 fix round owed | review | fork:deepsignal/correction-ledger, `briefs/deepsignal-correction-ledger.md` |
+| Post-cruise drift review (#54) | Two-sided smoothing with later references (post-cal, casts, bottles) after the cruise | BRIEFED, held | v2 | fork:deepsignal/post-cruise-drift, `briefs/deepsignal-post-cruise-drift.md` |
+| Ship-coupling discovery (#78) | Lagged dependency atlas between all streams with false-discovery control | BUILT (67440a40, 7 tests); Astra review queued | review | fork:deepsignal/ship-coupling, `briefs/deepsignal-ship-coupling.md` |
+| Dependency-graph fault detector (#79) | Learns normal sensor relationships; flags a sensor whose relationships break | BRIEFED, held | v2 | fork:deepsignal/dependency-graph, `briefs/deepsignal-dependency-graph.md` |
+| Scoreboard writer (#5) | Latest-value boards with per-model formatter, framing, pacing; stale shown as stale | WAITING: first board make, model, protocol manual, stale threshold (Eugene) | after inputs | D-SCORE1 |
+| $WICOR writer (#6) | MetAcq-compatible one-line met broadcast | DESIGNED | v2 | D-METACQ1 |
+| Sensor calibration records (#7) | Coefficients per sensor applied by a versioned transform | DESIGNED (overlaps #52) | v2 | D-METACQ1 |
+
+## 5. Phase 2: parity build-out (candidate Fri 2026-12-04)
+
+Twenty-six items, ranked by scorecard gap. Full table with bases, lanes and dependencies: `briefs/p2/INDEX.md`.
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| #104 ERDDAP generator | Builds ERDDAP `datasets.xml` so ERDDAP serves subsets in every format | BUILT (a4f8e4c) | 12-04 | fork:deepsignal/p2-erddap, `briefs/p2/104-erddap.md` |
+| #105 REST data API | Read-only data and metadata over REST for MATLAB, R and scripts | BUILT (8756fed) | 12-04 | fork:deepsignal/p2-rest-api, `briefs/p2/105-rest-api.md` |
+| #106 Best-source selector (core fix) | Primary sensor per role with automatic failover | BUILT a1 (090e208); a2 BUILDING | 12-04 | fork:deepsignal/p2-best-source, `briefs/p2/106-best-source.md` |
+| #107 Console map | See section 3 | BUILDING | 11-21 | `briefs/console/map.md` |
+| #108 Routes and waypoints | Route, ETA, bearing, off-course warning | BRIEFED (Mac queue) | 12-04 | `briefs/p2/108-route-eta.md` |
+| #109 Winch and CTD cast view | Wire out, speed, tension with SWL bands, CTD depth on one night-safe page | BUILDING; SWL values WAITING on Eugene | 12-04 | fork:deepsignal/p2-cast-view, `briefs/p2/109-cast-view.md` |
+| #110 Flowthrough state tagging | Tags every underway value with what was flowing | BUILT (2df7bd5) | 12-04 | fork:deepsignal/p2-flow-state, `briefs/p2/110-flow-state.md` |
+| #111 SAMOS and met report writers | SAMOS daily file and public met formats, byte-checked (D-111A) | BUILDING | 12-04 | fork:deepsignal/p2-met-reports, `briefs/p2/111-met-reports.md` |
+| #112 Met and seawater formulas (core fix) | Dew point, SLP, PSS-78, TEOS-10, sound speed as named functions | BRIEFED (Mac, Astra) | 12-04 | `briefs/p2/112-met-formulas.md` |
+| #113 Vessel geometry and lever arms | Sensor positions and lever-arm correction | BRIEFED (Mac, Astra) | 12-04 | `briefs/p2/113-geometry.md` |
+| #114 Sensor onboarding wizard | Identify stream, pick device, map names and limits, preview diff, deploy; no YAML | BUILDING (fix round 1) | 12-04 | fork:deepsignal/p2-onboard-wizard, `briefs/p2/114-onboard-wizard.md` |
+| #115 Roles and accounts | Public, science, tech, admin roles (engine only) | BUILDING; login layer WAITING on Eugene | 12-04 | fork:deepsignal/p2-roles, `briefs/p2/115-roles.md` |
+| #116 Data release policy | Privacy level, restricted fields, EEZ hold-back | BUILT a1 (6b19de4); policy content WAITING on Eugene | 12-04 | fork:deepsignal/p2-release-policy, `briefs/p2/116-release-policy.md` |
+| #117 Standard vocabularies | CF, SeaVoX, R2R, ICES, UN/LOCODE in the registry | BUILT (9749bdb) | 12-04 | fork:deepsignal/p2-vocab, `briefs/p2/117-vocab.md` |
+| #118 Instrument document store | Manuals and cal certificates attached to instruments | BUILDING | 12-04 | fork:deepsignal/p2-doc-store, `briefs/p2/118-doc-store.md` |
+| #119 Host health | Disk, CPU, RAM, NTP offset, restarts on the health board | BUILDING | 12-04 | fork:deepsignal/p2-host-health, `briefs/p2/119-host-health.md` |
+| #120 Cruise metadata | Dates, ports, participants, optional schedule import | BUILDING; MFP and MOMS access WAITING | 12-04 | fork:deepsignal/p2-cruise-meta, `briefs/p2/120-cruise-meta.md` |
+| #121 UNOLS met device pack (core fix) | Device definitions for the MetSpecs sensor list | BRIEFED (Mac, needs manuals) | 12-04 | `briefs/p2/121-device-pack.md` |
+| #122 Small core fixes | Two of four parts already on fork `dev`; rest folded into #121 and a console badge | DESIGNED (not briefed, see INDEX) | 12-04 | `briefs/p2/INDEX.md` |
+| #123 Low-bandwidth shore snapshot | Image plus compact JSON every N seconds for slow links | BUILT (159240c) | 12-04 | fork:deepsignal/p2-shore-snapshot, `briefs/p2/123-shore-snapshot.md` |
+| #124 Zero-prompt installer plus install clock | `--defaults` install; CI measures time to live data | Install clock BUILT (f3b7437, CI running); `--defaults` BUILDING | 12-04 | fork:ci/install-clock, fork:deepsignal/p2-install-defaults, `briefs/p2/124-install-defaults.md`, `briefs/install-clock.md` |
+| #125 Stream auto-discovery | See section 6 | BUILDING | 12-04 | `briefs/p2/125-stream-discovery.md` |
+| #126 Config from inventory | See section 6 | BUILDING | 12-04 | `briefs/p2/126-config-from-inventory.md` |
+| #127 Config linter | See section 6 | BUILDING | 12-04 | `briefs/p2/127-config-lint.md` |
+| #128 Component catalog | See section 6 | BUILDING | 12-04 | `briefs/p2/128-component-catalog.md` |
+| #129 Derived-product suggester | Proposes transforms (true wind, salinity, dew point, QC ranges) when inputs exist | PROPOSED (backlog) | later | `docs/IDEAS.md` |
+
+## 6. Setup automation: one engine, three front doors
+
+One setup engine does the work; three front doors call it: a **wizard** (console pages), a **CLI**, and
+an **MCP** server for AI clients. Same engine, same validation, same diff, whichever door is used.
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| Setup engine | Shared core the three doors call: discover, identify, generate, lint, diff, apply | DESIGNED | 12-04 | this section |
+| #125 Stream auto-discovery | Read-only scan of serial (baud detection), UDP, MQTT, Redis, cache fields, growing files | BUILDING | 12-04 | fork:deepsignal/p2-stream-discovery, `briefs/p2/125-stream-discovery.md` |
+| #114 Sniffing and onboarding | Identify a captured stream, pick device, map CF names and limits, preview the config diff | BUILDING | 12-04 | fork:deepsignal/p2-onboard-wizard, `briefs/p2/114-onboard-wizard.md` |
+| #128 Forms for all 75 components | Every reader, writer and transform introspected into a JSON Schema form with plain labels | BUILDING | 12-04 | fork:deepsignal/p2-component-catalog, `briefs/p2/128-component-catalog.md` |
+| #126 Cruise config generation | One acquisition file plus #52 history generates the whole cruise definition with modes | BUILDING | 12-04 | fork:deepsignal/p2-config-from-inventory, `briefs/p2/126-config-from-inventory.md` |
+| #127 Config lint | Ship-sense checks beyond schema: shared ports, loggers missing from modes, nothing feeding the cache | BUILDING | 12-04 | fork:deepsignal/p2-config-lint, `briefs/p2/127-config-lint.md` |
+| Instrument init profiles | Send each instrument its start-up commands on connect (MetAcq parity) | BRIEFED soon (brief being written) | 12-04 | IDEAS number pending |
+| Setup MCP | About 5 high-level tools; read-only by default; any write needs approval plus a dry-run diff | DESIGNED | after engine | D-MCP1, #64, #65, `research/2026-11-18-mcp-reference-architecture.md` |
+| Wizard pages | Console pages over #114, #125, #126, #128 | PROPOSED (console follow-up) | after MVP | `briefs/p2/INDEX.md` "What is left" |
+
+## 7. AI and MCP
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| MCP analytical gateway (#20, #64) | Typed domain tools (query, summarize, metadata, validate, plot); read-only plus proposal-only v1 | DESIGNED | after v2 | D-MCP1, `research/2026-11-18-mcp-reference-architecture.md` |
+| Approval and apply service (#65) | Validator, diff, policy, human approval record, separate apply identity | PROPOSED | after v2 | `docs/IDEAS.md` |
+| Provenance on every answer (#66) and query budgets (#67) | Each result carries source ids, bounds, counts, units, flags, computation; capped per call | PROPOSED | after v2 | `docs/IDEAS.md` |
+| AI audit trail (#62) | Every AI question, tool call and answer logged with the data it read | PROPOSED | after v2 | `docs/IDEAS.md` |
+| Console AI help | Ask for a view; works with no key, key server-side, provider-pluggable | DESIGNED | after MVP | `design/console-DESIGN.md` |
+
+## 8. Reanalysis of old cruise data (D-REAN1, D-REAN2)
+
+Run DeepSignal over archived cruises in scored passes; flags and corrections are reversible ledger layers;
+a pass is kept only if it beats the last on independent holdouts and the fault bench, with a person signing off
+every value change. 21 modules over milestones M0 to M5. Pilot: three Revelle GO-SHIP cruises, TSG confirmed in RR2205.
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| Reanalysis loop (#63) | Scored, reversible passes over the raw archive | DESIGNED; Eugene's open choices in plan section 9 | after v2 | `research/2026-11-18-reanalysis-program.md` |
+| Pilot cruises | Three Revelle GO-SHIP cruises from R2R | DESIGNED | after v2 | `research/2026-11-18-r2r-pilot-cruises.md` |
+| Legacy archive readers (#59) | Read SCS, MetAcq and R2R files into the same records | PROPOSED | after v2 | `docs/IDEAS.md` |
+
+## 9. Platform, gate and tooling
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| Linux gate (GitHub Actions) | Full suite on Linux for an exact sha, receipt per run | BUILDING r3 (da72a75 RED, 10 failures verified); review queued | 11-21 | desk branch `gate/linux-actions`, `briefs/gate-linux-r3.md` |
+| Django shared-config-name fix (#1, core fix) | `test_basic` gets two LoggerConfigs; fix plus test | BUILT (ad10eb1), parked: nothing upstream yet (D-ARCH6) | when Eugene says | fork:django-gui/shared-config-names, `pr/django-shared-config-names.md` |
+| Gate contrib mode (#49) | Runs `contrib/deepsignal/` tests, not only core `test/` | PROPOSED | 11-21 | `docs/IDEAS.md` |
+| Target-parity scorecard generator | Generates `docs/TARGET-PARITY.md` from scored rows | DONE | done | `tools/target-parity/gen.py` |
+| Reference check | Flags IDEAS numbers and briefs missing from this file | DONE | done | `tools/reference-check.py` |
+| ds-codex launcher | RAM-gated Mac launcher, separate Codex home, pinned sub-agents | DONE (desk 2c228e2, not yet on main) | done | D-SEP1, D-SUB1, `docs/CODEX.md` |
+
+## 10. Novel and backlog ideas
+
+Everything else in `docs/IDEAS.md` that is not yet in a table above. Status from IDEAS. Promote a row into a
+table above when it gets a design, brief or branch.
+
+<!-- backlog-index: generated from docs/IDEAS.md by tools/reference-check.py --backlog; edit IDEAS, not here -->
+- #2 macOS UDP and timing test failures (PROPOSED)
+- #3 Overlay package skeleton (PROPOSED)
+- #9 State-aware alarms with watch verdicts (PROPOSED)
+- #10 Redundant-sensor CUSUM drift (DESIGNED)
+- #11 Drift vs independent references (DESIGNED)
+- #14 Science, tech and shore views (PROPOSED)
+- #15 Event log (DESIGNED)
+- #16 Binned downloads (DESIGNED)
+- #17 Ship-to-shore sync, bulk (PROPOSED)
+- #18 Ship-to-shore sync, live (PROPOSED)
+- #19 Bandwidth-aware link profiles (PROPOSED)
+- #21 MCP issue-finding tools (PROPOSED)
+- #22 MCP precision and calibration tools (PROPOSED)
+- #23 Multi-AI-client support (PROPOSED)
+- #24 Codex as a builder (PROPOSED)
+- #25 Physics referee (sensor consensus) (PROPOSED)
+- #26 Sensor digital twin (PROPOSED)
+- #27 Cruise memory search (PROPOSED)
+- #28 Self-writing cruise log (PROPOSED)
+- #29 Plug-and-identify (PROPOSED)
+- #30 Scientist co-pilot (PROPOSED)
+- #31 Clock forensics (PROPOSED)
+- #32 Provenance hashes (PROPOSED)
+- #33 Time-travel replay (PROPOSED)
+- #34 Plain-language alarms (PROPOSED)
+- #35 Semantic ship-to-shore (PROPOSED)
+- #36 Calibration foresight (PROPOSED)
+- #37 Cruise narrator (PROPOSED)
+- #38 Roll and heave cross-correlation (PROPOSED)
+- #39 Ship turns for flow distortion (PROPOSED)
+- #40 Diurnal solar heating bias (PROPOSED)
+- #41 Tides and ADCP bottom track (PROPOSED)
+- #42 GNSS reflectometry (PROPOSED)
+- #43 Engine and pump vibration health (PROPOSED)
+- #44 Fleet view (PROPOSED)
+- #45 Open sensor-fingerprint library (PROPOSED)
+- #46 Cost and savings status line (PROPOSED)
+- #47 Agent bench (PROPOSED)
+- #48 Retriever brief library (PROPOSED)
+- #50 Wind averages for the bridge and $WICOR (PROPOSED)
+- #51 Two-anemometer wind consensus (PROPOSED)
+- #57 Uncertainty on every value (PROPOSED)
+- #58 End-of-cruise R2R-ready package (PROPOSED)
+- #60 Sensor response correction (PROPOSED)
+- #61 Instrument diagnostic channels (PROPOSED)
+- #68 Target MCP spec 2026-07-28 (PROPOSED)
+- #69 Golden-cruise MCP eval suite and local model tiers (PROPOSED)
+- #70 Read-only shadow pilot on Revelle or Sally Ride (PROPOSED)
+- #71 Operator-from-docs install test (PROPOSED)
+- #72 Non-OpenRVDAS stream adapters (CORIOLIX, SCS, MetAcq files) (PROPOSED)
+- #73 Publication and funding track (PROPOSED)
+- #74 Independence-aware calibration evidence graph (PROPOSED)
+- #75 Public sparse-reference drift benchmark (PROPOSED)
+- #76 Front-versus-drift competing hypotheses (PROPOSED)
+- #77 Cross-vessel calibration priors (PROPOSED)
+- #80 Directional wave spectrum from motion (PROPOSED)
+- #81 Self-calibrating ship wave buoy (PROPOSED)
+- #82 Current from SOG minus STW (PROPOSED)
+- #83 GNSS precipitable water vapor (PROPOSED)
+- #84 GNSS reflectometry for sea ice (PROPOSED)
+- #85 Ionosphere TEC and scintillation (PROPOSED)
+- #86 GNSS interference sentinel (PROPOSED)
+- #87 Satellite-link rain gauge (PROPOSED)
+- #88 Joint environmental inversion (PROPOSED)
+- #89 Scattering-layer and migration atlas (PROPOSED)
+- #90 Acoustic mixed-layer depth (PROPOSED)
+- #91 Gas-seep discovery (PROPOSED)
+- #92 Echosounder noise floor as machinery monitor (PROPOSED)
+- #93 Rain and wind from underwater sound (PROPOSED)
+- #94 Incidental marine-mammal detection (PROPOSED)
+- #95 Live air-sea bulk fluxes (PROPOSED)
+- #96 Mixing-state product (PROPOSED)
+- #97 Submesoscale front detector (PROPOSED)
+- #98 Vessel-performance digital twin (PROPOSED)
+- #99 Environment-conditioned machinery health (PROPOSED)
+- #100 Fuel and route counterfactual (PROPOSED)
+- #101 Masked multirate ship encoder (PROPOSED)
+- #102 Physics-conditioned representations (PROPOSED)
+- #103 Cross-vessel sensor ontology (PROPOSED)
+- #130 Instrument init profiles (DESIGNED)
+<!-- /backlog-index -->

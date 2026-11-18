@@ -123,6 +123,9 @@ first draft: re-run at xhigh and compare (C2 "What a Medium result means").
     helper; behavior matches the brief's stated lines.
 15. Author never reviews its own work. Review tier follows risk
     (OPERATING-SYSTEM section 6). Tests and the gate decide, not models.
+16. Reference doc: a Codex job that changes a feature's status in the desk (a brief, a launch,
+    a push, a review verdict) also updates that feature's row in `docs/REFERENCE.md` in the same
+    commit, and runs `python3 tools/reference-check.py`. A desk push that fails the check is not done.
 
 ## 3. Sync GitHub regularly (Eugene 2026-11-18, D-SYNC1)
 

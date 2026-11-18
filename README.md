@@ -1,5 +1,8 @@
 # openrvdas-desk
 
+> **DeepSignal feature reference: [`docs/REFERENCE.md`](docs/REFERENCE.md).** Every feature, built, in progress
+> and planned, with status, target date and link. Start there to see what DeepSignal does.
+
 The team desk for Eugene's OpenRVDAS work: how the agents are organized, what
 they have decided, what they are building next, and the gate every change must
 pass. The code lives in the fork `eugenevivino/openrvdas`. This repo never
@@ -18,6 +21,7 @@ Start with `AGENTS.md`, then `docs/OPERATING-SYSTEM.md`.
 | `docs/CODEX.md` | How we use Codex: codex-run, model tiers, context hygiene, caps | 210 lines |
 | `docs/BUILDERS.md` | Claude manages, Codex builds: split, models, local and cloud paths | 120 lines |
 | `docs/USABILITY.md` | Usability checklist every module and screen passes (rule 26) | 80 lines |
+| `docs/REFERENCE.md` | Canonical DeepSignal feature list: status, target, link per feature. Updated in the same commit as any status change | one table per area |
 | `docs/IDEAS.md` | Master list of every idea: status, phase, source | one row per idea |
 | `docs/MORNING.md` | Items that truly need Eugene, queued overnight | 60 lines |
 | `docs/STATE.md` | Where things stand now. Rewritten, never appended | 60 lines |

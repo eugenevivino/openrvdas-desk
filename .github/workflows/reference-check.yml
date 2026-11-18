@@ -1,0 +1,12 @@
+name: reference-check
+on:
+  push:
+    paths: ['docs/REFERENCE.md', 'docs/IDEAS.md', 'briefs/**', 'tools/reference-check.py']
+  pull_request:
+    paths: ['docs/REFERENCE.md', 'docs/IDEAS.md', 'briefs/**', 'tools/reference-check.py']
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/reference-check.py

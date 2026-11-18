@@ -93,9 +93,17 @@ Everything else: the decision desk decides and logs it in `docs/DECISIONS.md`.
 Answer first, recommendation marked, short. No em dashes. Plain words, define
 jargon once. Verified separate from inferred.
 
+## Reference doc (Eugene 2026-11-18)
+
+`docs/REFERENCE.md` is the canonical DeepSignal feature list. Any commit that changes a feature's
+status (briefed, launched, built, reviewed, done, dropped, new idea) updates its row there in the same
+commit; a new IDEAS row is added with `python3 tools/reference-check.py --backlog`. Run
+`python3 tools/reference-check.py` before pushing; the `reference-check` workflow fails a push that
+leaves an IDEAS number or brief out.
+
 ## Ending a session
 
-Add any new idea as a row in `docs/IDEAS.md`. Rewrite `docs/STATE.md` (keep it under 60 lines), add one line to
+Add any new idea as a row in `docs/IDEAS.md`, and update `docs/REFERENCE.md` for every status change. Rewrite `docs/STATE.md` (keep it under 60 lines), add one line to
 `docs/WORKLOG.md` per finished item, add a `docs/DECISIONS.md` entry when a
 decision changed, and if the work continues, write a handoff from
 `handoffs/LEAD_BRIEF_TEMPLATE.md`. Record branch, sha, gate result
