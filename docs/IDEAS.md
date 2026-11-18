@@ -33,7 +33,7 @@ own message. Design docs are linked in `research/README.md`.
 | 1 | Django LoggerConfig bug fix | `TestDjangoServerAPI.test_basic` gets two LoggerConfigs on master and dev, both platforms; fix plus test, upstream PR (core fix) | PROPOSED | 0 | T-DESK |
 | 2 | macOS UDP and timing test failures | 3 UDP tests read packets out of order, 1 timing test is slow on macOS only; find cause, file issues (core fix if real) | PROPOSED | 0 | T-DESK |
 | 3 | Overlay package skeleton | `openrvdas-overlay`: package, CachedDataServer client, `module:` config examples, its own gate | PROPOSED | 1 | EUG, T-DESK |
-| 4 | Vector wind averaging | Average wind as vectors so 359 and 1 degree give 0, not 180 | DESIGNED | 1 | T-METACQ |
+| 4 | Vector wind averaging | Average wind as vectors so 359 and 1 degree give 0, not 180. Built as DeepSignal `VectorWindAverageTransform` on fork branch `claude/project-thread-un3kq6` (558e45b), 23 tests pass; PR to contrib not yet sent | BUILDING | 1 | T-METACQ |
 | 5 | Scoreboard writer | Latest-value cache, page and cell layout, per-model formatter, Serial/TCP/UDP transport, stale shown as stale | DESIGNED | 1 | T-SCORE |
 | 6 | $WICOR writer | MetAcq-compatible one-line met broadcast, after close read of the manual's format chapter | DESIGNED | 1 | T-METACQ |
 | 7 | Sensor calibration records | Serial number, calibration date and coefficients per sensor, applied by a transform with version tracking | DESIGNED | 1 | T-METACQ |
@@ -103,4 +103,7 @@ own message. Design docs are linked in `research/README.md`.
 | 46 | Cost and savings status line | A small local script that shows tokens and spend per job and what retrievers kept out of context, from local logs only | PROPOSED | 0 | T-PA |
 | 47 | Agent bench | A fixed set of small tasks that scores our briefs, models and retrievers over time, results saved as files | PROPOSED | later | T-PA |
 | 48 | Retriever brief library | Reusable QUESTION/SCOPE/CAP briefs for gate TSVs, junit, device definitions, research notes | PROPOSED | 0 | T-PA |
+| 49 | Gate contrib mode | `gate.sh` runs only core `test/`, so it never runs `contrib/deepsignal/test/`; add a mode that drops the contrib folder into a current core checkout and runs its tests plus flake8 | PROPOSED | 0 | T-DSWIND |
+| 50 | Wind averages for the bridge and $WICOR | Feed DeepSignal one-minute and ten-minute true-wind averages (with gust and steadiness) to the night-safe bridge view (#13) and the $WICOR writer (#6) | PROPOSED | 1 | T-DSWIND |
+| 51 | Two-anemometer wind consensus | Average port and starboard true wind, but prefer the upwind sensor (the one not in the ship's wind shadow) per window, and flag when they disagree | PROPOSED | N | T-DSWIND |
 

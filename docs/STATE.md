@@ -1,6 +1,6 @@
 # State (rewritten each session, 60 lines max)
 
-Updated 2026-11-17 by the setup thread.
+Updated 2026-11-18 by the DeepSignal wind thread (Code section only).
 
 ## Now
 - Desk tree drafted; not yet in a repo. Waiting on Eugene to create
@@ -11,7 +11,13 @@ Updated 2026-11-17 by the setup thread.
 
 ## Code
 - Fork `eugenevivino/openrvdas` default branch `master` at 3f3d0c3
-  (v2.7.2). No team branches yet.
+  (v2.7.2).
+- DeepSignal (D-NAME1): fork branch `claude/project-thread-un3kq6` at
+  558e45b, based on openrvdas_contrib `master` 3b4b76e. Adds
+  `contrib/deepsignal/` with VectorWindAverageTransform. 23 tests pass on
+  contrib master and on core master, flake8 clean. Gate NOT RUN (gate.sh
+  does not run contrib tests yet, IDEAS #49). PR draft in
+  `pr/deepsignal-vector-wind.md`; Eugene sends it.
 
 ## Baseline (cloud dry run of gate.sh, Python 3.13, NOT the Mini gate)
 - Fork `dev` 1a6f1ed: pytest 631 passed, 59 skipped (4630 subtests);

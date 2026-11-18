@@ -55,6 +55,25 @@ Verified 2026-11-18 by reading `OceanDataTools/openrvdas_contrib` (shallow, read
 - The cloud session cannot open PRs on either upstream repo (fork only), so the
   PR step stays with Eugene or a session that has the upstream attached.
 
+### D-NAME1 Contribution name DeepSignal, folder `contrib/deepsignal/` (2026-11-18, DECIDED, Eugene)
+Eugene named the contribution "DeepSignal". Code lives in
+`contrib/deepsignal/` in `openrvdas_contrib`, loaded with
+`module: contrib.deepsignal.<path>`. Supersedes the PROPOSED folder name
+`openrvdas_overlay` in D-ARCH3. Treat the name as permanent: renaming later
+breaks ship configs.
+
+### D-DSWIND1 Vector wind averaging design (2026-11-18, DECIDED, builder)
+- Speed-weighted vector mean (u, v averaged), not core `polar_average`
+  (unweighted unit vectors, one field). Core stays the tool for heading
+  and course. No core code duplicated.
+- Trailing windows ending on whole multiples of `interval`, from the data
+  clock, never wall clock. Output emitted when a newer record arrives.
+- Never invent a value: a sample needs speed and direction in the same
+  record, finite, speed not negative; windows under `min_count` give no
+  value; a calm or cancelling window gives speeds but no direction.
+- Works on both contrib's old core (formats) and current core (type hints),
+  because contrib `master` still carries a 2024 core tree.
+
 ### D-TEAM1 Kalon-style desk structure (2026-11-17, PROPOSED)
 Use the Kalon desk's structure (shared AGENTS.md, decision log, briefs, lead
 handoffs, research desk, gate with exact expected failures, Eugene-only list),
