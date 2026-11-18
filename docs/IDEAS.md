@@ -16,7 +16,7 @@ unverified.** Check prior art before saying "first" anywhere public.
 Sources: T-SCORE scoreboard thread, T-METACQ MetAcq thread, T-COMP
 competitive analysis thread, T-MCP MCP thread, T-AI AI methods research
 (`research/2026-11-17-ai-methods.md`), T-DESK this setup thread, EUG Eugene's
-own message. Design docs are linked in `research/README.md`.
+own message, T-SOII Eugene's Oct 2026 SOII/DeepSignal leadership proposal. Design docs are linked in `research/README.md`.
 
 ## Success metrics (proposed, not yet agreed)
 
@@ -107,3 +107,23 @@ own message. Design docs are linked in `research/README.md`.
 | 50 | Wind averages for the bridge and $WICOR | Feed DeepSignal one-minute and ten-minute true-wind averages (with gust and steadiness) to the night-safe bridge view (#13) and the $WICOR writer (#6) | PROPOSED | 1 | T-DSWIND |
 | 51 | Two-anemometer wind consensus | Average port and starboard true wind, but prefer the upwind sensor (the one not in the ship's wind shadow) per window, and flag when they disagree | PROPOSED | N | T-DSWIND |
 
+## From the SOII/DeepSignal proposal (Oct 2026)
+
+Mined 2026-11-18 from Eugene's unfunded SOII leadership proposal. Only ideas
+the backlog did not already have, or that make an existing row stronger.
+Proposal rule kept for all of them: raw data is immutable; AI and math may
+suggest and show evidence, never silently rewrite data or command the ship.
+
+| # | Idea | One line | Status | Phase | Source |
+|---|---|---|---|---|---|
+| 52 | Instrument history graph | Per sensor: serial, firmware, calibration, repairs, swaps, mount position, acquisition software version and clock source, each dated and linked to data; contradiction checks for a tech to resolve (extends #7, feeds #11, #22, #36) | PROPOSED | 1 | T-SOII |
+| 53 | Fault-injection benchmark | Replay real cruise data with injected drift, step bias, lag, hysteresis, clock resets and spikes, plus real fronts as traps; scores every QC and drift module on detection time and false-flag rate (makes the "bad sensor under 1 hour" metric measurable; gate for #8-#11, #25) | PROPOSED | 2 | T-SOII |
+| 54 | Post-cruise drift review (lookahead) | After the cruise, use later data (post-cal, later casts, bottles, other sensors) with two-sided state-space smoothing to judge drift; strictly separate from live mode, which can never use the future | PROPOSED | N | T-SOII |
+| 55 | "Cannot tell" verdict | Drift and drift-vs-front tests may answer UNDECIDED when the data cannot separate a sensor change from a real ocean change (front, water mass), instead of forcing a flag; stated as such to the watch and on shore | PROPOSED | 2 | T-SOII |
+| 56 | Correction ledger with sign-off | Every proposed correction stored as a separate, reversible layer: inputs, method, code version, uncertainty, evidence plot, reviewer, approve or roll back; raw never changes (pairs with #32) | PROPOSED | 2 | T-SOII |
+| 57 | Uncertainty on every value | Each derived value carries a stated uncertainty from calibration, sensor spec and processing; periodically checked against independent references to prove the error bars are honest | PROPOSED | N | T-SOII |
+| 58 | End-of-cruise R2R-ready package | One button builds the cruise dataset: raw plus QC flags, corrections ledger, instrument history, provenance manifest, changelog, in archive-ready layout for R2R hand-off | PROPOSED | 3 | T-SOII |
+| 59 | Legacy archive readers | Read-only readers that load past cruises from SCS, MetAcq and R2R files into the same records, so replay (#33), cruise memory search (#27) and the benchmark (#53) work on years of history | PROPOSED | N | T-SOII |
+| 60 | Sensor response correction | Fit and undo known response lags (TSG plumbing delay, sensor time constants) as a reversible transform, only where the response is characterized; output marked as reconstructed (builds on #25, #38) | PROPOSED | N | T-SOII |
+| 61 | Instrument diagnostic channels | Log the health fields instruments already send but parsers drop (supply voltage, pump state, signal strength, internal temperature) and show them on the health board (#12) | PROPOSED | 2 | T-SOII |
+| 62 | AI audit trail | Every MCP/AI question, tool call and answer is logged with the data it read; AI tools stay read-only with no path to ship systems (hardens #20, #30) | PROPOSED | 3 | T-SOII |
