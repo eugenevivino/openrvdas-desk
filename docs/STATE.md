@@ -1,57 +1,44 @@
 # State (rewritten each session, 60 lines max)
 
-Updated 2026-11-18 05:35Z by the setup thread. Wind module line is from the DeepSignal thread.
+Updated 2026-11-18 07:20Z by the build lead. Mac reboot pending; resume steps in `resume/RESUME.md`.
 
 ## Now
-- RULE: build on the fork first. No upstream PR or "ready to send" prompt until
-  Eugene says the set is ready (D-ARCH6).
-- Desk repo `eugenevivino/openrvdas-desk` is live (public, `main`). Rules 1 to 28,
-  decisions through D-TEAM7, briefs, gate scripts and ideas 1 to 62 are in it.
-- Mini set up (2026-11-18): ~/OpenRVDAS-Work, venv-3.12, deps stamp e241119e.
-  Desk clone on the Mini and the first real `gate/remote.sh` run: NOT DONE.
-- Team method: Claude manages, Codex builds (rule 23). Cloud is the default lane,
-  always Sol medium; Astra and Sol-high work on a Mac (rule 8). Mac jobs pass `-m`
-  (rule 27) and use only /private/tmp/deepsignal/ (rule 28).
+- PRIORITY (Eugene): MVP #1 is the console display, target Tue 2026-11-25, parallel cloud build
+  (ROADMAP "MVP #1"). Cloud cap removed: run as many disjoint-file tasks as the work splits into.
+- Rules: build on the fork first, nothing upstream until Eugene says (D-ARCH6). Kalon is hard
+  separate: DeepSignal uses `~/.codex-deepsignal` and `~/bin/ds-codex` only (D-SEP1).
+- Cloud lane LIVE: env `deepsignal` (id in team memory, not here), Sol medium, `--env deepsignal`,
+  run from a fork clone under `CODEX_HOME=$HOME/.codex-deepsignal`. Prompts inline: `briefs/cloud/`.
+- Sub-agents: off by default; `ds-codex --sub-agents` pins the model (D-SUB1, verified). Top reasoning
+  effort is `ultra` (Sol, Astra). Astra needs KALON_ALLOW_ASTRA=1 on the Mac.
+- RAM: Mac launches hold until pressure is normal and swap is free; one DeepSignal job per Mac.
 
-- SEPARATION (D-SEP1): DeepSignal uses its own Codex home `~/.codex-deepsignal` and
-  workspace, never Kalon's. Cloud env for deepsignal not yet visible to the old login;
-  Eugene is logging in to the new home. Cloud #52 waits on that. Env id in team memory.
+## Code (all on the fork eugenevivino/openrvdas, base contrib 3b4b76e unless noted)
+- qartod-flags 2724f07a: built, 19 tests, flake8 clean. Needs independent review.
+- correction-ledger 99c01919: built, 25 tests; self-review by an unauthorized sub-agent
+  (INCIDENTS). Needs independent review and a D-LEDGER1 fix round.
+- fault-bench 9d87d99a: built, 17 tests. Needs independent review.
+- vector-wind 558e45b (`claude/project-thread-un3kq6`): done, parked.
+- console-core 5682671: built, Vitest 8/8; v2 update briefed, not launched.
+- Cloud tasks in flight at 07:15Z: #52 instrument-history (`task_e_6afd4ea8c79c832f80d646d43a49f24b`),
+  #78 ship-coupling (`task_e_6afd4edf411c832fb8c3f162adce11c9`). #79 and #54 held.
+- Django fix: fork branch `django-gui/shared-config-names` ad10eb1, parked.
+- Gate: desk `gate/linux-actions` 539080e. r2 review HOLD (4 findings); r3 brief `briefs/gate-linux-r3.md`.
+  Workflow not on main yet; first real Linux run pending.
 
-## Code
-- Django fix PR: fork branch `django-gui/shared-config-names` ad10eb1 (on dev 1a6f1ed).
-  Django 48 OK, pytest 631 passed, flake8 clean on changed lines. Gate NOT RUN.
-  PR text in `pr/` (draft only). Parked on the fork (D-ARCH6); also waiting on the
-  developer's reply to Eugene's issue, then "Fixes #N". Eugene sends it.
-- DeepSignal wind: fork branch `claude/project-thread-un3kq6` 558e45b, based on
-  contrib master 3b4b76e. VectorWindAverageTransform, 23 tests pass, gate NOT RUN.
-  DONE, parked on the fork (D-ARCH6). Draft `pr/deepsignal-vector-wind.md`, not for sending yet.
-- Contrib: branches on the existing fork, PRs to openrvdas_contrib `master`,
-  folder `contrib/deepsignal/` (D-ARCH3, D-ARCH4).
+## Mac queue after reboot (one at a time, behind the RAM gate)
+1. gate-linux-r3. 2. r3 review (Astra ultra, read-only). 3. qartod-flags review. 4. #53 review. 5. #56 review.
+Before that: `CODEX_HOME=$HOME/.codex-deepsignal codex login status`, then RESUME.md step 2.
+
+## IDEAS and decisions
+- IDEAS 1 to 103; the build lead owns numbering, next 104. Decisions through D-LEDGER1, D-SUB1,
+  D-SEP1; open for Eugene: D-ADOPT1 (separate package vs contrib).
 
 ## Sync (D-SYNC1)
-- Rule: push finished work at once; fetch upstream core and contrib into the fork
-  daily and before each new module branch; apply pending patches at once.
-- Last sync: desk pushed 2026-11-18 05:4xZ. Fork upstream fetch: NOT DONE today
-  (fork dev 1a6f1ed, contrib master 3b4b76e as of today).
-
-## In flight
-- gate-linux (briefs/gate-linux.md): Codex job RUNNING on the MacBook since 05:33:59Z
-  (gpt-6.2-sol high, 45 min cap), /private/tmp/deepsignal/gate-linux. DeepSignal has
-  one guaranteed MacBook slot (rule 8, D-TEAM8); queue: gate, QARTOD build, Mac briefs.
-- Briefs ready, not launched: #52 history and #53 fault bench (lane cloud), #56 ledger
-  and #54 drift (lane mac), QARTOD flags.
-
-## Baseline (cloud dry run of gate.sh, Python 3.13, NOT the Mini gate)
-- Fork `dev` 1a6f1ed: pytest 631 passed, 59 skipped; Django 47 run, 1 error
-  `TestDjangoServerAPI.test_basic` (fixed on the branch above).
-- Mini baseline (3.12.13, macOS, by hand): 4 macOS-only pytest failures that pass
-  on Linux (UDP ordering and timing). macOS failures never block (rule 25).
+- Desk pushes at once. Fork upstream fetch not done today (fork dev 1a6f1ed, contrib master 3b4b76e).
 
 ## Open asks for Eugene
-- Codex cloud setup: connect the fork, create the environment (Python 3.12, deps,
-  internet off after setup), send the environment id.
-- Nothing goes upstream until you say the set is ready (D-ARCH6).
+- Cloud env: add CODEX_ENV_NODE_VERSION=22 and CODEX_ENV_PYTHON_VERSION=3.12 (console is Node 22).
+- Approve or change the console MVP additions (a to d approved by the build lead under the "recommended" rule).
+- Night red default card (console thread). Kalon carry-over note in INCIDENTS (sub-agents).
 - First scoreboard make, model, protocol; stale threshold.
-
-## Next bounded task
-- Linux gate built by Codex, then desk clone on the Mini and the first real gate.
