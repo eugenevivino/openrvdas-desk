@@ -453,3 +453,10 @@ r2, r3 and r4 each fixed four findings and the next review found four more (bash
 
 ### D-QARTOD3 One final structural round (2026-11-18, build lead)
 Fix round 2 still BLOCKs on STOCK inputs: linear flat-line (23.85 ms per record at 20 Hz alternating readings), a stock CSV row `,10` loses the record, and an OverflowError at +-1e308. Because these are specific and two Sol rounds left a linear scan, one last round by Astra high (briefs/mac/qartod-flags-fix3.md) with monotonic-deque flat-line, then an ultra re-review. If still BLOCK on stock inputs the branch stays unmerged and the call goes to Eugene in MORNING. No further rounds.
+
+## D-ACCEPT-RAM (2026-11-18 16:20Z, build lead, DeepSignal-only deviation from the shared Kalon memory rule)
+Acceptance test runs only (accept.sh: light unit tests, lint, builds) gate on: available RAM >= 4 GB including
+reclaimable pages, kernel pressure level 1, swap used not growing versus a reading at least 5 minutes old, and an
+absolute stop at 5.5 GB swap used. Reason: macOS keeps swap allocated while RAM is healthy (16:18Z: 12.9 GB available,
+pressure 1, swap 4.7 GB), so the 3.8 GB swap ceiling stalled all acceptance for hours. Codex jobs (ds-codex) keep the
+shared 3.8 GB swap ceiling unchanged. Nothing of Kalon's is changed. Eugene may veto (MORNING).
