@@ -55,3 +55,4 @@ sample data (catalog at `../docs/SAMPLE-DATA.md`) (`/mnt/project-files/sample-da
 - [2026-11-18-mcp-design-review.md](2026-11-18-mcp-design-review.md): independent security and effectiveness review of the MCP design (Astra ultra, read-only)
 - [2026-11-18-security-architecture-review.md](2026-11-18-security-architecture-review.md): independent review of docs/SECURITY-ARCHITECTURE.md, security block #189-#198 (Astra ultra, read-only)
 - [2026-11-18-sonar-math-review.md](2026-11-18-sonar-math-review.md): independent math review of SONAR-SCIENCE.md and briefs #170-#174 (Astra high, read-only)
+- [2026-11-18-sonar-math-confirm.md](2026-11-18-sonar-math-confirm.md): confirm that the sonar patch 790e221 applies the math review (Astra high, read-only)
