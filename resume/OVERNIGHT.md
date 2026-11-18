@@ -41,4 +41,25 @@ push only deepsignal/* fork branches and desk branches; two failures of the same
 - install-clock Actions result pending (review note: actions/checkout@v6 unpinned).
 - #79, #54: held for Mac Astra builds when the lead says.
 - #130 instrument-init: task_e_6afd56a1d0a0832fa7f14f0a38c28e1c (deepsignal/p2-instrument-init, high risk, nothing merged)
-Last sync 2026-11-18T07:44:42Z: fork branches pushed ok; upstream fetched ok (core dev 1a6f1edb, contrib master 3b4b76e6); desk main pushed after this line.
+- docs-journeys: task_e_6afd576de9a0832fb3dbe561bf42b30b (deepsignal/docs-journeys from 1a6f1ed; output goes to desk docs/ after acceptance, lead-handled, not autopilot)
+- D-UPSTREAM0 guard (07:52Z): shared pre-push hook /private/tmp/deepsignal/hooks/pre-push (refuses any push whose remote
+  name or URL mentions OceanDataTools) set as core.hooksPath in 58 MacBook clones incl. ~/openrvdas, and in the Mini's
+  ~/OpenRVDAS-Work/openrvdas; ~/openrvdas remote upstream pushurl set to DISABLED; ds-codex (desk tools 7dc1d7b) exports
+  the hook for every git run in a job; accept.sh sets it on new clones. Tested on local bare repos: OceanDataTools pushes
+  refused, fork push allowed. Script audit: only read-only upstream fetch by URL in hourly-sync.sh.
+- From 07:52Z every cloud prompt I submit is prefixed with desk briefs/cloud/_HEADER.md.
+- batch 7 sealog-bridge: task_e_6afd599ec718832fb89bf656786e421c
+- batch 7 openvdm-bridge: task_e_6afd59a24b08832fbaee1b0224d6a4f9
+- batch 7 archive-compress: task_e_6afd59a492b0832fa3790bf25c1edb51
+- batch 7 grafana-quality: task_e_6afd59a72c98832fa64b69ac16f19f83
+- batch 7 cruise-context: task_e_6afd59acd1b8832fb3ae8fee1ec93365
+- #137 eez-mode: task_e_6afd6053c4bc832f818e13cd12d9b5bc (CRITICAL under D-REVIEW1; push branch, never merge)
+- ship batch iec450-bridge: task_e_6afd620303f0832f88db3974cb4d0298
+- ship batch sv-consistency: task_e_6afd62068fcc832f91a87368fb15c7b3
+- ship batch depth-consensus: task_e_6afd6209b424832fab4d0f6a9ca9e9e1
+- ship batch link-health: task_e_6afd620c657c832faf6cce3276ac7579
+- #139 kongsberg-tap HELD with #121: downloads need Eugene's own yes (my rule); MORNING line added. Ship batch submitted 08:30Z (iec450-bridge, sv-consistency, depth-consensus, link-health).
+- #157 device-servers: task_e_6afd628285f8832fb9cbc0904351bac8
+- #158 seismic-shot-qc: task_e_6afd632eba60832f8e3e06e1d7a31509
+- #145 adcp-health: task_e_6afd649fb2e4832f840ac759cba32b5a; #147 sv-manager queued on the Mac after chain-3 (Astra high)
+Last sync 2026-11-18T08:44:46Z: fork branches pushed ok; upstream fetched ok (core dev 1a6f1edb, contrib master 3b4b76e6); desk main pushed after this line.
