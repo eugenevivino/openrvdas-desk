@@ -5,7 +5,7 @@
 - Module: exactly one, `QartodFlagTransform`. Branch `deepsignal/qartod-flags`
 - Base: `OceanDataTools/openrvdas_contrib` `master` at 3b4b76e (already pushed as fork branch `deepsignal/qartod-flags`)
 - Mac scratch path: `/private/tmp/deepsignal/qartod-flags/` only (docs/CODEX.md rule 1b)
-- Model and effort: Codex Astra (gpt-6-astra) high, fresh session, under 40 turns. Math-heavy QC design, approved by Eugene 2026-11-18. Review: separate fresh Astra xhigh, read-only.
+- Model and effort: Codex Astra 6.2 high (Eugene 2026-11-18: Astra 6.2 and Sol 6.2 replace earlier picks), fresh session, under 40 turns. Math-heavy QC design, approved by Eugene 2026-11-18. Review: separate fresh Astra xhigh, read-only.
 - Upstream home: openrvdas_contrib (Eugene sends the PR)
 
 ## Goal
@@ -55,6 +55,30 @@ Tests, each on by listing it under a field, each giving 1, 3, 4 or 2:
 4. `rate_of_change`: abs(value minus previous good value) / seconds between them over `max_rate` (units per second) gives 3. Non-positive time step gives 2 for this test.
 5. `flat_line`: value has stayed within `tolerance` of the current value for at least `suspect_seconds` gives 3, `fail_seconds` gives 4.
 6. `timing`: record timestamp not later than the previous one gives 4; more than `max_future_seconds` (default 60) ahead of wall clock gives 4; gap since previous record over `max_gap_seconds` gives 3. Applies to every configured field present in the record.
+
+"Cannot tell" verdict, formal name AMBIGUOUS (IDEAS #55, Eugene approved
+2026-11-18; vocabulary from research/2026-11-18-reanalysis-program.md 10.1,
+where AMBIGUOUS maps to QARTOD flag 3). A big jump can be a sensor fault or a
+real ocean front; a single stream cannot always tell.
+- Module constant `VERDICT_AMBIGUOUS = 'AMBIGUOUS'` (a shared verdict module
+  will own it later).
+- Optional per field: `front_check: {companions: [FieldA, ...], min_change: {FieldA: 0.2}}`.
+  Companions are other fields in the same record that should also move at a
+  real front (salinity for temperature, a second thermosalinograph).
+- When `spike` or `rate_of_change` would give 4 or 3 and at least one companion
+  changed by at least its `min_change` since its previous good value, the test
+  gives 3 (never 4) and the transform adds `<field><suffix>_reason` =
+  `AMBIGUOUS: jump matches a change in <FieldA>; may be a real front, check before trusting or discarding`.
+- When no companion moved, the original 4 or 3 stands and the reason field
+  names the test that failed (for example `FAIL: spike 2.4 over limit 2.0`).
+- When `front_check` is not configured, behavior is unchanged and no reason
+  field is written unless the aggregate is 3 or 4 (then the reason names the test).
+- Companion missing or bad in that record: no AMBIGUOUS; say so in the reason.
+- gross_range, syntax and timing are never softened by front_check.
+- Tests: front with companion moving gives 3 plus AMBIGUOUS, same jump with
+  companion flat gives 4, companion missing, config error for an unknown
+  companion name, reason field text for each case.
+- Docs: a short "Sensor fault or real front?" section in plain words.
 
 History for spike, rate_of_change and flat_line uses only values that were
 numeric and not flagged 4 by gross_range or syntax. History is bounded
