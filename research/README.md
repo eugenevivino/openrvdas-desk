@@ -32,6 +32,7 @@ Plans written as research files:
 | `2026-11-18-django-test-basic.md` | 11-18 | Build lead | Root cause of the Django `test_basic` failure on the fork. |
 | `2026-11-18-samos-sample-files.md`, `2026-11-18-samos-ship-format-and-fm13.md`, `samples/` | 11-18 | Met reports (#111) | SAMOS ship text format and FM-13 BBXX facts and sample files; D-111A. |
 | `RVTEC-SURVEY.md` | 11-18 | Pain points | 18 interview questions for RVTEC techs mapped to roadmap items. |
+| `2026-11-18-scoreboard-research.md` | 11-18 | Scoreboard | Fleet research on deck LED scoreboards and how boards are driven; basis for D-SCORE1, D-SCORE2 and #182-#187. |
 | `2026-11-18-competitive-improvements.md` | 11-18 | Competitive analysis | Where OpenRVDAS can improve against CORIOLIX, MetAcq and others; feeds the roadmap and TARGET-PARITY. |
 | `2026-11-18-metacq-manual-analysis.md` | 11-18 | MetAcq gap map | What the MetAcq manual implies we must replicate; feeds the parity scorecard. |
 | `2026-11-18-proposal-unbuilt-ideas.md` | 11-18 | Proposal mining | Mines the SOII proposal (IDEAS #52-#62, D-SOII1) and signals of opportunity (T-SIG, #78-#103, D-SIG1) for unbuilt ideas. |
@@ -49,4 +50,4 @@ Plans written as research files:
 
 ## Still to land (reports that exist only in chat or as artifacts; owners asked to drop the text on the shared mount)
 
-Scoreboard fleet research, sample data (catalog at `../docs/SAMPLE-DATA.md`) (`/mnt/project-files/sample-data`, manifest only, large files stay on the mount), sonar science (#170-#181).
+sample data (catalog at `../docs/SAMPLE-DATA.md`) (`/mnt/project-files/sample-data`, manifest only, large files stay on the mount), sonar science (#170-#181).
