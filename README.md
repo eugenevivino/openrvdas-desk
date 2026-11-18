@@ -19,6 +19,7 @@ Start with `AGENTS.md`, then `docs/OPERATING-SYSTEM.md`.
 | `docs/BUILDERS.md` | Claude manages, Codex builds: split, models, local and cloud paths | 120 lines |
 | `docs/USABILITY.md` | Usability checklist every module and screen passes (rule 26) | 80 lines |
 | `docs/IDEAS.md` | Master list of every idea: status, phase, source | one row per idea |
+| `docs/MORNING.md` | Items that truly need Eugene, queued overnight | 60 lines |
 | `docs/STATE.md` | Where things stand now. Rewritten, never appended | 60 lines |
 | `docs/WORKLOG.md` | One line per finished item | append only |
 | `docs/INCIDENTS.md` | One entry per break, stall, or rule change | append only |

@@ -362,3 +362,11 @@ or less, 10 or fewer actions, no YAML typed; 1 server per ship. Baseline is
 about 25 actions (17 installer prompts) with no maintained live display;
 wall-clock to be measured by `briefs/install-clock.md`. Installer changes are
 core and need Eugene's go-ahead (OPERATIONS.md traps).
+
+### D-NIGHT1 Overnight authority while Eugene sleeps (2026-11-18, DECIDED)
+Eugene: work through blockers; for a non-critical choice that would block work, consult Astra at `ultra`
+(read-only, Mac, KALON_ALLOW_ASTRA=1) and do what it recommends. Every such decision is logged here with the
+question, Astra's answer in one line and the file path of the full answer. Hard rules still stand: nothing upstream
+(D-ARCH6), Kalon untouched, no deleting outside `/private/tmp/deepsignal/`, no secrets, nothing outward-facing,
+no spending beyond the agreed lanes. Anything that truly needs Eugene goes to `docs/MORNING.md` and work continues
+on everything else. A morning summary is kept in `docs/STATE.md`.
