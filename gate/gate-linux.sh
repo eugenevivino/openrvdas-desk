@@ -47,6 +47,12 @@ verify_checkout() {
   [[ "$actual" == "$sha" ]] || refuse "fork HEAD $actual does not match $sha"
 }
 
+verify_lint_file() {
+  [[ -f "$1" && ! -L "$1" ]] \
+    || refuse "changed Python path is not a regular file: $1"
+  [[ -r "$1" ]] || refuse "cannot read changed Python file: $1"
+}
+
 record_suite() {
   local suite=$1 status=$2 rows=$3
   [[ -f "$rows" ]] || refuse "$suite produced no test rows"
@@ -76,12 +82,34 @@ fork=$(cd -- "$fork" && pwd) || refuse 'cannot enter fork checkout'
 verify_checkout
 [[ -r "$expected" ]] || refuse 'expected-failures.txt is unavailable'
 
+# The workflow fetches fork branches into refs/remotes/origin/ before checkout.
+origin_ref=$(git -C "$fork" for-each-ref --contains "$sha" --count=1 \
+  --format='%(refname)' refs/remotes/origin/) || refuse 'cannot check fork origin branches'
+[[ -n "$origin_ref" ]] || refuse "$sha is not reachable from any fork origin branch"
 base=$(git -C "$fork" merge-base "$sha" refs/remotes/origin/dev) \
   || refuse 'no merge base with origin/dev'
-git -C "$fork" diff --name-only -z --diff-filter=AMR "$base" "$sha" -- '*.py' \
+git -C "$fork" diff --name-only -z --diff-filter=AMRT "$base" "$sha" -- '*.py' \
   > "$rec/changed.txt" || refuse 'cannot list changed Python files'
 
+# Validate path text before it can enter the UTF-8 results.tsv.
+unusual_name=$(python3 -I - "$rec/changed.txt" <<'PY'
+from pathlib import Path
+import sys
+
+for raw_path in Path(sys.argv[1]).read_bytes().split(b"\0"):
+    path = raw_path.decode("utf-8", errors="surrogateescape")
+    if path and not path.isprintable():
+        print(ascii(path))
+        break
+PY
+) || refuse 'cannot validate changed Python file names'
+[[ -z "$unusual_name" ]] \
+  || refuse "unusual characters in a changed file name: $unusual_name"
+
 cd -- "$fork"
+while IFS= read -r -d '' file; do
+  verify_lint_file "$file"
+done < "$rec/changed.txt"
 for file in database/settings.py database/influxdb/settings.py django_gui/settings.py; do
   if [[ -f "$file.dist" && ! -e "$file" ]]; then
     cp -- "$file.dist" "$file" || refuse "could not copy $file.dist"
@@ -117,10 +145,15 @@ record_suite django "$status" "$rec/django.tsv"
 
 : > "$rec/flake8.log"
 while IFS= read -r -d '' file; do
+  verify_lint_file "$file"
   status=0
   "$python" -m flake8 --format='%(code)s %(path)s:%(row)d:%(col)d: %(text)s' \
     "./$file" > "$rec/flake8.out" 2>> "$rec/flake8.log" || status=$?
   cat "$rec/flake8.out" >> "$rec/flake8.log"
+  if grep -q '^E902 ' "$rec/flake8.out"; then
+    refuse "flake8 could not read $file (see flake8.log)"
+  fi
+  verify_lint_file "$file"
   if (( status <= 1 )) && grep -Eq '^[A-Z]+[0-9]+ ' "$rec/flake8.out"; then
     printf 'flake8::%s\tFAIL\n' "$file" >> "$results"
   elif (( status == 0 )) && [[ ! -s "$rec/flake8.out" ]]; then

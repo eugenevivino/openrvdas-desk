@@ -53,10 +53,20 @@ if tool == "uname":
 elif tool == "git":
     if args[2:] == ["rev-parse", "--verify", "HEAD"]:
         print(os.environ["CHECKOUT_SHA"])
+    elif args[2:] == ["for-each-ref", "--contains", os.environ["CHECKOUT_SHA"],
+                      "--count=1", "--format=%(refname)",
+                      "refs/remotes/origin/"]:
+        if os.environ.get("FORK_CONTAINS_SHA", "1") == "1":
+            print("refs/remotes/origin/topic")
     elif args[2] == "merge-base":
         print(os.environ["CHECKOUT_SHA"])
     elif args[2] == "diff":
-        for path in (os.environ["LINT_CLEAN"], os.environ["LINT_CHANGED"]):
+        diff_filter = next(arg.split("=", 1)[1] for arg in args
+                           if arg.startswith("--diff-filter="))
+        paths = [os.environ["LINT_CLEAN"]]
+        if os.environ.get("LINT_CHANGE_TYPE", "M") in diff_filter:
+            paths.append(os.environ["LINT_CHANGED"])
+        for path in paths:
             sys.stdout.buffer.write(os.fsencode(path) + b"\0")
     else:
         sys.exit("unexpected git call: " + repr(args))
@@ -102,7 +112,9 @@ elif args[:2] == ["-m", "flake8"]:
         sys.exit("flake8 input does not exist: " + path)
     if path == "./" + os.environ["LINT_CHANGED"]:
         code = os.environ.get("FLAKE8_CODE")
-        if code:
+        if code == "E902":
+            print(f"E902 {path}:0:0: FileNotFoundError: {path}")
+        elif code:
             print(f"{code} {path}:1:1: fixture violation")
         sys.exit(int(os.environ.get("FLAKE8_STATUS", "0")))
 elif args[0] == "-I":
@@ -199,6 +211,55 @@ class LinuxGateTest(unittest.TestCase):
         results = (self.receipts / "results.tsv").read_text()
         self.assertIn(f"flake8::{LINT_CLEAN}\tPASS\n", results)
         self.assertIn(f"flake8::{LINT_CHANGED}\tFAIL\n", results)
+
+    def test_linux_gate_lints_regular_file_from_git_type_change(self):
+        receipt = self.run_gate(
+            1, "RED", LINT_CHANGE_TYPE="T", FLAKE8_STATUS="1",
+            FLAKE8_CODE="E225",
+        )
+        self.assertEqual(receipt["unexcused_failures"],
+                         [f"flake8::{LINT_CHANGED}"])
+        changed = (self.receipts / "changed.txt").read_bytes().split(b"\0")
+        self.assertIn(os.fsencode(LINT_CHANGED), changed)
+
+    def test_linux_gate_refuses_nonregular_changed_python_paths(self):
+        for kind in ("symlink", "directory", "missing"):
+            with self.subTest(kind=kind):
+                name = f"test/{kind}.py"
+                path = self.fork / name
+                if kind == "symlink":
+                    path.symlink_to(self.fork / LINT_CLEAN)
+                if kind == "directory":
+                    path.mkdir()
+                self.receipts = self.receipts.with_name(f"receipt-{kind}")
+                self.run_gate(2, "REFUSED", LINT_CHANGED=name,
+                              refusal=f"changed Python path is not a regular "
+                                      f"file: {name}")
+                self.assertFalse((self.receipts / "pip.log").exists())
+
+    def test_linux_gate_refuses_flake8_e902(self):
+        self.run_gate(2, "REFUSED", FLAKE8_STATUS="1", FLAKE8_CODE="E902",
+                      refusal=f"flake8 could not read {LINT_CHANGED}")
+        self.assertIn("E902", (self.receipts / "flake8.log").read_text())
+        results = (self.receipts / "results.tsv").read_text()
+        self.assertNotIn(f"flake8::{LINT_CHANGED}\t", results)
+
+    def test_linux_gate_refuses_sha_outside_fork_remote_refs(self):
+        self.run_gate(2, "REFUSED", FORK_CONTAINS_SHA="0",
+                      refusal="not reachable from any fork origin branch")
+        self.assertFalse((self.receipts / "pip.log").exists())
+
+    def test_linux_gate_refuses_unusual_changed_python_names_up_front(self):
+        for kind, char in (("tab", "\t"), ("newline", "\n"), ("cr", "\r"),
+                           ("line-separator", "\u2028")):
+            with self.subTest(kind=kind):
+                name = f"test/unusual{char}name.py"
+                (self.fork / name).write_text("value = 1\n")
+                self.receipts = self.receipts.with_name(f"receipt-{kind}")
+                self.run_gate(2, "REFUSED", LINT_CHANGED=name,
+                              refusal="unusual characters in a changed file "
+                                      f"name: {name!r}")
+                self.assertFalse((self.receipts / "pip.log").exists())
 
     def test_linux_gate_refuses_flake8_crash_with_empty_output(self):
         self.run_gate(2, "REFUSED", FLAKE8_STATUS="1",
