@@ -39,6 +39,7 @@ Written 2026-11-18 by the parity thread, ranked by value from docs/TARGET-PARITY
 | 33 | #138 | [IEC 61162-450 bridge reader](138-iec450-bridge.md), prompt `briefs/cloud/p2-iec450-bridge.md` | `deepsignal/p2-iec450-bridge` | `3b4b76e` contrib tree | cloud | py | 5 | none | no |
 | 34 | #141 | [Depth consensus](141-depth-consensus.md), prompt `briefs/cloud/p2-depth-consensus.md` | `deepsignal/p2-depth-consensus` | `3b4b76e` contrib tree | cloud | py | 5 | none to build; reads #139 field names in use | no |
 | 35 | #156 | [Link health with NOC integration](156-link-health.md), prompt `briefs/cloud/p2-link-health.md` | `deepsignal/p2-link-health` | `3b4b76e` contrib tree | cloud | py | 5 | none; console `health` follow-up shows its fields | no |
+| 36 | #157 | [Serial device servers, vendor-neutral (Moxa, Pepperl+Fuchs first)](157-device-servers.md), prompt `briefs/cloud/p2-device-servers.md` | `deepsignal/p2-device-servers` | `3b4b76e` contrib tree | cloud | py | 5 | none; #156 link health folds its fields into link verdicts | no |
 
 ## Not briefed, and why
 

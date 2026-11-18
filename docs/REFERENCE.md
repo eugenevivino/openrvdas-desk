@@ -215,6 +215,7 @@ only. Full design, ranked table, security and risk tables: `docs/SHIP-SYSTEMS.md
 | #138 IEC 61162-450 bridge reader | Clean NMEA plus source id from bridge multicast, receive only | BRIEFED | v2 | `briefs/p2/138-iec450-bridge.md` |
 | #141 Depth consensus | Multibeam nadir vs single-beam vs grid; lost bottom and step flags | BRIEFED | v2 | `briefs/p2/141-depth-consensus.md` |
 | #156 Link health with NOC integration | One verdict per instrument link on top of OpenRVDAS logger status, stderr and cache timestamps; `/health` for Uptime Kuma, Zabbix or LibreNMS; their alerts in via webhook | BRIEFED | v2 | `briefs/p2/156-link-health.md` |
+| #157 Serial device servers (Moxa, Pepperl+Fuchs and similar) | Vendor-neutral drivers; finds them, reads every port (settings, clients, bytes, errors), maps ports to loggers, writes reader configs, flags mismatches; changes only through #153 with approval | BRIEFED | v2 | `briefs/p2/157-device-servers.md` |
 | #142 Time and motion alignment | Motion lag, sonar clock offset, sonar vs nav position | PROPOSED | v2 | `docs/SHIP-SYSTEMS.md` |
 | #143 Sonar health board | Ping rate, swath, file-growth heartbeat, runtime changes as events | PROPOSED | v2 | same |
 | #144 Acoustic transmit awareness | Who pings when; overlap detection; never controls a synchronizer | PROPOSED | later | same |

@@ -6,9 +6,9 @@ Written 2026-11-18 by the ship-systems thread for Eugene's two asks:
    through some kind of pathway."
 2. "Help configure instruments, perhaps even dynamically. Intelligently, even if it means ssh'ing in."
 
-IDEAS #138 to #156. Decisions D-SHIP1 and D-NOC1. Briefs: `briefs/p2/138-iec450-bridge.md`,
+IDEAS #138 to #157. Decisions D-SHIP1 and D-NOC1. Briefs: `briefs/p2/138-iec450-bridge.md`,
 `briefs/p2/139-kongsberg-tap.md`, `briefs/p2/140-sv-consistency.md`, `briefs/p2/141-depth-consensus.md`,
-`briefs/p2/156-link-health.md`.
+`briefs/p2/156-link-health.md`, `briefs/p2/157-device-servers.md`.
 
 **Evidence level.** Interface facts below come from vendor documentation and fleet practice as known to the
 lead; each row marks what is verified in the OpenRVDAS source (V) versus a lead to confirm on a real ship (L).
@@ -177,6 +177,7 @@ module misbehaves. Rank orders passive work by value per effort, then by how man
 | 13 | #150 | ECDIS route import | P | 3/2/2 | S | low | #108 | PROPOSED |
 | 14 | #149 | NMEA 2000 through a read-only gateway | P | 2/2/1 | M | low | none | PROPOSED |
 | 15 | #156 | Link health with NOC integration (section 10) | P, opt-in probes | 5/2/4 | M | low | #143 #145 | BRIEFED |
+| 15b | #157 | Serial device servers, vendor-neutral (Moxa, Pepperl+Fuchs first; section 11) | P (reads), A via #153 | 5/2/3 | M | medium | #156 | BRIEFED |
 | 16 | #152 | Instrument config reader | R | 5/2/2 | M | medium | #153 | PROPOSED |
 | 17 | #155 | Scoped SSH access kit | R | 4/1/2 | S | medium | #152 #154 | PROPOSED |
 | 18 | #153 | Config advisor | R | 5/3/2 | M | low (advice only) | #154 | PROPOSED |
@@ -348,3 +349,46 @@ accept one client. A "is port open" probe on the data port can steal the session
 probes default to off, a TCP probe may only target a management port, and the config check refuses any
 probe that matches a reader's host and port. Freshness from the cache is the primary signal; probes only
 answer "is it the device or the cable".
+
+## 11. Serial device servers: Moxa, Pepperl+Fuchs and similar (#157)
+
+Eugene: "integrate VERY well with Moxas and Pepperl+Fuchs devices." Nearly every serial instrument on a
+UNOLS ship reaches the DAS through a Moxa NPort or a Pepperl+Fuchs Comtrol DeviceMaster, so this is where
+most "no data" problems actually live. Eugene added "and other similar devices": Digi, Lantronix, Perle,
+B&B and Advantech, Brainboxes, Sena. Brief: `briefs/p2/157-device-servers.md`.
+
+**Vendor-neutral by design.** One driver interface (identify, read ports, say what it can read) and one
+port-status shape for every vendor. v1 drivers: Moxa, Pepperl+Fuchs, and a generic SNMP driver (MIB-II plus
+the standard RS-232 MIB, RFC 1659, with per-port speed and error counters) that covers most other brands and
+backs up the vendor drivers. OID tables and web paths live in data files, so adding a vendor is a file, not
+code. A field a device cannot report shows "not reported", never zero. Telnet is deliberately not a v1
+fallback: it sends the admin password in clear text and opens a session that can change settings. If a
+device has neither SNMP nor web status, it gets a later, opt-in, read-command-only telnet driver.
+
+**What DeepSignal does (read-only, v2):**
+1. **Find them.** Passive first: match the vendor's MAC prefix in the DAS host's ARP table, and read hosts
+   from the cruise definition. A vendor discovery broadcast is opt-in, on a named interface only.
+2. **Read each port** through SNMP (preferred: read-only, no login) or the vendor's HTTP pages or API:
+   baud and framing, mode, connected clients, bytes in and out, framing, parity and overrun errors.
+3. **Map each port to its logger**, from the reader's host and port or the local tty name.
+4. **Write the reader config** for a new device server, as a new file plus a diff, never an edit in place.
+5. **Explain mismatches**, folded into each #156 link verdict:
+
+| Seen | Likely cause | First thing to try |
+|---|---|---|
+| Framing or parity errors rising | Baud or framing mismatch with the instrument | Compare instrument settings with the port |
+| Port baud differs from the device definition | Port or config set wrong | Fix whichever side is wrong |
+| Logger RUNNING, port has 0 clients | Logger not connected (wrong host or port, or another client holds it) | Check reader host and port |
+| Bytes flowing, cache field stale | Parsing problem, not wiring | Check the device definition |
+| No bytes in while logger RUNNING | Instrument off or cable fault | Check power and cable |
+| Two readers on one single-client port | One logger will keep losing the session | Remove one reader |
+
+**Changing port settings is a write.** It goes through the #153 apply path (#155 for credentials): backup
+export of the device config, a dry-run diff, Eugene's named approval of each change, apply, verify on the
+live stream, rollback. Device servers sit in the "DAS hosts, serial servers" row of the risk table in
+section 7: apply allowed with approval, port settings only. Never SNMP SET or web changes from v2.
+
+**Gotchas that shape the design:** many ports accept one TCP client, so DeepSignal never probes data ports;
+a web login can end another admin's session on some models, so SNMP comes first and HTTP reads skip
+anything behind a login; SNMP v2c communities travel in clear text, so they stay on the instrument LAN and
+v3 is the next step.
