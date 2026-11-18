@@ -2,3 +2,4 @@
 - #78 ship-coupling: final re-review after fix round 3 is HOLD (VERIFIED (deepsignal/ship-coupling 4882b47, unmerged). Review: /private/tmp/deepsignal/ship-coupling-fix3-review/answer.md. No more rounds without your call.
 - fault-bench: round 3 (final) re-review is verdict: HOLD at 58e66c8. Unmerged; no further rounds. Review: research/2026-11-18-fault-bench-fix3-review.md.
 - QARTOD (final unit round): Astra ultra review is Verdict: HOLD at deepsignal/qartod-flags 736ef2e. Not merged; no further rounds. Review: research/2026-11-18-qartod-final-review.md.
+- Console unit (deepsignal/console-mvp 7efd237): review round 2 is Verdict: HOLD. Install and CDS parts are security, so no auto-merge; merge needs your mark. Review: research/2026-11-18-console-unit-review-r2.md.
