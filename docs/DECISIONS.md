@@ -467,3 +467,6 @@ Replaces the fixed 3.8 GB swap ceiling and supersedes D-ACCEPT-RAM. One gate for
 reclaimable is at least 3 GB, swap has not grown more than 0.5 GB over 5 minutes, and swap used is under the 8 GB hard
 stop. One heavy DeepSignal job at a time; pause new starts on warn or critical pressure; Kalon still yields first.
 Nothing of Kalon's is changed.
+
+### D-UNITS1 Ship whole modules as one unit (2026-11-18, Eugene)
+Standing rule, effective now. One job per module unit (2 to 3 slices), prerequisites proven first, one review pass of at most 2 rounds on the whole diff (P1 blocks, rest become tickets), one mark, one gate, one merge. Pure R100 moves skip model review. Core logic, security and math keep full review. No new small-piece branches or tasks; in-flight pieces finish as they are; existing small pieces fold into whole units. Reporting is modules landed and modules finished. Full text in AGENTS.md and docs/OPERATING-SYSTEM.md. Applies to DeepSignal only; nothing of Kalon's is touched.

@@ -108,3 +108,17 @@ Add any new idea as a row in `docs/IDEAS.md`, and update `docs/REFERENCE.md` for
 decision changed, and if the work continues, write a handoff from
 `handoffs/LEAD_BRIEF_TEMPLATE.md`. Record branch, sha, gate result
 (PASS, FAIL, NOT RUN), and the next bounded task.
+
+## Ship whole modules, never small pieces (Eugene 2026-11-18, standing rule)
+
+Each module ships as ONE unit:
+
+- One job per unit (2 to 3 slices at most), fixed in place on the unit branch `deepsignal/<module>`.
+- Prove prerequisites exist before the unit starts (inputs merged, fixtures, env, briefs).
+- One review pass on the whole diff, at most 2 rounds. A P1 blocks; everything else becomes a ticket.
+- One approval mark on the final head, one gate, one merge.
+- Pure file moves (`git diff -M100%` shows only R100) skip model review. Core logic, security and math changes keep full review.
+- Do not cut or launch small-piece branches or tasks. Pieces already in flight finish as they are. Fold existing small pieces (for example console fix rounds) into their whole module unit.
+- Report progress as modules landed and modules finished, not pieces.
+
+Why: every small piece paid the full toll (queue, review, mark, gate, merge) and collided with others in shared files.
