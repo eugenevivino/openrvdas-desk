@@ -28,6 +28,9 @@ DeepSignal is an open-source layer on top of OpenRVDAS (the Open Research Vessel
 System) that makes a ship's underway data easier to set up, see, trust and fix. OpenRVDAS stays
 unmodified; DeepSignal adds modules that plug in through its standard interfaces.
 
+**Positioning:** DeepSignal is the vessel's operational truth layer: interoperate with UHDAS, SIS and SCS,
+don't replace them.
+
 **Goals (Eugene, 2026-11-17 to 18):**
 1. A console a non-expert tech can run on the bridge and in the lab, better than Grafana on ease (D-UX1).
 2. Parity with MetAcq and most of CORIOLIX, measured by the scorecard, not claimed (D-PARITY1).
@@ -77,6 +80,7 @@ Rulebook: `design/console-DESIGN.md`. Task table: `briefs/console/INDEX.md`. Int
 | Kiosk with auto night | Locked bridge kiosk; night palette switches automatically, one tap always; red default (D-CONSOLE2) | BUILDING | 11-19 | fork:deepsignal/console-mod-kiosk-night, `briefs/console/kiosk-night.md` |
 | One-command install plus self-test | `install.sh` then open `/console/` then read the self-test page: the 3 actions of D-SETUP1 | BUILDING | 11-19 | fork:deepsignal/console-install, `briefs/console/install.md` |
 | Map (#107) | Offline map, track, data colored on track, events, cached basemaps | BUILDING (stretch: MVP only if green by 11-21) | 11-21 | fork:deepsignal/console-mod-map, `briefs/console/map.md` |
+| Stream health chain view v0 (#162) | Console view of each stream's stages and root cause; stretch on the same rule as the map (MVP only if green by 11-21) | BRIEFED (stretch) | 11-21 | section 12, `docs/PAIN-POINTS-MAP.md` |
 | Test fixture | Stock OpenRVDAS logger on NBP1406 replay feeding the console | BUILDING | 11-19 | fork:deepsignal/console-harness-fixture, `briefs/console/fixture.md` |
 | 24-hour soak | Real-rate replay, memory sampled every minute; growth under 5% after warm-up | BRIEFED (after fixture) | 11-22 to 11-24 | `briefs/console/soak.md`, D-SOAK1 |
 | Source-loss test | Kill the logger: STALE within 10 s, recover with no restart, garbage input never crashes | BRIEFED (after fixture) | 11-24 | `briefs/console/source-loss.md` |
@@ -236,7 +240,22 @@ only. Full design, ranked table, security and risk tables: `docs/SHIP-SYSTEMS.md
 | #155 Scoped SSH access kit | Forced-command keys or short-lived certificates, full logging | PROPOSED | later | same |
 | Sonar, bridge, DP, motion control, engine, winch writes | Never built (D-SHIP1) | BANNED | never | same |
 
-## 12. Novel and backlog ideas
+## 12. Operational truth layer (pain-points study)
+
+From the RVTEC pain-points study. Ranked, phase 2 first. Sources: `docs/PAIN-POINTS-MAP.md`, `research/RVTEC-SURVEY.md`.
+
+| Feature | What it does | Status | Target | Link |
+|---|---|---|---|---|
+| #162 Stream health chain | Per-stream stages (port, parse, cache, write), root cause, alerts on state transitions; console view v0 is an MVP stretch | BRIEFED | 12-04 | `docs/PAIN-POINTS-MAP.md` |
+| #163 Config provenance | Every config change recorded with a semantic diff (what changed in ship terms, not just lines) | BRIEFED | 12-04 | `docs/PAIN-POINTS-MAP.md` |
+| #164 Calibration and units registry | One registry of calibrations and units per channel, checked against the data | BRIEFED | 12-04 | `docs/PAIN-POINTS-MAP.md` |
+| #165 Time health | Clock source, offset and timestamp sanity per instrument and host | BRIEFED | 12-04 | `docs/PAIN-POINTS-MAP.md` |
+| #166 Continuous archive readiness | Shows at any moment whether the cruise archive would pass hand-off (R2R-ready) | BRIEFED | 12-04 | `docs/PAIN-POINTS-MAP.md` |
+| #167 Alarm-linked runbooks | Each alarm opens the steps to fix it, written for a non-expert tech | BRIEFED | 12-04 | `docs/PAIN-POINTS-MAP.md` |
+| #168 Unified event timeline and daily digest | One timeline of alarms, config changes, events and gaps, plus a daily summary | BRIEFED | 12-04 | `docs/PAIN-POINTS-MAP.md` |
+| #169 Science trust view | Per-variable answer to "can I use this data now", with the evidence | BRIEFED | 12-04 | `docs/PAIN-POINTS-MAP.md` |
+
+## 13. Novel and backlog ideas
 
 Everything else in `docs/IDEAS.md` that is not yet in a table above. Status from IDEAS. Promote a row into a
 table above when it gets a design, brief or branch.
