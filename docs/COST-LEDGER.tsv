@@ -1,0 +1,2 @@
+date	brief	tool	model	effort	wall_s	tok_in	tok_out	tok_cached	note
+2026-11-18	django-test-basic-diagnosis	codex	gpt-6-astra	low	50	41000			bare codex exec, violated codex-run rule (INCIDENTS)

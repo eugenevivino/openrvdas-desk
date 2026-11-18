@@ -120,3 +120,14 @@ A concrete example, the fix for the Django bug, on a topic branch:
   MacBook and the Mini (not verified; those machines are Kalon's setup).
 - Confirm Sol and Luna are available on our plan, and whether `codex-run`
   needs `KALON_ALLOW_ASTRA=1` for the Astra review tier.
+
+## 5. Retrievers and the ledger (rules 19 and 21)
+
+- A retriever is a read-only, fresh, cheap job (Luna or Sol medium on Codex, or a
+  small Claude model). Tools: read, grep, glob, one write for an optional report
+  file. Brief: QUESTION, SCOPE, CAP (default 40 lines), REPORT yes or no. Grep
+  first, read by offset and limit, answer by the 20th tool call with what it has.
+- Typical retriever jobs here: a gate `results.tsv` or junit file, a pytest log, a
+  device definition, a long research note, "where is X called".
+- Every job, retriever or builder, gets a row in `docs/COST-LEDGER.tsv`.
+

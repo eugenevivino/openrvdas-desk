@@ -55,3 +55,21 @@ Changes to this file need Eugene's own message.
 
 18. Recommendation first, short, checklists. One command per code block, no
     placeholders. No em dashes. Verified separate from inferred. Drop no ask.
+
+## Lean sessions and proof (Eugene 2026-11-18, adopted from ProjectArchitect, D-PA1)
+
+19. Retrievers. A session never reads a long log, gate TSV, junit file, big
+    source file or research page whole. A cheap fresh helper reads it for one
+    stated question and returns pointers (`path:line`) in at most 40 lines, or
+    `NOT FOUND: <what was searched>`. Brief = QUESTION, SCOPE, CAP, REPORT.
+20. Machine-checked milestones. Every roadmap phase and every brief defines
+    done as a command and its expected result (a test, the gate, a count). A
+    phase closes only when that check passes on the exact sha and Eugene says so.
+21. Cost ledger. Every Claude and Codex job adds one row to
+    `docs/COST-LEDGER.tsv` (date, brief, tool, model, effort, wall seconds,
+    tokens in, out, cached, note). Read from local session logs, never from
+    account credentials. Weekly rollup goes in `docs/WORKLOG.md`.
+22. Plain-English recap at every phase close, in `docs/recaps/<phase>.md`: what
+    changed for a crew member, what was proven (with the check), what is not
+    proven, what comes next. Written for Eugene, not for engineers.
+

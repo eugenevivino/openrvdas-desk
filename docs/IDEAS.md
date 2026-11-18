@@ -100,3 +100,7 @@ own message. Design docs are linked in `research/README.md`.
 |---|---|---|---|---|---|
 | 44 | Fleet view | The overlay on several ships, compared on shore (health and calibration across the fleet) | PROPOSED | later | T-DESK |
 | 45 | Open sensor-fingerprint library | Shared fingerprints between ships and institutions (feeds 29) | PROPOSED | later | T-DESK |
+| 46 | Cost and savings status line | A small local script that shows tokens and spend per job and what retrievers kept out of context, from local logs only | PROPOSED | 0 | T-PA |
+| 47 | Agent bench | A fixed set of small tasks that scores our briefs, models and retrievers over time, results saved as files | PROPOSED | later | T-PA |
+| 48 | Retriever brief library | Reusable QUESTION/SCOPE/CAP briefs for gate TSVs, junit, device definitions, research notes | PROPOSED | 0 | T-PA |
+

@@ -112,3 +112,21 @@ never deletions; layered anomaly detectors simplest first; drift needs an
 independent reference; LLMs narrate over tools, they do not analyze raw data;
 foundation models are a secondary signal for now. See
 `research/2026-11-17-ai-methods.md`.
+
+## Process
+
+### D-PA1 Adopt four ProjectArchitect ideas as desk rules (2026-11-18, DECIDED)
+Eugene approved "the good parts" of Druthulu/ProjectArchitect (PA3, read-only
+review of commit edcc2b0, nothing installed). Adopted as rules 19 to 22 in our
+own terms: retrievers, machine-checked milestones, a cost ledger for Claude and
+Codex, a plain-English recap at each phase close.
+Not adopted, and why: the installer and its plugin (rule 15: nothing installed
+without Eugene naming it; it edits `~/.claude/settings.json` globally and
+`install.sh` can run `sudo apt-get`); its usage poller (reads
+`~/.claude/.credentials.json` and sends the OAuth token to an undocumented
+`api.anthropic.com/api/oauth/usage` endpoint); external coders through
+OpenRouter (code and prompts leave the machine on a new key); its planner/expert
+loop (we already have briefs, gate and review tiers). Revisit the statusline
+only as our own small script over local logs.
+See `research/2026-11-18-projectarchitect.md`.
+
