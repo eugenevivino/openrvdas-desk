@@ -4,6 +4,7 @@ Used as: python manage.py test test.django_gui --testrunner=orv_django_runner.Ru
 with this directory on PYTHONPATH and ORV_DJ_ROWS set to the output file.
 Writes `django::<test id><TAB>PASS|FAIL|SKIP` rows, then
 `django::__COMPLETE__<TAB>PASS` only if every started test was recorded.
+An early stop leaves the run incomplete even when the recorded counts agree.
 Structured results instead of parsing verbose text: Django tests log to the
 console mid-line, which makes text parsing unreliable.
 """
@@ -67,7 +68,9 @@ class Runner(DiscoverRunner):
                 f.write("%s\t%s\n" % (name, rows[name]))
             # Error holders (setUpClass failures) are recorded but not counted
             # in testsRun, so require at least testsRun rows.
-            if result.testsRun > 0 and len(rows) >= result.testsRun:
+            if result.shouldStop:
+                f.write("django::__INTERRUPTED__\tFAIL\n")
+            elif result.testsRun > 0 and len(rows) >= result.testsRun:
                 f.write("django::__COMPLETE__\tPASS\n")
             else:
                 f.write("django::__COUNT_MISMATCH__ ran=%d rows=%d\tFAIL\n" % (result.testsRun, len(rows)))

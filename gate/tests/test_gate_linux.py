@@ -3,11 +3,15 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import random
+import runpy
 import shutil
 import subprocess
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 
 GATE = Path(__file__).resolve().parents[1]
@@ -42,15 +46,53 @@ printf() {
 # Stand-ins for the runner's OS, checkout and fork execution. The gate and
 # shared JUnit parser and verdict run for real.
 RUNNER = r'''
+import hashlib
 import os
 from pathlib import Path
 import sys
+import tarfile
+
+
+def object_id(kind, content):
+    header = f"{kind} {len(content)}\0".encode()
+    return hashlib.sha1(header + content).hexdigest()
+
+
+def git_tree(snapshot, clean, changed, change_type, old):
+    directory = "test"
+    clean_content = b"old\n" if old else (snapshot / clean).read_bytes()
+    leaves = {clean: ("100644", clean_content)}
+    mode = "100644"
+    node = snapshot / changed
+    if old and change_type == "T":
+        mode = "120000"
+    content = node.read_bytes() if node.is_file() else b"value = 1\n"
+    leaves[changed] = (mode, b"old\n" if old else content)
+    trees = [directory]
+    if not old and change_type == "D":
+        del leaves[changed]
+        if node.is_dir():
+            trees.append(changed)
+            child = changed + "/child.txt"
+            leaves[child] = ("100644", (snapshot / child).read_bytes())
+    for path in trees:
+        sys.stdout.buffer.write(b"040000 tree " + b"0" * 40 + b"\t"
+                                + os.fsencode(path) + b"\0")
+    for path, (mode, content) in leaves.items():
+        oid = object_id("blob", content)
+        sys.stdout.buffer.write(f"{mode} blob {oid}\t".encode()
+                                + os.fsencode(path) + b"\0")
+
 
 tool = Path(sys.argv[0]).name
 args = sys.argv[1:]
 if tool == "uname":
     print(os.environ.get("UNAME", "Linux"))
 elif tool == "git":
+    snapshot = Path(os.environ["FORK_SNAPSHOT"])
+    clean = os.environ["LINT_CLEAN"]
+    changed = os.environ["LINT_CHANGED"]
+    change_type = os.environ.get("LINT_CHANGE_TYPE", "M")
     if args[2:] == ["rev-parse", "--verify", "HEAD"]:
         print(os.environ["CHECKOUT_SHA"])
     elif args[2:] == ["for-each-ref", "--contains", os.environ["CHECKOUT_SHA"],
@@ -59,15 +101,27 @@ elif tool == "git":
         if os.environ.get("FORK_CONTAINS_SHA", "1") == "1":
             print("refs/remotes/origin/topic")
     elif args[2] == "merge-base":
-        print(os.environ["CHECKOUT_SHA"])
-    elif args[2] == "diff":
-        diff_filter = next(arg.split("=", 1)[1] for arg in args
-                           if arg.startswith("--diff-filter="))
-        paths = [os.environ["LINT_CLEAN"]]
-        if os.environ.get("LINT_CHANGE_TYPE", "M") in diff_filter:
-            paths.append(os.environ["LINT_CHANGED"])
+        print("b" * 40)
+    elif args[2:4] == ["diff", "--name-only"]:
+        garbage = os.environ.get("CHANGED_GARBAGE")
+        if garbage is not None:
+            sys.stdout.buffer.write(bytes.fromhex(garbage))
+            sys.exit(0)
+        paths = [clean, changed]
+        if change_type == "D" and (snapshot / changed).is_dir():
+            paths.append(changed + "/child.txt")
         for path in paths:
             sys.stdout.buffer.write(os.fsencode(path) + b"\0")
+    elif args[2:4] == ["diff", "--quiet"] or args[2] == "status":
+        # Simulate a Git stat cache that does not detect a byte rewrite.
+        pass
+    elif args[2:] == ["ls-files", "-s", "-z"]:
+        print("fixture index")
+    elif args[2] == "ls-tree":
+        git_tree(snapshot, clean, changed, change_type, args[-1] == "b" * 40)
+    elif args[2] == "archive":
+        with tarfile.open(fileobj=sys.stdout.buffer, mode="w|") as archive:
+            archive.add(snapshot / "test", arcname="test")
     else:
         sys.exit("unexpected git call: " + repr(args))
 elif args[:2] == ["-I", "-c"]:
@@ -85,6 +139,8 @@ elif args == ["-m", "pip", "freeze"]:
     print("pytest-timeout==2.4.0")
     sys.exit(int(os.environ.get("PIP_FREEZE_STATUS", "0")))
 elif args[:2] == ["-m", "pytest"]:
+    if os.environ.get("REWRITE_DURING_PYTEST"):
+        Path(os.environ["LINT_CHANGED"]).write_text("value = 2\n")
     junit = next(arg.split("=", 1)[1] for arg in args
                  if arg.startswith("--junitxml="))
     name = os.environ.get("PYTEST_FAILURE", "")
@@ -104,19 +160,34 @@ elif args[:3] == ["manage.py", "test", "test.django_gui"]:
         rows += failure + "\tFAIL\n"
     if os.environ.get("DJANGO_COMPLETE", "1") == "1":
         rows += "django::__COMPLETE__\tPASS\n"
-    Path(os.environ["ORV_DJ_ROWS"]).write_text(rows, encoding="utf-8")
+    out = Path(os.environ["ORV_DJ_ROWS"])
+    raw = os.environ.get("DJANGO_RAW")
+    out.write_bytes(rows.encode() if raw is None else bytes.fromhex(raw))
     sys.exit(int(os.environ.get("DJANGO_STATUS", str(int(bool(failure))))))
 elif args[:2] == ["-m", "flake8"]:
     path = args[-1]
     if not Path(path).is_file():
         sys.exit("flake8 input does not exist: " + path)
+    if Path.cwd().name != "lint-export":
+        sys.exit("flake8 input is not in the lint export")
     if path == "./" + os.environ["LINT_CHANGED"]:
-        code = os.environ.get("FLAKE8_CODE")
-        if code == "E902":
-            print(f"E902 {path}:0:0: FileNotFoundError: {path}")
+        garbage = os.environ.get("FLAKE8_GARBAGE")
+        if garbage is not None:
+            sys.stdout.buffer.write(bytes.fromhex(garbage))
+            sys.exit(0)
+        code = os.environ.get("FLAKE8_CODE", "")
+        status = int(os.environ.get("FLAKE8_STATUS", "0"))
+        real_flake8 = os.environ.get("GATE_REAL_FLAKE8")
+        if code == "E501" and status == 0 and real_flake8:
+            os.execv(real_flake8, [real_flake8, "-I", *args])
+        if code.startswith("E9"):
+            print(f"{code} {path}:0:0: could not parse input: {path}")
         elif code:
             print(f"{code} {path}:1:1: fixture violation")
-        sys.exit(int(os.environ.get("FLAKE8_STATUS", "0")))
+        if status == 0:
+            print(int(bool(code)))
+        sys.exit(status)
+    print(0)
 elif args[0] == "-I":
     real_python = os.environ["REAL_PYTHON"]
     os.execv(real_python, [real_python, *args])
@@ -158,6 +229,7 @@ class LinuxGateTest(unittest.TestCase):
             "PATH": os.pathsep.join((str(tools), os.defpath)),
             "REAL_PYTHON": sys.executable,
             "CHECKOUT_SHA": SHA,
+            "GATE_REAL_FLAKE8": os.environ.get("GATE_REAL_FLAKE8", ""),
             "LINT_CLEAN": LINT_CLEAN,
             "LINT_CHANGED": LINT_CHANGED,
             "OS_RELEASE": str(self.os_release),
@@ -165,10 +237,13 @@ class LinuxGateTest(unittest.TestCase):
         }
 
     def invoke_gate(self, sha=SHA, **fixture):
+        snapshot = self.receipts.with_name(self.receipts.name + "-snapshot")
+        shutil.copytree(self.fork, snapshot, symlinks=True)
         return subprocess.run(
             ["bash", str(self.gate / "gate-linux.sh"), sha, str(self.fork),
              str(self.receipts)],
-            env={**self.env, **fixture}, capture_output=True, text=True,
+            env={**self.env, "FORK_SNAPSHOT": str(snapshot), **fixture},
+            capture_output=True, text=True,
             timeout=30,
         )
 
@@ -203,24 +278,19 @@ class LinuxGateTest(unittest.TestCase):
         )
 
     def test_linux_gate_records_flake8_violation_as_red(self):
-        receipt = self.run_gate(
-            1, "RED", FLAKE8_STATUS="1", FLAKE8_CODE="E225"
-        )
+        receipt = self.run_gate(1, "RED", FLAKE8_CODE="E225")
         self.assertEqual(receipt["unexcused_failures"],
                          [f"flake8::{LINT_CHANGED}"])
         results = (self.receipts / "results.tsv").read_text()
         self.assertIn(f"flake8::{LINT_CLEAN}\tPASS\n", results)
         self.assertIn(f"flake8::{LINT_CHANGED}\tFAIL\n", results)
 
-    def test_linux_gate_lints_regular_file_from_git_type_change(self):
-        receipt = self.run_gate(
-            1, "RED", LINT_CHANGE_TYPE="T", FLAKE8_STATUS="1",
-            FLAKE8_CODE="E225",
-        )
-        self.assertEqual(receipt["unexcused_failures"],
-                         [f"flake8::{LINT_CHANGED}"])
+    def test_linux_gate_refuses_symlink_replaced_by_regular_file(self):
+        self.run_gate(2, "REFUSED", LINT_CHANGE_TYPE="T",
+                      refusal=f"Git type changed for {LINT_CHANGED}")
         changed = (self.receipts / "changed.txt").read_bytes().split(b"\0")
         self.assertIn(os.fsencode(LINT_CHANGED), changed)
+        self.assertFalse((self.receipts / "pip.log").exists())
 
     def test_linux_gate_refuses_nonregular_changed_python_paths(self):
         for kind in ("symlink", "directory", "missing"):
@@ -238,7 +308,7 @@ class LinuxGateTest(unittest.TestCase):
                 self.assertFalse((self.receipts / "pip.log").exists())
 
     def test_linux_gate_refuses_flake8_e902(self):
-        self.run_gate(2, "REFUSED", FLAKE8_STATUS="1", FLAKE8_CODE="E902",
+        self.run_gate(2, "REFUSED", FLAKE8_CODE="E902",
                       refusal=f"flake8 could not read {LINT_CHANGED}")
         self.assertIn("E902", (self.receipts / "flake8.log").read_text())
         results = (self.receipts / "results.tsv").read_text()
@@ -264,7 +334,8 @@ class LinuxGateTest(unittest.TestCase):
     def test_linux_gate_refuses_flake8_crash_with_empty_output(self):
         self.run_gate(2, "REFUSED", FLAKE8_STATUS="1",
                       refusal=f"flake8 did not complete for {LINT_CHANGED}")
-        self.assertEqual((self.receipts / "flake8.log").read_bytes(), b"")
+        self.assertEqual((self.receipts / "flake8.out").read_bytes(), b"")
+        self.assertEqual((self.receipts / "flake8.log").read_bytes(), b"0\n")
         results = (self.receipts / "results.tsv").read_text()
         self.assertIn(f"flake8::{LINT_CLEAN}\tPASS\n", results)
         self.assertNotIn(f"flake8::{LINT_CHANGED}\t", results)
@@ -364,3 +435,74 @@ class LinuxGateTest(unittest.TestCase):
 
     def test_linux_gate_refuses_interrupted_pytest(self):
         self.run_gate(2, "REFUSED", PYTEST_STATUS="2")
+
+    def test_linux_gate_refuses_malformed_suite_without_recording_rows(self):
+        raw = b"foreign::test\tPASS\n__END__\tPASS\n"
+        self.run_gate(2, "REFUSED", DJANGO_RAW=raw.hex())
+        self.assertEqual((self.receipts / "results.tsv").read_bytes(), b"")
+        self.assertEqual((self.receipts / "django.tsv").read_bytes(), raw)
+
+    def test_linux_gate_refuses_file_replaced_by_directory(self):
+        path = self.fork / LINT_CHANGED
+        path.unlink()
+        path.mkdir()
+        (path / "child.txt").write_text("fixture\n")
+        self.run_gate(2, "REFUSED", LINT_CHANGE_TYPE="D",
+                      refusal=f"Git type changed for {LINT_CHANGED}")
+        self.assertFalse((self.receipts / "pip.log").exists())
+
+    def test_linux_gate_refuses_flake8_interruption_after_violation(self):
+        self.run_gate(2, "REFUSED", FLAKE8_STATUS="1", FLAKE8_CODE="E501",
+                      refusal=f"flake8 did not complete for {LINT_CHANGED}")
+        self.assertIn("E501", (self.receipts / "flake8.log").read_text())
+
+    def test_linux_gate_records_complete_e501_as_red(self):
+        (self.fork / LINT_CHANGED).write_text(f'value = "{"x" * 95}"\n')
+        receipt = self.run_gate(1, "RED", FLAKE8_CODE="E501")
+        self.assertEqual(receipt["unexcused_failures"],
+                         [f"flake8::{LINT_CHANGED}"])
+        self.assertIn(f"E501 ./{LINT_CHANGED}:",
+                      (self.receipts / "flake8.log").read_text())
+
+    def test_linux_gate_refuses_tracked_rewrite_during_pytest(self):
+        self.run_gate(2, "REFUSED", REWRITE_DURING_PYTEST="1",
+                      refusal="after pytest")
+        self.assertFalse((self.receipts / "flake8.log").exists())
+
+    def test_linux_gate_random_garbage_in_evidence_never_yields_green(self):
+        rng = random.Random(341)
+        for channel in ("DJANGO_RAW", "CHANGED_GARBAGE", "FLAKE8_GARBAGE"):
+            for case in range(4):
+                with self.subTest(channel=channel, case=case):
+                    garbage = b"?" + rng.randbytes(rng.randrange(1, 40))
+                    if channel == "DJANGO_RAW":
+                        garbage += b"\n__END__\tPASS\n"
+                    if channel == "CHANGED_GARBAGE":
+                        garbage = os.fsencode(LINT_CLEAN) + b"\0" + garbage
+                    self.receipts = self.receipts.with_name(
+                        f"receipt-{channel}-{case}"
+                    )
+                    self.run_gate(2, "REFUSED", **{channel: garbage.hex()})
+
+
+class DjangoRunnerTest(unittest.TestCase):
+    def test_django_cooperative_stop_does_not_mark_suite_complete(self):
+        result = unittest.TestResult()
+        result.startTest(self)
+        result.rows = {"django::test.ok": "PASS"}
+        result.stop()
+
+        class DiscoverRunner:
+            def run_suite(self, suite, **kwargs):
+                return result
+
+        fake_django = SimpleNamespace(DiscoverRunner=DiscoverRunner)
+        with patch.dict(sys.modules, {"django.test.runner": fake_django}):
+            runner_path = str(GATE / "orv_django_runner.py")
+            runner = runpy.run_path(runner_path)["Runner"]
+        with tempfile.TemporaryDirectory() as temp:
+            rows = Path(temp) / "rows.tsv"
+            with patch.dict(os.environ, {"ORV_DJ_ROWS": str(rows)}):
+                runner().run_suite(None)
+            self.assertIn("django::test.ok\tPASS\n", rows.read_text())
+            self.assertNotIn("::__COMPLETE__", rows.read_text())
