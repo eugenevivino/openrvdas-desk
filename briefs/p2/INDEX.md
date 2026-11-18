@@ -88,3 +88,5 @@ Wave 1 runs in parallel (disjoint files; `contract.py` byte-identical on every b
 
 
 | 49 | #188 | [AI watch assistant: event-triggered triage](188-ai-triage.md), prompt `briefs/cloud/p2-ai-triage.md` | `deepsignal/p2-ai-triage` | `3b4b76e` contrib tree | cloud | py | 10 | #162, #167, #168 formats (reads files only) | no; API path on by default with caps (Eugene 2026-11-18) |
+| 50 | #197 | [CDS lockdown (loopback read-only relay)](197-cds-lockdown.md) | `deepsignal/sec-cds-lockdown` | `3b4b76e` contrib tree | cloud | py | 11 | none | no; merges only on Eugene's approval |
+| 51 | #189 | [Auth gateway](189-auth-gateway.md) | see brief | see brief | cloud | py | 11 | #197 green and Eugene's D-SEC2 login decision | no; merges only on Eugene's approval |
