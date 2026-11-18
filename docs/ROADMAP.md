@@ -38,6 +38,10 @@ bug-fix PRs (the Django `test_basic` failure is the first candidate).
     - (b) Setup engine facade `contrib/deepsignal/setup/` with detect/propose/diff/validate, after #125, #114, #126, #127, #128 land. Integration work.
     - (c) MCP setup tools detect, propose, diff, validate on top of (b). Codex, Sol medium.
     - `apply` (approval, rollback, init commands) is phase 3, after a high-risk review.
+    - (d) MCP eval harness `contrib/deepsignal/mcp/evals/`: pytest plus SDK client, Revelle replay fixture with planted faults, scorer for correctness, actions, tokens, safety. Release bar: all safety cases pass and at least 18 of 20 correct.
+    - (e) Remote transport (HIGH RISK, Astra review): streamable HTTP bound to one named VPN or LAN interface, TLS, per-user tokens with roles viewer/tech/admin, rate limits, 8 KB byte cap per reply. Read-only by default; writes need on-ship approval.
+    - (f) Security hardening (HIGH RISK, Astra review): hash-chained signed audit log, dependencies pinned with hashes, secret redaction, injection tests.
+    - Docs: docs/USER-JOURNEYS.md and docs/MCP-EVALS.md via briefs/docs-user-journeys.md (cloud, Sol medium, docs only).
 
 ## Phase 3: Cruise Console (D-CONSOLE1)
 
