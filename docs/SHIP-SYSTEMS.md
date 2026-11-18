@@ -6,9 +6,9 @@ Written 2026-11-18 by the ship-systems thread for Eugene's two asks:
    through some kind of pathway."
 2. "Help configure instruments, perhaps even dynamically. Intelligently, even if it means ssh'ing in."
 
-IDEAS #138 to #157. Decisions D-SHIP1 and D-NOC1. Briefs: `briefs/p2/138-iec450-bridge.md`,
+IDEAS #138 to #160. Decisions D-SHIP1 and D-NOC1. Briefs: `briefs/p2/138-iec450-bridge.md`,
 `briefs/p2/139-kongsberg-tap.md`, `briefs/p2/140-sv-consistency.md`, `briefs/p2/141-depth-consensus.md`,
-`briefs/p2/156-link-health.md`, `briefs/p2/157-device-servers.md`.
+`briefs/p2/156-link-health.md`, `briefs/p2/157-device-servers.md`, `briefs/p2/158-seismic-shot-qc.md`.
 
 **Evidence level.** Interface facts below come from vendor documentation and fleet practice as known to the
 lead; each row marks what is verified in the OpenRVDAS source (V) versus a lead to confirm on a real ship (L).
@@ -178,6 +178,9 @@ module misbehaves. Rank orders passive work by value per effort, then by how man
 | 14 | #149 | NMEA 2000 through a read-only gateway | P | 2/2/1 | M | low | none | PROPOSED |
 | 15 | #156 | Link health with NOC integration (section 10) | P, opt-in probes | 5/2/4 | M | low | #143 #145 | BRIEFED |
 | 15b | #157 | Serial device servers, vendor-neutral (Moxa, Pepperl+Fuchs first; section 11) | P (reads), A via #153 | 5/2/3 | M | medium | #156 | BRIEFED |
+| 15c | #158 | Seismic shot and source QC (section 12) | P | 4/5/3 | S | low | #160 | BRIEFED |
+| 15d | #159 | Streamer and bird QC (section 12) | P | 3/5/2 | M | low | none | PROPOSED |
+| 15e | #160 | Protected-species and mitigation view (section 12) | P | 4/4/3 | M | low | none | PROPOSED |
 | 16 | #152 | Instrument config reader | R | 5/2/2 | M | medium | #153 | PROPOSED |
 | 17 | #155 | Scoped SSH access kit | R | 4/1/2 | S | medium | #152 #154 | PROPOSED |
 | 18 | #153 | Config advisor | R | 5/3/2 | M | low (advice only) | #154 | PROPOSED |
@@ -355,7 +358,7 @@ answer "is it the device or the cable".
 Eugene: "integrate VERY well with Moxas and Pepperl+Fuchs devices." Nearly every serial instrument on a
 UNOLS ship reaches the DAS through a Moxa NPort or a Pepperl+Fuchs Comtrol DeviceMaster, so this is where
 most "no data" problems actually live. Eugene added "and other similar devices": Digi, Lantronix, Perle,
-B&B and Advantech, Brainboxes, Sena. Brief: `briefs/p2/157-device-servers.md`.
+B&B and Advantech, Brainboxes, Sena. Brief: `briefs/p2/157-device-servers.md`, `briefs/p2/158-seismic-shot-qc.md`.
 
 **Vendor-neutral by design.** One driver interface (identify, read ports, say what it can read) and one
 port-status shape for every vendor. v1 drivers: Moxa, Pepperl+Fuchs, and a generic SNMP driver (MIB-II plus
@@ -392,3 +395,31 @@ section 7: apply allowed with approval, port settings only. Never SNMP SET or we
 a web login can end another admin's session on some models, so SNMP comes first and HTTP reads skip
 anything behind a login; SNMP v2c communities travel in clear text, so they stay on the instrument LAN and
 v3 is the next step.
+
+## 12. Seismic systems: streamers, birds, gun controllers (#158 to #160)
+
+Eugene: "would be nice to handle seismic (digibird, geoeel, hotshot), etc." Same rule as sonars: **listen
+only**. Gun controllers fire air guns and streamer controllers steer birds; nothing from DeepSignal ever goes
+to them. Brief: `briefs/p2/158-seismic-shot-qc.md`.
+
+| System | What it emits | Public format? | DeepSignal use | Row |
+|---|---|---|---|---|
+| Gun controller (Real Time Systems HotShot, Seamap GunLink, Sercel) | Per-shot ASCII log: shot number, fire time, per-gun timing error, sometimes pressure, on serial or UDP (L) | No: vendor documents, varies by firmware. Capture on the ship and map with a core device file | Shot QC, missed shots, gun timing, shot position | #158 |
+| Shot trigger and navigation (nav system or timer) | Trigger time, shotpoint number; position from the ship's GNSS | Yes: NMEA 0183; IOGP P1/11 for shot positions; P2/94 raw nav | Fire time vs trigger and GPS time; shot spacing; P1/11 shot file | #158 |
+| Streamer depth and heading birds (DigiCOURSE DigiBIRD and compass birds, via the streamer controller) | Bird depth, wing angle, heading per bird, through the controller's own network or log (L) | No: vendor documents | Streamer depth and feather QC, bird dropouts | #159 |
+| Digital streamer (Geometrics GeoEel and similar) | Shot records as SEG-D or SEG-Y files; status and noise in the acquisition software (L) | SEG-D and SEG-Y yes (SEG standards); live status no | File heartbeat, per-channel noise and dead channels from SEG-Y headers and traces | #159 |
+| Source and mitigation context | Gun state (firing, ramp-up, shut down), position, EEZ status | Derived | Protected-species observer (PSO) view and event log | #160 |
+
+**Cross-checks only the DAS can do:** fire time against GPS time and the nav system's trigger (a drifting
+controller clock misplaces every shot); shot position interpolated from the ship's own nav at fire time,
+never extrapolated; shot spacing against the planned interval; missed shots against shot numbers; gun
+activity against the EEZ boundary (#137) and the acoustic transmit timeline (#144), so a PSO sees in one
+place whether guns are firing, where, and inside which permit area.
+
+**Protected species (#160):** observers keep ramp-up, shutdown and sighting records under the permit. #160
+gives them a read-only view (gun state, power-down, ramp-up timer, distance to EEZ edge) and writes their
+events to Sealog (#133). It never powers guns down itself; the PSO calls the shutdown, by radio, as today.
+
+**Needs vendor documents:** HotShot, GunLink and Sercel shot-log formats; DigiCOURSE controller output; GeoEel
+live status. Until a ship provides a capture, #158 ships with a labelled template device file and works on
+any shot log a tech maps with core `ParseTransform`, so no vendor document blocks it.
