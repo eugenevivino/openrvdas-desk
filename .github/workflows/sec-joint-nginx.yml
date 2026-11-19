@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: eugenevivino/openrvdas
-          ref: 814353acdba88387c9e1b8f0a3213f2f92230b9c
+          ref: 1dc7a5e001f9535520ac8986922253c2ea20e01e
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
