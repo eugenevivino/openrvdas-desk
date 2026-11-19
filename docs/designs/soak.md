@@ -1,56 +1,45 @@
-# Design note: soak (D-DESIGN1)
+# Design note: 24-hour Console UI soak
 
-- Unit: `soak` on fork branch `deepsignal/integration` at `7c60dbf`. Launcher unit: `soak`.
-- Author: Astra, 2026-11-18. Status: DRAFT.
+Status: DRAFT, Eugene approval required. Launcher unit: `soak`. Decision: D-SOAK1.
 
 ## Fixed target
 
-The console pilot candidate at `7c60dbf` sustains 24 real hours on the Mini when Kalon is idle, with the MacBook as fallback under the memory gate. Both Macs observe the heavy-job gate. D-SOAK1 assigns the same head a 5.5 h run in the desk Linux Actions job. Three persistent WebSocket clients and one client reconnecting every 10 min each request all fields with 300 s of history, then consume live records.
+Qualify the Nov 25 supervised pilot on fork integration `1dc7a5e001f9535520ac8986922253c2ea20e01e`. Run 24 real hours on the Mini when idle, with the MacBook as fallback after normal admission. Run 5.5 hours on the same SHA in the desk Linux job. The harness starts a loopback replay fixture. Three persistent clients and one client that reconnects every ten minutes request all fixture fields with 300 seconds of history, then receive live records.
 
-Sample every 60 s with a 30 min warm-up. A completed run passes when all of the following hold:
+Sample every 60 seconds after starting, with a 30-minute warm-up. Require all six fixture processes (cache, manager and four loggers) to stay alive and measured. Each process's median RSS for its final ten post-warm-up samples must stay within 5% of its initial ten. Each client's median interval maximum receive lag must be at most five seconds. Every post-warm-up client interval must contain new records, including for the reconnecting client.
 
-- Zero crashes. The cache, logger manager and all four loggers survive. Every post-warm-up sample contains positive RSS for all six processes, with zero unmeasured loggers. Each process’s last 10-sample median RSS is at most 5% above its first 10-sample median after warm-up.
-- Every client’s median interval maximum receive lag is at most 5 s. Lag is receipt time minus record timestamp. The median uses intervals with new records.
-- Post-warm-up samples exist, with zero empty intervals for each client, including the reconnecting client. `soak.py` can return `PASS` despite individual empty intervals because it tests median record rate. Acceptance therefore also requires the sample check below.
+## Acceptance tests
 
-## Acceptance tests (commands)
-
-From the candidate checkout root, check verdict behavior and lint:
+Run from the root of the exact candidate checkout using the existing fixture environment. Run only the duration command for the selected host, in fresh scratch. Keep exit status and report with the candidate SHA and host.
 
 ```sh
-python3 -m pytest contrib/deepsignal/test/harness/test_soak.py -v
-flake8 contrib/deepsignal/test/harness/soak.py contrib/deepsignal/test/harness/test_soak.py
+test "$(git rev-parse HEAD)" = 1dc7a5e001f9535520ac8986922253c2ea20e01e
+python3 -m pytest -v contrib/deepsignal/test/harness/test_soak.py
+python3 -m flake8 contrib/deepsignal/test/harness/soak.py contrib/deepsignal/test/harness/test_soak.py
 ```
 
-On the selected Mac, start the run, inspect liveness and elapsed time with `ps` as needed, then collect its exit status in the same shell:
+Mac:
 
 ```sh
-python3 -m contrib.deepsignal.test.harness.soak --hours 24 --warmup-min 30 --sample-s 60 --clients 3 --report soak.json &
-soak_pid=$!
-ps -p "$soak_pid" -o pid=,etime=,command=
-wait "$soak_pid"
+test ! -e soak-mac.json && python3 -m contrib.deepsignal.test.harness.soak --hours 24 --warmup-min 30 --sample-s 60 --clients 3 --report soak-mac.json
 ```
 
-In the desk Linux job, run:
+Desk Linux:
 
 ```sh
-python3 -m contrib.deepsignal.test.harness.soak --hours 5.5 --warmup-min 30 --sample-s 60 --clients 3 --report soak.json
+test ! -e soak-linux.json && python3 -m contrib.deepsignal.test.harness.soak --hours 5.5 --warmup-min 30 --sample-s 60 --clients 3 --report soak-linux.json
 ```
 
-On either host, read the completed report and check every expected client. The command prints the runner verdict and reasons, counts empty client intervals, and exits nonzero on either failure. Runner exit codes are 0 for `PASS`, 1 for `FAIL` and 2 for `COULD_NOT_RUN`. A crash or missing report leaves the run without a pass.
+Each host must record exit 0 and pass this independent check from the checkout root. The runner's median-rate verdict alone can miss individual empty intervals.
 
 ```sh
-python3 -c 'import json,sys; r=json.load(open("soak.json")); samples=[s for s in r["samples"] if s["after_warmup"]]; clients=("client-1","client-2","client-3","reconnecting-client"); empty=sum(s["clients"].get(c,{}).get("messages_per_s",0)<=0 for s in samples for c in clients); print(r["verdict"],r["reasons"],"empty client intervals:",empty); sys.exit(r["verdict"]!="PASS" or not samples or empty!=0)'
+python3 -c 'import json,sys; from pathlib import Path; p,=Path(".").glob("soak-*.json"); r=json.loads(p.read_text()); s=[x for x in r["samples"] if x["after_warmup"]]; clients=("client-1","client-2","client-3","reconnecting-client"); empty=sum(x["clients"].get(c,{}).get("messages_per_s",0)<=0 for x in s for c in clients); print(p,r["verdict"],r["reasons"],"samples",len(s),"empty intervals",empty); sys.exit(r["verdict"]!="PASS" or len(s)<10 or empty!=0)'
 ```
 
 ## Out of scope
 
-Deliberate source loss and recovery belong to D-RECOVER1. Restarting a killed logger is an operator action, or a production `supervisord` action. Automatic restart is outside MVP acceptance. An unplanned logger death still fails the soak. Other out-of-scope findings become tickets unless they meet D-P1DEF1(a), (b) or (c).
+Deliberate source-loss drills, automatic logger restart, bridge cutover and changes to the security redesign or its tickets. An unplanned fixture-process death fails the soak.
 
-## Prerequisites on trunk
+## Prerequisites and gate
 
-Verified by inspection in this checkout: `fixture.py` starts the replay cache and manager and discovers PIDs for `mwx1`, `s330`, `knud1` and `true_winds`. `soak.py`, `test_soak.py` and `SOAK.md` are present. This design review did not execute a soak.
-
-## Who judges
-
-The desk Linux job is the gate of record. A Mac-only failure is recorded against the 24 h run and does not block that gate under D-SOAK1. Review takes place in Codex cloud. The soak reviewer model, review effort and merge owner are not specified in the sources.
+The fork merge was fetched and `814353a` is in the pinned tip's ancestry. The tip contains `fixture.py`, `soak.py`, `test_soak.py` and `SOAK.md`. Before launch, verify the SHA and claim again, confirm host admission, isolated fixture ports and processes, existing dependencies and a desk Linux job pinned to the same SHA. Obtain a new Linux run ID and retain both hosts' reports. Linux is the gate of record under D-SOAK1. Record a Mac-only failure separately. Stop for a new pin if integration changes before launch.
