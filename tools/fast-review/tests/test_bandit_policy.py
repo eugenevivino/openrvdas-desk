@@ -22,34 +22,51 @@ SCANNER = JOBS / "venv-scan/bin/python"
 BASELINE = "ec69d0ebd92cf8854b91a7a50fc53e748b886c6e"
 REVIEWED = "contrib/deepsignal/console/install/install_site.py"
 SCOPE = "contrib/deepsignal"
+UNRELATED = f"{SCOPE}/__init__.py"
 
 
 def git(repo, *args):
-    return subprocess.check_output(["git", "-C", repo, *args])
+    return subprocess.check_output(
+        ["git", "-C", repo, "-c", "core.hooksPath=/dev/null", *args],
+        env={**os.environ, "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_NOSYSTEM": "1"},
+    )
+
+
+def commit(candidate, *paths):
+    repo, _ = candidate
+    git(repo, "add", "--force", "--", *paths)
+    git(repo, "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid",
+        "commit", "-m", "Test candidate variation")
+    return repo, git(repo, "rev-parse", "HEAD").decode().strip()
 
 
 @pytest.fixture(scope="module")
-def pinned():
+def pinned(tmp_path_factory):
     head = (JOBS / "pilot-bandit-qualification/candidate.sha").read_text().strip()
     assert git(PINNED, "rev-parse", "HEAD").decode().strip() == head
-    git_dir = git(PINNED, "rev-parse", "--absolute-git-dir").decode().strip()
+    seed = tmp_path_factory.mktemp("seed")
+    git(seed, "init", "--quiet")
+    # Copy the exact reviewed commit from a local path without sharing its object store.
+    git(seed, "-c", "protocol.file.allow=always", "fetch", "--quiet", "--no-tags",
+        "--depth=1", str(PINNED), head)
+    git(seed, "update-ref", "HEAD", head)
     archive = git(PINNED, "archive", head, SCOPE, ".flake8")
-    return head, git_dir, archive
+    return head, seed, archive
 
 
 @pytest.fixture
 def candidate(tmp_path, pinned):
-    head, git_dir, archive = pinned
+    head, seed, archive = pinned
     repo = tmp_path / "candidate"
-    repo.mkdir()
+    shutil.copytree(seed / ".git", repo / ".git")
     with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
         tar.extractall(repo, filter="data")
-    git_env = {"GIT_DIR": git_dir, "GIT_WORK_TREE": str(repo)}
-    return repo, head, git_env
+    git(repo, "read-tree", head)
+    return repo, head
 
 
 def pre_review(candidate, receipts, entrypoint=None):
-    repo, head, git_env = candidate
+    repo, head = candidate
     if entrypoint is None:
         entrypoint = stage_entrypoint(repo.parent)
         stage_scanner(entrypoint, f'exec {SCANNER} "$@"\n')
@@ -59,7 +76,7 @@ def pre_review(candidate, receipts, entrypoint=None):
         desk_receipts.symlink_to(receipts, target_is_directory=True)
     return subprocess.run(
         ["bash", entrypoint, repo, head],
-        env={**os.environ, **git_env}, capture_output=True, text=True, check=False,
+        capture_output=True, text=True, check=False,
     )
 
 
@@ -103,8 +120,11 @@ def test_d_fix1_exact_reviewed_head(candidate, tmp_path):
 
 def test_d_fix1_unrelated_safe_variations_and_checkout_config(candidate, tmp_path):
     repo = candidate[0]
-    (repo / SCOPE / "safe_extra.py").write_text("def addition(a, b):\n    return a + b\n")
-    (repo / SCOPE / "safe_extra.pyw").write_text('LABEL = "harmless"\n')
+    additions = [f"{SCOPE}/safe_extra.py", f"{SCOPE}/safe_extra.pyw"]
+    (repo / additions[0]).write_text("def addition(a, b):\n    return a + b\n")
+    (repo / additions[1]).write_text('LABEL = "harmless"\n')
+    (repo / UNRELATED).write_bytes(git(repo, "show", f"HEAD:{UNRELATED}") + b"\n# Benign edit.\n")
+    candidate = commit(candidate, UNRELATED, *additions)
     # Product-provided scanner settings and policy data are untrusted.
     (repo / SCOPE / ".bandit").write_text("[bandit]\nskips = B101,B603,B104,B404\n")
     (repo / SCOPE / "bandit-policy.json").write_text("{}\n")
@@ -115,6 +135,62 @@ def test_d_fix1_unrelated_safe_variations_and_checkout_config(candidate, tmp_pat
     report = json.loads(base64.b64decode(raw["stdout_b64"]))
     assert report["metrics"][f"{SCOPE}/safe_extra.py"]["loc"] == 2
     assert report["metrics"][f"{SCOPE}/safe_extra.pyw"]["loc"] == 1
+    assert verdict["verdict"] == "PASS" and verdict["finding_count"] == 188
+    inventory = {
+        path: hashlib.sha256(git(repo, "show", f"{candidate[1]}:{path}")).hexdigest()
+        for path in report["metrics"] if path != "_totals"
+    }
+    encoded = json.dumps(inventory, sort_keys=True, separators=(",", ":")).encode("ascii")
+    assert raw["source_inventory_sha256"] == hashlib.sha256(encoded).hexdigest()
+
+
+@pytest.mark.parametrize("change", ["edited", "staged", "missing", "untracked", "ignored"])
+def test_d_fix1_dirty_scanned_source_is_red(candidate, tmp_path, change):
+    repo, head = candidate
+    if change in {"edited", "staged"}:
+        (repo / UNRELATED).write_text('LABEL = "dirty"\n')
+        if change == "staged":
+            git(repo, "add", "--", UNRELATED)
+    elif change == "missing":
+        (repo / UNRELATED).unlink()
+    else:
+        relative = f"{SCOPE}/dirty.py" if change == "untracked" else f"{SCOPE}/dirty.pyw"
+        if change == "ignored":
+            (repo / ".git/info/exclude").write_text(f"/{relative}\n")
+        (repo / relative).write_text('LABEL = "dirty"\n')
+        if change == "ignored":
+            git(repo, "check-ignore", "--", relative)
+    assert git(repo, "rev-parse", "HEAD").decode().strip() == head
+    receipts = tmp_path / "receipts"
+    result = pre_review(candidate, receipts)
+    assert result.returncode == 1 and "FAIL bandit" in result.stdout, result
+    raw, verdict = documents(candidate, receipts)
+    report = json.loads(base64.b64decode(raw["stdout_b64"]))
+    assert raw["exit_status"] == 1 and verdict["finding_count"] == 188
+    assert report["metrics"][UNRELATED] == json.loads(EVIDENCE.read_bytes())["metrics"][UNRELATED]
+    assert f"{SCOPE}/dirty.py" not in report["metrics"]
+    assert f"{SCOPE}/dirty.pyw" not in report["metrics"]
+    assert verdict["verdict"] == "FAIL" and "pinned Git tree" in verdict["rationale"]
+
+
+def test_d_fix1_edits_outside_recursive_scan_scope_pass(candidate, tmp_path):
+    repo = candidate[0]
+    paths = ["outside.py", f"{SCOPE}/nested/test/ignored.py", f"{SCOPE}/node_modules/ignored.pyw"]
+    for relative in paths:
+        path = repo / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("assert __name__\n")
+    candidate = commit(candidate, *paths)
+    (repo / paths[0]).write_text("assert False\n")
+    (repo / paths[1]).unlink()
+    (repo / SCOPE / "node_modules/untracked.py").write_text("assert False\n")
+    receipts = tmp_path / "receipts"
+    result = pre_review(candidate, receipts)
+    assert result.returncode == 0, result
+    raw, verdict = documents(candidate, receipts)
+    report = json.loads(base64.b64decode(raw["stdout_b64"]))
+    assert not set(paths) & report["metrics"].keys()
+    assert f"{SCOPE}/node_modules/untracked.py" not in report["metrics"]
     assert verdict["verdict"] == "PASS" and verdict["finding_count"] == 188
 
 
@@ -131,6 +207,7 @@ def test_d_fix1_unlisted_sites_are_red(candidate, tmp_path, name, source, rule):
     relative = f"{SCOPE}/{name}"
     (repo / relative).write_text(source)
     (repo / SCOPE / ".bandit").write_text(f"[bandit]\nskips = {rule}\n")
+    candidate = commit(candidate, relative)
     receipts = tmp_path / "receipts"
     result = pre_review(candidate, receipts)
     assert result.returncode == 1 and "RESULT RED" in result.stdout, result
@@ -145,6 +222,7 @@ def test_d_fix1_reviewed_source_change_is_red(candidate, tmp_path):
     path = candidate[0] / REVIEWED
     with path.open("a") as stream:
         stream.write("\n# Harmless source change outside the findings' reported context.\n")
+    candidate = commit(candidate, REVIEWED)
     receipts = tmp_path / "receipts"
     result = pre_review(candidate, receipts)
     assert result.returncode == 1 and "FAIL bandit" in result.stdout, result
@@ -156,6 +234,7 @@ def test_d_fix1_reviewed_source_change_is_red(candidate, tmp_path):
 
 def test_real_scanner_skipped_file_is_red(candidate, tmp_path):
     (candidate[0] / SCOPE / "invalid.py").write_text("def invalid(:\n")
+    candidate = commit(candidate, f"{SCOPE}/invalid.py")
     receipts = tmp_path / "receipts"
     result = pre_review(candidate, receipts)
     assert result.returncode == 1 and "FAIL bandit" in result.stdout, result
@@ -172,8 +251,8 @@ def test_missing_reviewed_file_at_pinned_head_is_red(candidate, tmp_path):
     result = pre_review(candidate, receipts)
     assert result.returncode == 1 and "FAIL bandit" in result.stdout, result
     raw, verdict = documents(candidate, receipts)
-    assert raw["exit_status"] == 1 and verdict["finding_count"] == 183
-    assert verdict["verdict"] == "FAIL" and "reviewed source missing" in verdict["rationale"]
+    assert raw["exit_status"] == 1 and verdict["finding_count"] == 188
+    assert verdict["verdict"] == "FAIL" and "pinned Git tree" in verdict["rationale"]
 
 
 def stage_entrypoint(tmp_path, source=None):
@@ -202,6 +281,28 @@ def stage_scanner(entrypoint, body):
     path.parent.mkdir(parents=True)
     path.write_text('#!/bin/bash\nif [[ "$*" == *"import pip_audit"* ]]; then exit 1; fi\n' + body)
     path.chmod(0o700)
+
+
+@pytest.mark.parametrize("restore", [False, True], ids=["persistent", "restored"])
+def test_d_fix1_snapshot_write_during_scan_is_red(candidate, tmp_path, staged_entrypoint, restore):
+    path = shlex.quote(UNRELATED)
+    restore_source = f'cat original-source > {path}\n' if restore else ""
+    stage_scanner(
+        staged_entrypoint,
+        f'if [[ " $* " == *" -m bandit "* ]]; then\n'
+        f'    cp {path} original-source\n'
+        f'    printf "LABEL = 42\\n" > {path}\n'
+        f'    {SCANNER} "$@"\n'
+        f'    status=$?\n    {restore_source}    exit "$status"\nfi\n'
+        f'exec {SCANNER} "$@"\n',
+    )
+    receipts = tmp_path / "receipts"
+    result = pre_review(candidate, receipts, staged_entrypoint)
+    assert result.returncode == 1 and "FAIL bandit" in result.stdout, result
+    raw, verdict = documents(candidate, receipts)
+    report = json.loads(base64.b64decode(raw["stdout_b64"]))
+    assert raw["exit_status"] == 1 and report["metrics"][UNRELATED]["loc"] == 1
+    assert verdict["verdict"] == "FAIL" and "scan snapshot changed" in verdict["rationale"]
 
 
 @pytest.mark.parametrize("damage", ["missing", "corrupt", "version", "shortened"])

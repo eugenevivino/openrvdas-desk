@@ -5,6 +5,7 @@ from collections import Counter, defaultdict
 import fcntl
 from fnmatch import fnmatchcase
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -100,11 +101,22 @@ def excluded(path):
     return any(fnmatchcase(path, pattern) for pattern in EXCLUDES)
 
 
+def scanned_source(path):
+    return path.endswith((".py", ".pyw")) and not excluded(path)
+
+
 def walk_error(error):
     raise error
 
 
-def source_inventory(repo, snapshot=None):
+def file_stamp(info):
+    # Exclude atime, which can change as Bandit reads. ctime detects writes
+    # even when the original bytes and mtime are restored.
+    return (info.st_dev, info.st_ino, info.st_mode, info.st_size,
+            info.st_mtime_ns, info.st_ctime_ns)
+
+
+def source_inventory(repo, stamps=None):
     scope = repo / SCOPE
     for directory in (scope.parent, scope):
         require(directory.is_dir() and not directory.is_symlink(),
@@ -113,6 +125,8 @@ def source_inventory(repo, snapshot=None):
     for root, dirs, names in os.walk(scope, onerror=walk_error):
         root = Path(root)
         local = root.relative_to(repo).as_posix()
+        if stamps is not None:
+            stamps[local] = file_stamp(root.lstat())
         dirs[:] = [d for d in dirs if not excluded(f"{local}/{d}/")]
         for directory in dirs:
             require(not (root / directory).is_symlink(),
@@ -120,18 +134,72 @@ def source_inventory(repo, snapshot=None):
         for name in names:
             path = root / name
             relative = path.relative_to(repo).as_posix()
-            if not name.endswith((".py", ".pyw")) or excluded(relative):
+            if not scanned_source(relative):
                 continue
-            require(stat.S_ISREG(path.lstat().st_mode),
-                    f"non-regular scan source {relative!r}")
-            data = path.read_bytes()
-            files[relative] = digest(data)
-            if snapshot is not None:
-                destination = snapshot / relative
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                destination.write_bytes(data)
+            info = path.lstat()
+            require(stat.S_ISREG(info.st_mode), f"non-regular scan source {relative!r}")
+            if stamps is not None:
+                stamps[relative] = file_stamp(info)
+            files[relative] = digest(path.read_bytes())
     require(files, "no source files in scan scope")
     return files
+
+
+def git_output(repo, *args, input_bytes=None):
+    return subprocess.run(
+        ["git", "--no-replace-objects", "-C", repo, *args],
+        env={**os.environ, "GIT_NO_LAZY_FETCH": "1"},
+        input=input_bytes, capture_output=True, check=True, timeout=120,
+    ).stdout
+
+
+def committed_snapshot(repo, head, snapshot):
+    listing = git_output(repo, "ls-tree", "-rz", "--full-tree", head, "--", SCOPE)
+    sources = {}
+    for line in listing.split(b"\0")[:-1]:
+        metadata, name = line.split(b"\t", 1)
+        relative = os.fsdecode(name)
+        if not scanned_source(relative):
+            continue
+        require(relative.startswith(f"{SCOPE}/")
+                and not {"", ".", ".."}.intersection(relative.split("/")),
+                f"invalid committed source path {relative!r}")
+        mode, kind, oid = metadata.split()
+        require(kind == b"blob" and mode in (b"100644", b"100755"),
+                f"non-regular committed scan source {relative!r}")
+        sources[relative] = oid
+    require(sources, "no source files in pinned Git tree")
+
+    # Read the raw blobs in one Git invocation, without checkout filters or
+    # archive attributes modifying the source bytes or file list.
+    batch = b"\n".join(sources.values()) + b"\n"
+    blobs = io.BytesIO(git_output(repo, "cat-file", "--batch", input_bytes=batch))
+    inventory = {}
+    for relative, oid in sources.items():
+        header = blobs.readline().split()
+        require(len(header) == 3 and header[:2] == [oid, b"blob"] and header[2].isdigit(),
+                f"invalid Git blob for {relative!r}")
+        size = int(header[2])
+        data = blobs.read(size)
+        require(len(data) == size and blobs.read(1) == b"\n",
+                f"incomplete Git blob for {relative!r}")
+        inventory[relative] = digest(data)
+        destination = snapshot / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(data)
+    require(not blobs.read(1), "unexpected data after Git blobs")
+    return inventory
+
+
+def verify_candidate(repo, head, inventory):
+    current = git_output(repo, "rev-parse", "--verify", "HEAD^{commit}").decode("ascii").strip()
+    require(current == head, "candidate head moved")
+    try:
+        actual = source_inventory(repo)
+    except (OSError, ValueError) as exc:
+        reason = f"candidate source cannot be verified against pinned Git tree: {exc}"
+        raise ValueError(reason) from exc
+    require(actual == inventory, "candidate source does not match pinned Git tree")
 
 
 def run_scan(scanner, repo, receipts, raw):
@@ -140,18 +208,34 @@ def run_scan(scanner, repo, receipts, raw):
             "scanner probe failed")
     with tempfile.TemporaryDirectory(prefix=".bandit-scan-", dir=receipts) as temp:
         snapshot = Path(temp)
-        inventory = source_inventory(repo, snapshot)
+        head = raw["candidate_head"]
+        inventory = committed_snapshot(repo, head, snapshot)
         raw["source_inventory_sha256"] = digest(canonical(inventory))
         raw["file_count"] = len(inventory)
+        integrity_error = None
+        try:
+            verify_candidate(repo, head, inventory)
+        except (OSError, ValueError, subprocess.SubprocessError) as exc:
+            # The committed snapshot can still produce independent scan evidence.
+            integrity_error = str(exc)
         ini = snapshot / "desk-bandit.ini"
         ini.write_text("[bandit]\n", encoding="ascii")
+        before = {}
+        require(source_inventory(snapshot, before) == inventory,
+                "scan snapshot does not match pinned Git tree")
         args = [
             "-q", "-r", SCOPE, "-x", ",".join(EXCLUDES),
             "--ini", ini.name, "--ignore-nosec", "-f", "json",
         ]
         raw["scanner_args"] = args
         raw.update(capture([*scanner, "-m", "bandit", *args], cwd=snapshot))
-        return inventory
+        try:
+            after = {}
+            require(source_inventory(snapshot, after) == inventory and before == after,
+                    "source bytes or file metadata differ")
+        except (OSError, ValueError) as exc:
+            integrity_error = f"scan snapshot changed during scan: {exc}"
+        return inventory, integrity_error
 
 
 def report_findings(raw, report, inventory):
@@ -239,7 +323,7 @@ def match_policy(policy, head, inventory, findings):
     return rationales
 
 
-def verdict_for(raw, repo, inventory, raw_sha):
+def verdict_for(raw, repo, inventory, raw_sha, integrity_error):
     verdict = {
         "candidate_head": raw["candidate_head"],
         "run_id": raw["run_id"],
@@ -276,13 +360,10 @@ def verdict_for(raw, repo, inventory, raw_sha):
         require(observed == version, "scanner version drift")
         findings = report_findings(raw, report, inventory)
 
-        current = subprocess.check_output(
-            ["git", "-C", repo, "rev-parse", "--verify", "HEAD"],
-            stderr=subprocess.PIPE, text=True,
-        ).strip()
-        require(current == raw["candidate_head"], "candidate head moved")
-        require(source_inventory(repo) == inventory, "candidate source changed")
-        rationales = match_policy(policy, current, inventory, findings)
+        require(integrity_error is None, integrity_error)
+        head = raw["candidate_head"]
+        verify_candidate(repo, head, inventory)
+        rationales = match_policy(policy, head, inventory, findings)
         verdict.update(
             verdict="PASS",
             rationale=("all findings match reviewed sites" if rationales
@@ -317,12 +398,13 @@ def main(scanner_path, repo_path, head, receipt_path):
             "error": None,
         }
         inventory = {}
+        integrity_error = None
         try:
-            inventory = run_scan(scanner, repo, receipts, raw)
-        except (OSError, ValueError) as exc:
+            inventory, integrity_error = run_scan(scanner, repo, receipts, raw)
+        except (OSError, ValueError, subprocess.SubprocessError) as exc:
             raw["error"] = str(exc)
         raw_sha = publish(receipts / f"bandit-raw-{head}.json", raw)
-        verdict = verdict_for(raw, repo, inventory, raw_sha)
+        verdict = verdict_for(raw, repo, inventory, raw_sha, integrity_error)
         publish(receipts / f"bandit-policy-{head}.json", verdict)
         print(f'{verdict["verdict"]} bandit (run {raw["run_id"]}, findings '
               f'{verdict["finding_count"]}): {verdict["rationale"]}')
