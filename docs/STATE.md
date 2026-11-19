@@ -12,6 +12,11 @@ Updated 2026-11-19 02:05Z by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 - The [separate gate proposal](https://github.com/eugenevivino/openrvdas-desk/pull/3) at `d06ad2d` passed 43 Mac tests. Ubuntu accepted the exact 188 sites and a benign change, and rejected both a dirty checkout and finding 189. The live pre-review on `8f0794e` still fails Bandit. [Policy CI](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44555642874).
 - The [owner proposal](../research/2026-11-19-pilot-bandit-owner-proposal.md) is on desk main. Once an owner-approved resolution lands, re-cut the tested console changes on the new integration tip, rerun the full installed gate, then request independent P1 review. The 24-hour soak remains on hold.
 
+## Throughput and Stream Health (2026-11-19)
+
+- Hosted verification candidate `95e9edf` passed six desk checks. A real Mac fixture held its slot from 11:22:42 to 11:23:42 a.m. Eastern. Hosted tests started at 11:23:18 on console `fc31b54` and passed. Owner review precedes installation. [Desk PR](https://github.com/eugenevivino/openrvdas-desk/pull/4) and [Linux run](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44565419757).
+- Stream Health view is the approved third slot. Codex Cloud task `task_e_6aff21dc9714832fb600eb15fc7ffc5a` was submitted through the desk from integration `1dc7a5e`.
+
 ## Handoff (2026-11-19 03:42Z)
 - Eugene drives new work from the Codex GUI using docs/CODEX-HANDOVER.md; Codex takes unclaimed units.
 - Security redesign MERGED into deepsignal/integration 1dc7a5e (Eugene approved 03:49Z), tag deepsignal/pilot-candidate-2;
@@ -49,4 +54,4 @@ Updated 2026-11-19 02:05Z by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 - #121 and #139 downloads; venv-sci install (sonar estimators); nginx not installed on the Mac (by decision).
 
 ## Sync (D-SYNC1)
-- Last sync 2026-11-19T15:47:06Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
+- Last sync 2026-11-19T16:47:10Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
