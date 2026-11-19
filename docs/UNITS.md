@@ -8,7 +8,7 @@ only from logged evidence at the exact head; never mark a stamp without evidence
 | Unit | Branch | Head | Status |
 |---|---|---|---|
 | console-ui | `deepsignal/integration` | 7c60dbf | ACTIVE (D-WIP3 slot 1: console pilot and follow-ups) |
-| stream-health-view | `deepsignal/stream-health-view` | pending | ACTIVE (D-WIP3 slot 3: presentation only) |
+| stream-health-view | `deepsignal/stream-health-view` | 9f156fa | ACTIVE (slot 3, fork PR #2 awaiting release gate) |
 | sec-cds-joint | `deepsignal/sec-cds-joint` | 82c8f3d | ACTIVE (D-WIP3 slot 2: security redesign) |
 
 ## PAUSED (D-WIP3: launch nothing new; in-flight jobs finish as they are)

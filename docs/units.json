@@ -76,9 +76,9 @@
   {
    "unit": "stream-health-view",
    "branch": "deepsignal/stream-health-view",
-   "head": "",
+   "head": "9f156fa",
    "critical": false,
-   "status": "ACTIVE (D-WIP3 slot 3: Stream Health console view)",
+   "status": "ACTIVE (slot 3, fork PR #2 awaiting release gate)",
    "design_note": "docs/designs/stream-health-view.md",
    "stamps": {
     "moved": {
@@ -87,9 +87,9 @@
      "at": ""
     },
     "tested": {
-     "ok": false,
-     "evidence": "",
-     "at": ""
+     "ok": true,
+     "at": "9f156fa",
+     "evidence": "Mac and Ubuntu passed 186 frontend tests and Chromium with two stock-CDS fixture streams. Linux run 44571508115. Installed Bandit remains red."
     },
     "fixed": {
      "ok": false,
@@ -2564,9 +2564,9 @@
   {
    "unit": "cloud-verification-dispatch",
    "branch": "deepsignal/cloud-verification-dispatch",
-   "head": "",
+   "head": "95e9edf",
    "critical": true,
-   "status": "Process tooling outside WIP (D-PIPE2)",
+   "status": "Owner review (process tooling, outside WIP)",
    "design_note": "docs/designs/cloud-verification-dispatch.md",
    "stamps": {
     "moved": {
@@ -2575,9 +2575,9 @@
      "at": ""
     },
     "tested": {
-     "ok": false,
-     "evidence": "",
-     "at": ""
+     "ok": true,
+     "at": "95e9edf",
+     "evidence": "Six desk admission and verification checks plus live GitHub Actions run 44565419757 while the Mac fixture held its slot."
     },
     "fixed": {
      "ok": false,

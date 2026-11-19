@@ -15,7 +15,7 @@ Updated 2026-11-19 02:05Z by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 ## Throughput and Stream Health (2026-11-19)
 
 - Hosted verification candidate `95e9edf` passed six desk checks. A real Mac fixture held its slot from 11:22:42 to 11:23:42 a.m. Eastern. Hosted tests started at 11:23:18 on console `fc31b54` and passed. Owner review precedes installation. [Desk PR](https://github.com/eugenevivino/openrvdas-desk/pull/4) and [Linux run](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44565419757).
-- Stream Health view is the approved third slot. Codex Cloud task `task_e_6aff21dc9714832fb600eb15fc7ffc5a` was submitted through the desk from integration `1dc7a5e`.
+- Stream Health fork [PR #2](https://github.com/eugenevivino/openrvdas/pull/2), `9f156fa`, passed 186 frontend tests and a two-stream Chromium test on both macOS and Ubuntu. All design and P1 checklist items passed. Bandit alone holds the formal review. T-CON-12 records a stock CDS startup delivery gap. Vessel producer integration is pending. [Linux receipt](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44571508115).
 
 ## Handoff (2026-11-19 03:42Z)
 - Eugene drives new work from the Codex GUI using docs/CODEX-HANDOVER.md; Codex takes unclaimed units.

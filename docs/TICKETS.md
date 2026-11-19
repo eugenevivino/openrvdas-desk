@@ -21,6 +21,10 @@ The Mac passed all nine commands in `docs/designs/console.md`. Release blockers 
 - T-CON-7 Auto Night accepts latitude 99 (`autoNight.ts`); bounds check reusing the pause path.
 - T-CON-8 Out-of-range longitude can stall the raster tile loop (`MapTile.tsx`, inferred); bounds check in `pairTrack`.
 
+## Console data delivery
+
+- T-CON-12 During startup, stock CDS can omit a root update published between the first history response and the fallback subscription for an empty background field. With an initial sample 400 seconds old, the protocol trace delivered the initial root and then two empty batches. Publishing the same update after fallback acknowledgement delivered it. An initial sample 45 seconds old also delivered the early update. The Stream Health view shows missing evidence in the first case. Verify delivery across the subscription change before relying on a single root transition. Evidence is in the Stream Health job under `tmp/stream-health-cds-timing.log`.
+
 ## Tests and tooling
 - T-CON-6 Source-loss and browser tests are flaky under load (scripted runs right after a build fail 1 to 3
   tests; reruns pass). Find the timing dependence; no sleeps.
