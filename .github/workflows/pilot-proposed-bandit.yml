@@ -1,0 +1,88 @@
+name: Proposed pilot Bandit policy
+on:
+  push:
+    branches: [ci/pilot-proposed-bandit]
+permissions:
+  contents: read
+jobs:
+  proposal:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      RECEIPTS: /private/tmp/deepsignal/receipts
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: d06ad2d86bbb49d0b540d7e987c51e4130eba614
+          path: desk
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: eugenevivino/openrvdas
+          ref: 8f0794ea62f935c9859ac8bc4c918dd6bfcd0a74
+          path: product
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prepare isolated desk dependencies
+        run: |
+          test "$(git -C desk rev-parse HEAD)" = d06ad2d86bbb49d0b540d7e987c51e4130eba614
+          test "$(git -C product rev-parse HEAD)" = 8f0794ea62f935c9859ac8bc4c918dd6bfcd0a74
+          sudo install -d -o "$(id -u)" -g "$(id -g)" /private/tmp/deepsignal
+          python -m venv /private/tmp/deepsignal/venv-scan
+          /private/tmp/deepsignal/venv-scan/bin/python -m pip install -q bandit==1.9.4
+          python -m venv /private/tmp/deepsignal/console-core/venv
+          /private/tmp/deepsignal/console-core/venv/bin/python -m pip install -q flake8==7.5.0
+          git -C product config user.email fixture@example.invalid
+          git -C product config user.name "Ephemeral CI fixture"
+      - name: Check exact hardening commit using the proposed entrypoint
+        run: |
+          bash desk/tools/fast-review/pre-review.sh "$PWD/product" 8f0794ea62f935c9859ac8bc4c918dd6bfcd0a74
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          receipts = Path(os.environ["RECEIPTS"])
+          sha = "8f0794ea62f935c9859ac8bc4c918dd6bfcd0a74"
+          raw = json.loads((receipts / f"bandit-raw-{sha}.json").read_text())
+          verdict = json.loads((receipts / f"bandit-policy-{sha}.json").read_text())
+          assert raw["run_id"] == verdict["run_id"]
+          assert raw["exit_status"] == 1 and verdict["verdict"] == "PASS" and verdict["finding_count"] == 188
+          print("Exact product commit: raw Bandit exit 1, 188 individually listed findings, draft policy PASS")
+          PY
+      - name: Check a harmless addition in the scanned tree
+        run: |
+          echo 'LABEL = "bridge"' > product/contrib/deepsignal/pilot_policy_fixture.py
+          git -C product add contrib/deepsignal/pilot_policy_fixture.py
+          git -C product commit -qm 'Benign isolated policy fixture'
+          bash desk/tools/fast-review/pre-review.sh "$PWD/product" 8f0794ea62f935c9859ac8bc4c918dd6bfcd0a74
+      - name: Check that a dirty checkout cannot qualify its clean commit
+        run: |
+          echo 'LABEL = "other"' > product/contrib/deepsignal/pilot_policy_fixture.py
+          set +e
+          bash desk/tools/fast-review/pre-review.sh "$PWD/product" 8f0794ea62f935c9859ac8bc4c918dd6bfcd0a74
+          result=$?
+          set -e
+          test "$result" = 1
+          echo 'LABEL = "bridge"' > product/contrib/deepsignal/pilot_policy_fixture.py
+          git -C product diff --exit-code
+      - name: Confirm an extra assertion still blocks
+        run: |
+          echo 'assert __name__' >> product/contrib/deepsignal/pilot_policy_fixture.py
+          git -C product add contrib/deepsignal/pilot_policy_fixture.py
+          git -C product commit -qm 'Isolated extra assertion diagnostic'
+          set +e
+          bash desk/tools/fast-review/pre-review.sh "$PWD/product" 8f0794ea62f935c9859ac8bc4c918dd6bfcd0a74
+          result=$?
+          set -e
+          test "$result" = 1
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          sha = subprocess.check_output(["git", "-C", "product", "rev-parse", "HEAD"], text=True).strip()
+          receipts = Path(os.environ["RECEIPTS"])
+          raw = json.loads((receipts / f"bandit-raw-{sha}.json").read_text())
+          verdict = json.loads((receipts / f"bandit-policy-{sha}.json").read_text())
+          assert raw["exit_status"] == 1 and verdict["verdict"] == "FAIL" and verdict["finding_count"] == 189
+          print("Extra assertion: 189 findings, draft policy FAIL as required")
+          PY
