@@ -170,6 +170,15 @@ fi
 
 # (d) One DeepSignal job at a time: lock dir holding the owner PID; a lock whose PID is gone is stale and removed.
 lock_held() { [ -d "$LOCK" ] || return 1; local p; p=$(cat "$LOCK/pid" 2>/dev/null); [ -n "$p" ] && kill -0 "$p" 2>/dev/null && { echo "$p"; return 0; }; return 1; }
+# (e) Machine-wide heavy-job cap (D-PIPE1 rule 8, D-PIPE1a): counts every project's heavy jobs, read-only (process
+# list only, never touches another project). Kalon still yields first; DeepSignal only waits more. Exit 12.
+HEAVY_CAP=${DS_HEAVY_CAP:-2}; heavy_n() { "$SCRATCH/heavy-jobs.sh" 2>/dev/null || echo 0; }
+if [ "$dry" = 1 ]; then echo "ds-codex: heavy jobs machine-wide: $(heavy_n) of cap $HEAVY_CAP" >&2
+elif [ "$(heavy_n)" -ge "$HEAVY_CAP" ]; then
+  [ "$waitram" -gt 0 ] || die 12 "heavy-job cap: $(heavy_n) heavy jobs running machine-wide (cap $HEAVY_CAP)"
+  heavy_deadline=$(( $(date +%s) + waitram ))
+  until [ "$(heavy_n)" -lt "$HEAVY_CAP" ]; do [ "$(date +%s)" -ge "$heavy_deadline" ] && die 12 "heavy-job cap still reached after ${waitram}s (cap $HEAVY_CAP)"; sleep 30; done
+fi
 if holder=$(lock_held); then die 10 "another DeepSignal Codex job holds $LOCK (pid $holder)"; fi
 [ -d "$LOCK" ] && { echo "ds-codex: removing stale lock (pid $(cat "$LOCK/pid" 2>/dev/null || echo none) is gone)" >&2; rm -rf "$LOCK"; }
 
