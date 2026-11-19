@@ -1,9 +1,38 @@
 #!/bin/bash
-# Static checks: mac-build pins HEAD and refuses a moved branch (launch and push); the launcher takes one claim per job
-# and a second launch of the same job is refused (exit 3).
-set -u; D=/private/tmp/deepsignal
-grep -q 'NOT LAUNCHED (pinned head' $D/mac-build.sh && grep -q 'NOT PUSHED (pinned head' $D/mac-build.sh && echo "PASS mac-build pins HEAD at launch and push" || { echo "FAIL pinned head guard missing"; exit 1; }
-T=$(mktemp -d $D/cds-redesign-pintest.XXXX); printf 'x\n' > $T/p.md
-( DS_REVIEW_ROUTE=exempt:test DS_POLL=2 $D/ds-launch-when-ok.sh $T $T/p.md $T/r.log 8 -- -m gpt-6.2-sol -s read-only - > $T/first 2>&1 & ); sleep 2
-out=$(DS_REVIEW_ROUTE=exempt:test DS_POLL=1 $D/ds-launch-when-ok.sh $T $T/p.md $T/r2.log 1 -- -m gpt-6.2-sol -s read-only - 2>&1); rc=$?
-[ $rc = 3 ] && echo "PASS second launch of the same job refused: $out" || echo "INFO second launch rc=$rc (the first may already have exited if the lock was free): $out"
+# Check both Mac build pin guards and refuse a second launch through the desk launcher.
+set -eu
+cd "$(dirname "$0")/../../.."
+export TMPDIR=${DS_PIPE2_TEST_TMPDIR:-/private/tmp/deepsignal/cloud-verification-dispatch/tmp}
+export PYTHONDONTWRITEBYTECODE=1
+T=$(mktemp -d "$TMPDIR/pinned-launch.XXXXXX")
+first=""
+cleanup() {
+  if [ -n "$first" ]; then
+    kill "$first" 2>/dev/null || true
+    wait "$first" 2>/dev/null || true
+  fi
+  rm -rf "$T"
+}
+trap cleanup EXIT
+grep -q 'NOT LAUNCHED (pinned head' tools/pipe2/mac-build.sh
+grep -q 'NOT PUSHED (pinned head' tools/pipe2/mac-build.sh
+echo "PASS mac-build pins HEAD at launch and push"
+L=$(/opt/homebrew/bin/python3.12 tools/pipe2/tests/cloud-verification-fixture.py stage "$T")
+export PATH="$T/bin:$PATH" DS_REVIEW_ROUTE=exempt:test DS_POLL=1
+mkdir "$T/.ds-codex.lock"
+printf '%s\n' "$$" > "$T/.ds-codex.lock/pid"
+: > "$T/wip-units.txt"
+printf 'x\n' > "$T/p.md"
+bash "$L" "$T" "$T/p.md" "$T/r.log" 15 -- -m gpt-6.2-sol -s read-only - > "$T/first" 2>&1 &
+first=$!
+claim="$T/claims/$(printf '%s|%s' "$T" "$T/p.md" | shasum | cut -c1-16)"
+for ((i=0; i<5; i++)); do
+  [ -s "$claim/pid" ] && break
+  sleep 1
+done
+[ "$(cat "$claim/pid")" = "$first" ] || { echo "FAIL first launch did not claim the job"; cat "$T/first"; exit 1; }
+rc=0
+out=$(bash "$L" "$T" "$T/p.md" "$T/r2.log" 1 -- -m gpt-6.2-sol -s read-only - 2>&1) || rc=$?
+[ "$rc" = 3 ] && [[ "$out" == *"already claimed by pid $first"* ]] || { echo "FAIL second launch rc=$rc: $out"; exit 1; }
+[ ! -e "$T/mac-called" ]
+echo "PASS second launch of the same job refused: $out"
