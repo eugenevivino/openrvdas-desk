@@ -11,3 +11,5 @@
 - Jobs are launched only by the detached launcher, which takes a claim file per job; never launch the same job from a second loop.
 
 Design first (D-DESIGN1): this task has a design note on the desk (fixed target, acceptance tests, out of scope). Build only to it; anything outside it is out of scope.
+
+Tests of the fuzz, mutant or sanitizer kind: own code, local only, no network, no exploitation. Briefs declare their needs (network, tools, disk, RAM, required files) in a front-matter block (D-PIPE2).

@@ -79,3 +79,18 @@ send to the decision desk through the lead.
 ## Design note (D-DESIGN1)
 - Design note: `docs/designs/<unit>.md` (required before a build; reviewers judge against it).
 - D-FIX1: every fix needs a production-path regression plus one variation that must keep the same answer; name both tests here.
+
+## Needs (D-PIPE2 preflight) and test scope language
+Start every build brief with this front-matter block (checked in about 2 minutes before any slot or claim):
+```
+---
+needs:
+  network: no
+  tools: python3.12, git
+  disk_gb: 1
+  ram_gb: 2
+  required_files: <paths relative to the repo root>
+---
+```
+Fuzz, mutant or sanitizer style tests: own code, local only, no network, no exploitation.
+Swift: not applicable (DeepSignal has no Swift).

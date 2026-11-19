@@ -2417,6 +2417,41 @@
     }
    },
    "status": "PAUSED (D-WIP3)"
+  },
+  {
+   "unit": "pipe2-tooling",
+   "branch": "desk main",
+   "head": "desk",
+   "critical": false,
+   "status": "DONE outside WIP (process tooling, D-PIPE2)",
+   "design_note": "docs/designs/pipe2-tooling.md",
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "tools/pipe2/tests: 5 of 5 pass on the MacBook 2026-11-19",
+     "at": "desk"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
   }
  ],
  "superseded": [

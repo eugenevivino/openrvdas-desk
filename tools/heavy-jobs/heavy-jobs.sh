@@ -8,3 +8,4 @@ re=$(grep -vE '^[[:space:]]*(#|$)' "$P" | paste -sd '|' -)
 [ -n "$re" ] || { echo 0; exit 0; }
 if [ "${1:-}" = "--list" ]; then $PS -axo pid=,command= | grep -E -- "$re" | grep -v -- 'heavy-jobs.sh'; exit 0; fi
 $PS -axo command= | grep -E -- "$re" | grep -vc -- 'heavy-jobs.sh'
+exit 0

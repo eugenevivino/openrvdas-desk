@@ -61,6 +61,8 @@ These rules govern every DeepSignal build from now on. Full texts and dates are 
 
 9. **D-FIX1, fixes that hold.** Every fix needs a production-path regression test plus one variation that must keep the same answer (for example a late QC flag delivered before and after history eviction gives the same result). The builder's self-check enforces a minimum of two new tests whenever code changes, and reviewers judge fixes against both.
 
+10. **D-PIPE2, launch hygiene.** Each brief declares its needs (network, tools, disk, RAM, required files) in a front-matter block, and the launcher checks them in about two minutes before taking any slot or claim. A build is pinned to the branch head it started from and refuses to run or push if that head moves. Each job writes a receipt of its acceptance results, and a rerun can repeat only the failed or skipped commands. Unit jobs launch only through the one launcher, and the background loops run one copy each. Never merge main, dev or integration into a unit branch; re-cut the unit onto the trunk tip instead (a pre-push hook refuses it). Fuzz, mutant and sanitizer tests stay on our own code, local only, no network, no exploitation. Swift is not applicable. The machine heavy-job cap is 3 with one slot reserved for Kalon, so DeepSignal launches only while the total is under 2.
+
 ## 3. How work flows
 
 ```

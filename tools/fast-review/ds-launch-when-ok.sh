@@ -4,6 +4,11 @@
 # Usage: ds-launch-when-ok.sh <workdir> <prompt-file> <run-log> <max-wait-seconds> -- <ds-codex args...>
 set -u
 wd="$1"; prompt="$2"; runlog="$3"; maxwait="$4"; shift 5
+# D-PIPE2 preflight: a build job (not read-only) must declare its needs in the brief's front matter, and they must be
+# met, before any WIP slot, design check or claim is taken (exit 8). Reviews and design-note jobs are exempt.
+case " $* " in *" -s read-only "*|*" --sandbox read-only "*) ;; *)
+  pf=$(perl -e 'alarm 130; exec @ARGV' /private/tmp/deepsignal/preflight.sh "$prompt" "$wd" 2>&1) || { echo "NOT launched: $pf"; exit 8; };;
+esac
 # D-WIP3: WIP cap of 3 path units; a non-path job is refused while all slots are taken (DS_WIP_EXEMPT=reason
 # lets an Eugene-requested one-off through, logged). Review routing: the Mac runs only math reviews; a read-only
 # job needs DS_REVIEW_ROUTE=math or DS_REVIEW_ROUTE=exempt:<reason>, otherwise it goes to cloud-review.sh.
@@ -32,7 +37,7 @@ fi
 echo $$ > "$CL/pid"; printf "%s\n%s\n" "$wd" "$prompt" > "$CL/job"; trap 'rm -rf "$CL"' EXIT
 L=/private/tmp/deepsignal/.ds-codex.lock; MIN_SWAP_FREE_MB=${MIN_SWAP_FREE_MB:-2048}; S=$(date +%s); last=""
 # Memory is gated by ds-codex; the machine-wide heavy-job cap (D-PIPE1a) is checked here too, read-only.
-mem_ok() { local n; n=$(/private/tmp/deepsignal/heavy-jobs.sh 2>/dev/null || echo 0); last="memory gated by ds-codex --wait-ram; heavy jobs $n of cap ${DS_HEAVY_CAP:-2}"; [ "$n" -lt "${DS_HEAVY_CAP:-2}" ]; }
+mem_ok() { local n; n=$(/private/tmp/deepsignal/heavy-jobs.sh 2>/dev/null || echo 0); last="memory gated by ds-codex --wait-ram; heavy jobs $n of cap ${DS_HEAVY_CAP:-$(( ${DS_MACHINE_CAP:-3} - ${DS_KALON_RESERVED:-1} ))}"; [ "$n" -lt "${DS_HEAVY_CAP:-$(( ${DS_MACHINE_CAP:-3} - ${DS_KALON_RESERVED:-1} ))}" ]; }
 while :; do
   while { [ -d "$L" ] && kill -0 "$(cat "$L/pid" 2>/dev/null)" 2>/dev/null; } || ! mem_ok; do
     [ $(( $(date +%s)-S )) -gt "$maxwait" ] && { echo "NOT launched after ${maxwait}s: lock=$([ -d "$L" ] && cat "$L/pid" || echo free) $last"; exit 1; }

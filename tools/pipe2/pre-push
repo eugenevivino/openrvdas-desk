@@ -1,0 +1,14 @@
+#!/bin/bash
+# D-UPSTREAM0 (2026-11-18): nothing is pushed to OceanDataTools until Eugene approves. Refuse any push whose remote
+# name, push URL or configured URLs mention OceanDataTools (any case).
+remote="$1"; url="$2"
+all="$url $(git config --get-all remote."$remote".url 2>/dev/null) $(git config --get-all remote."$remote".pushurl 2>/dev/null)"
+if printf '%s' "$all" | grep -qi 'oceandatatools'; then
+  echo "pre-push: REFUSED (D-UPSTREAM0): pushing to OceanDataTools is not allowed ($remote $url)" >&2; exit 1
+fi
+# D-PIPE2 rule 9: refuse merging trunk into a unit branch (see trunk-merge-check.sh).
+while read -r lref lsha rref rsha; do
+  [ -n "${lsha:-}" ] || continue
+  /private/tmp/deepsignal/trunk-merge-check.sh "$(git rev-parse --show-toplevel)" "$lsha" "$rref" "$remote" || exit 1
+done
+exit 0
