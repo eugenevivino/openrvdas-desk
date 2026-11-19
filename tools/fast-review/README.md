@@ -14,3 +14,6 @@ round in about 10 to 20 minutes.
    `TICKET:` lines for `docs/TICKETS.md`, and records timing (queue, per part, merge, total).
 3. `cloud-review.sh`: one cloud review task; any file other than its review file rejects the review.
 4. `ds-launch-when-ok.sh`: the Mac launcher (claims, WIP cap, heavy-job cap, review routing, design-note check).
+
+The [draft pilot Bandit policy](bandit-policy-review.md) describes the two
+Bandit receipts and the owner approvals required before deployment.

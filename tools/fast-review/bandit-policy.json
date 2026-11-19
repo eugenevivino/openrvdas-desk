@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "reviewed_head": "8f0794ea62f935c9859ac8bc4c918dd6bfcd0a74",
+  "bandit_version": "1.9.4",
+  "reference_report_sha256": "19cb5b1bdadeb9420102fc98d5c5a007b09e90c5ead3412f1a56874d570969c3",
+  "files": {
+    "contrib/deepsignal/console/install/install_site.py": {
+      "source_sha256": "e5bd5071e6ab7bacd8bc2b3e06018190a1d69c9096a7164b99a33417e6d177dd",
+      "findings_sha256": "b77a18c4f8e4e8134bd743b3f921543019d13aac6d563c4416f9ea81ea0e3c48",
+      "groups": [
+        {"rationale": "installer-command", "rule": "B603", "severity": "LOW", "confidence": "HIGH", "sites": [[32, 11, 79]]},
+        {"rationale": "installer-import", "rule": "B404", "severity": "LOW", "confidence": "HIGH", "sites": [[12, 0, 17]]},
+        {"rationale": "installer-listener-check", "rule": "B603", "severity": "LOW", "confidence": "HIGH", "sites": [[151, 4, 73]]},
+        {"rationale": "installer-nginx-inspection", "rule": "B603", "severity": "LOW", "confidence": "HIGH", "sites": [[46, 13, 88]]},
+        {"rationale": "installer-release-probe", "rule": "B603", "severity": "LOW", "confidence": "HIGH", "sites": [[163, 4, 82]]}
+      ]
+    },
+    "contrib/deepsignal/console/install/test_nginx_site.py": {
+      "source_sha256": "120c34ce159d8e30e597bd31129f286e23deb9d0ab9b9ce4f558e80d54146316",
+      "findings_sha256": "d0b26d9aff3de67a0bce4aa8a5d1513e76d7faa95d3eac15e187a4fff6157c40",
+      "groups": [
+        {"rationale": "nginx-ci-wildcard-bind", "rule": "B104", "severity": "MEDIUM", "confidence": "MEDIUM", "sites": [[331, 23, 32]]},
+        {"rationale": "nginx-fixture-import", "rule": "B404", "severity": "LOW", "confidence": "HIGH", "sites": [[10, 0, 17]]},
+        {"rationale": "nginx-fixture-launch", "rule": "B603", "severity": "LOW", "confidence": "HIGH", "sites": [[279, 18, 9]]},
+        {"rationale": "pytest-assertions", "rule": "B101", "severity": "LOW", "confidence": "HIGH", "sites": [[33, 4, 33], [34, 4, 49], [35, 4, 39], [36, 4, 28], [49, 8, 68], [50, 8, 45], [51, 8, 42], [52, 8, 58], [59, 4, 33], [60, 4, 46], [61, 4, 38], [62, 4, 28], [73, 4, 33], [74, 4, 54], [75, 4, 38], [76, 4, 40], [77, 4, 28], [78, 4, 47], [90, 4, 33], [91, 4, 69], [92, 4, 39], [93, 4, 44], [94, 4, 47], [110, 4, 33], [111, 4, 61], [112, 4, 51], [113, 4, 39], [114, 4, 28], [123, 4, 33], [124, 4, 60], [125, 4, 39], [126, 4, 44], [135, 4, 33], [136, 4, 46], [137, 4, 40], [138, 4, 28], [151, 4, 33], [152, 4, 77], [153, 4, 39], [154, 4, 28], [165, 4, 34], [166, 4, 40], [167, 4, 48], [169, 4, 61], [170, 4, 48], [187, 4, 33], [188, 4, 74], [189, 4, 60], [190, 4, 28], [196, 4, 32], [200, 4, 33], [201, 4, 69], [202, 4, 40], [207, 4, 32], [211, 8, 42], [212, 8, 53], [213, 8, 44], [216, 4, 33], [217, 4, 49], [218, 4, 38], [219, 4, 28], [220, 4, 72], [226, 4, 37], [228, 4, 48], [229, 4, 71], [247, 8, 37], [248, 8, 44], [249, 8, 57], [250, 8, 63], [251, 8, 32], [257, 4, 67], [259, 4, 48], [260, 4, 5], [268, 4, 91], [269, 4, 46], [270, 4, 40], [271, 4, 57], [272, 4, 44], [290, 12, 45], [307, 4, 82], [378, 16, 76], [379, 16, 85], [380, 16, 89], [381, 16, 89], [384, 20, 60], [385, 16, 78], [390, 16, 86], [391, 16, 57], [395, 16, 67], [401, 12, 60], [405, 12, 82], [410, 12, 41], [411, 12, 90], [412, 8, 55], [413, 8, 34], [414, 8, 84], [415, 8, 80], [417, 8, 71], [420, 12, 41], [421, 12, 100], [422, 12, 36], [433, 4, 73], [434, 4, 68], [435, 4, 64], [436, 4, 69], [439, 4, 34], [440, 4, 55], [441, 4, 40], [442, 4, 74], [445, 4, 41], [446, 4, 62], [447, 4, 68], [448, 4, 79], [449, 4, 72], [461, 4, 33], [462, 4, 51], [463, 4, 67], [470, 4, 33], [471, 4, 72], [472, 4, 67]]}
+      ]
+    },
+    "contrib/deepsignal/console/install/test_owned_site.py": {
+      "source_sha256": "ef305c6a00aec7d07cc1fcc02b2386ba92a15321822609aa54bcd799a86d90d5",
+      "findings_sha256": "2e7f6e616b4c4461995a19041495887609c3b07fce77fe0a01e06d9c0d036bc7",
+      "groups": [
+        {"rationale": "owned-site-fixture-import", "rule": "B404", "severity": "LOW", "confidence": "HIGH", "sites": [[7, 0, 17]]},
+        {"rationale": "owned-site-fixture-launch", "rule": "B603", "severity": "LOW", "confidence": "HIGH", "sites": [[136, 15, 9]]},
+        {"rationale": "pytest-assertions", "rule": "B101", "severity": "LOW", "confidence": "HIGH", "sites": [[156, 4, 64], [166, 4, 40], [167, 4, 55], [168, 4, 59], [169, 4, 40], [170, 4, 37], [176, 4, 32], [180, 4, 35], [181, 4, 39], [182, 4, 40], [183, 4, 55], [184, 4, 68], [188, 4, 52], [189, 4, 40], [190, 4, 78], [210, 4, 33], [211, 4, 38], [212, 4, 56], [213, 4, 49], [214, 4, 49], [230, 4, 33], [231, 4, 37], [232, 4, 39], [233, 4, 44], [234, 4, 49], [242, 4, 33], [243, 4, 38], [244, 4, 38], [245, 4, 44], [252, 8, 68], [253, 8, 50], [256, 4, 78], [257, 4, 49], [258, 4, 59], [264, 4, 33], [265, 4, 36], [266, 4, 50], [267, 4, 28], [268, 4, 78], [269, 4, 73], [278, 4, 33], [279, 4, 70], [280, 4, 61], [281, 4, 28], [282, 4, 49], [293, 4, 33], [294, 4, 71], [295, 4, 65], [296, 4, 28], [297, 4, 49], [307, 4, 33], [308, 4, 55], [309, 4, 38], [310, 4, 44], [311, 4, 49]]}
+      ]
+    },
+    "contrib/deepsignal/security/check_cds.py": {
+      "source_sha256": "34d3192959b40be5b50063f73a87e07afcfc28a3037c831ad146d6ee353fb728",
+      "findings_sha256": "3c278f40013ac713a75784dd76f70c2d51e2018c8618b69d2e562eca8c59275c",
+      "groups": [
+        {"rationale": "listener-check-import", "rule": "B404", "severity": "LOW", "confidence": "HIGH", "sites": [[11, 0, 17]]}
+      ]
+    },
+    "contrib/deepsignal/security/probe_cds.py": {
+      "source_sha256": "b505af02b904d680739aca99e96a32079203da6bc4d604335c869b12def68e64",
+      "findings_sha256": "3029758164990797fb2eb957b1677da7b08cd97f36f32a5387e0914659984077",
+      "groups": [
+        {"rationale": "supervisor-pid-query", "rule": "B603", "severity": "LOW", "confidence": "HIGH", "sites": [[42, 13, 77]]},
+        {"rationale": "supervisor-probe-import", "rule": "B404", "severity": "LOW", "confidence": "HIGH", "sites": [[19, 0, 17]]}
+      ]
+    }
+  }
+}
