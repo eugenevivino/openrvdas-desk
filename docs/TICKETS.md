@@ -27,3 +27,9 @@ tag `deepsignal/pilot-candidate`). Each ticket gets a regression test that fails
 ## Security (stay with the critical unit, fork `deepsignal/sec-cds-joint`)
 - T-SEC-1 UDP fixture baseline is not RED at f38b52e (round 2 review ticket).
 - T-SEC-2 Side-effect-free gate probe (IDEAS #200).
+
+## Security (from the CDS gate redesign fast review at 814353a, 2026-11-19)
+- T-SEC-3 [sec-cds-joint logic] contrib/deepsignal/docs/security-cds.md:43 says each run publishes a nonce, but the documented `--site-only` run below it performs only a byte comparison and does not publish.
+- T-SEC-4 [sec-cds-joint install-security] contrib/deepsignal/security/cds_gateway.py:99 accumulates every prior subscription when enforcing MAX_FIELDS even though the CDS replaces a subscription, so a valid client that rotates through more than 200 distinct fields is disconnected.
+- T-SEC-5 [sec-cds-joint install-security] contrib/deepsignal/security/cds_gateway.py:90 forwards structurally invalid but allowed CDS requests such as a subscribe field with a null specification, letting an unauthenticated LAN client trigger an exception in the upstream CDS connection instead of receiving a refusal.
+- T-SEC-6 [sec-cds-joint install-security] contrib/deepsignal/console/install/install_site.py:96 busy-spins without a sleep while waiting up to five seconds for a worker generation, unnecessarily consuming a CPU during every nginx reload.

@@ -44,14 +44,18 @@ existing bridge display, not a cutover. Cutover only after the release checks in
 1. **Console pilot candidate** (landed in integration, LANDED 1). Open items are tickets T-CON-1 to T-CON-10 in
    `docs/TICKETS.md` (late FAIL clears lastGood, learned period reset on page return, Map "Position aging" with no
    track, plus hardening and flaky tests). Needs a design note (`docs/designs/console.md`) before more is built.
-2. **Security redesign** (`sec-cds-joint`, design note `docs/designs/security-redesign.md`, spec
-   `research/2026-11-19-cds-gate-redesign.md`). State: slice 1 cdc9f71, slice 2 5fb327f pushed; slice 3 (outside
-   black-box probe) building. Fast review pilot at 5fb327f: HOLD on one P1 (gateway upstream `max_size=None`), queued as
-   `briefs/mac/cds-redesign-fix1.md`. The chain `/private/tmp/deepsignal/cds-final.sh` runs: slice 3, fix1, self-check,
-   fast review of the whole unit (base 0fd4dee) and the Linux nginx run. Next by hand if the chain stops:
-   `MB_DIR=/private/tmp/deepsignal/cds-redesign-fix1 MB_BRANCH=deepsignal/sec-cds-joint /private/tmp/deepsignal/mac-build.sh cds-redesign-fix1 gpt-6.2-sol high`
+2. **Security redesign** (`sec-cds-joint`, CLAIMED by the MacBook Claude session; do not work on it). Head
+   814353a = slices 1 to 3 plus fix round 1. Fast review PASS (194 s round), Linux nginx runtime probe PASS
+   (run 44452842829). Waiting for Eugene's merge mark into `deepsignal/integration` (critical, never auto-merged).
+   Tickets T-SEC-3 to T-SEC-6. Claim: `/private/tmp/deepsignal/claims/unit-security-redesign/owner.txt`.
 3. **24 h soak** of the pilot candidate. Design note `docs/designs/soak.md` (DRAFT; criteria from D-SOAK1 and the soak
    brief). Not started. D-RECOVER1: a killed logger is restarted by an operator or supervisord, not by our code.
+
+## Claims (2026-11-19 03:42Z)
+
+Units carry `claimed_by` in `docs/units.json`. Only the security redesign is claimed (by the MacBook Claude session).
+Everything else, including the 24 h soak and the console follow-ups, is unclaimed and free for Codex. Before starting
+a unit, set its `claimed_by` and create `/private/tmp/deepsignal/claims/unit-<name>/owner.txt`; release both when done.
 
 ## 5. Decisions waiting on Eugene (short MORNING list)
 
@@ -97,7 +101,7 @@ existing bridge display, not a cutover. Cutover only after the release checks in
   (edit the `ref:` sha in its workflow and push; read with `gh run list -R eugenevivino/openrvdas-desk -b ci/sec-joint-nginx`).
 - Detached loops: `heartbeat.sh` (15 min, restarts `autopilot.sh`), `autopilot.sh` (accepts in-flight cloud tasks),
   `hourly-sync.sh` (pushes ahead `deepsignal/*` branches; see pitfall 1).
-- Counts: `python3 tools/finish-line.py` in the desk (now LANDED 1, QUALIFIED 0, FINISHED 0).
+- Counts: `python3 tools/finish-line.py` in the desk (now LANDED 1, QUALIFIED 1, FINISHED 0).
 
 ## 8. Where things live (desk)
 
