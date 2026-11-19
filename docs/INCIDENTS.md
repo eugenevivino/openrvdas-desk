@@ -37,3 +37,7 @@ The joint #197 work was built in a clone whose local branch was still named `dee
 - A chain recorded the previous CI run id instead of the new one (sec-cds-joint r2). Guard: chains record the previous run id and wait for a different one before reading results.
 - The session dropped during an 18:01Z to 20:34Z network outage. Guard: detached heartbeat.sh plus a session cron that does not need re-arming.
 - 2026-11-19 Rule 8 (shared machine) was enforced only through the memory gate. Guard: machine-wide heavy-job count (D-PIPE1a) in ds-codex and the launcher, with a sandboxed test that the counter writes nothing outside /private/tmp/deepsignal.
+
+## 2026-11-19: first scanner-policy test wrote a desk receipt
+
+The baseline entrypoint ignored the test harness's proposed scratch path. One test wrote a RED pre-review receipt for 8f0794e in the live receipt directory and attempted the unrelated pip-audit lookup. The original output is preserved under pilot-bandit-policy/initial-harness-red.txt. The corrected harness relocates the entire desk in its fixture and runs the real Bandit there. Only the subsequently admitted, installed self-check is evidence for the hardening commit. The live gate code was unchanged.

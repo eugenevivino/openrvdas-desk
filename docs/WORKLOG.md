@@ -11,3 +11,5 @@ One line per finished item: `YYYY-MM-DD | what | branch or PR | PASS, FAIL, or P
 2026-11-18 | DeepSignal VectorWindAverageTransform: 23 tests pass on contrib master and core master 3f3d0c3, flake8 clean, sample config run on NBP1406 data | fork claude/project-thread-un3kq6 558e45b, PR not sent | PASS (fast check, gate NOT RUN)
 
 2026-11-19 | Supervised pilot passed all nine design commands, 190 frontend tests, 158 Python tests on each OS, ten browser modules on both, and the live HTTP and HTTPS workstation demo. The only red gate is inherited Bandit. Owner proposal is on desk main. | fork deepsignal/console-supervised-pilot fc31b54 | PARKED before release review
+
+2026-11-19 | Pilot hardening: 204 Mac and 206 Ubuntu tests passed, including live Supervisor and both nginx configurations on Ubuntu. Installed Bandit remains RED with 188 findings. Separate policy tests passed on Mac (43) and Ubuntu (four scenarios). Security-owner decisions pending on both drafts. | fork PR #1 8f0794e, desk PR #3 d06ad2d, desk issue #2 | PARKED before release approval
