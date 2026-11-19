@@ -526,3 +526,5 @@ Items 1 to 4 (design first, WIP cap 3, fast reviews, cloud for non-math) were al
 ### November 19: Stream Health view and cloud verification dispatch
 
 Eugene approved replacing the held soak in slot 3 with the read-only Stream Health console view. The existing stream-health engine keeps its own status. Eugene also approved the cloud verification dispatch design as desk process tooling. The security owner retains the critical merge and ticket ownership.
+
+Eugene approved the Stream Health view design. For comparable non-critical scope or design decisions the DeepSignal lead may approve after a recorded Astra Ultra concurrence. Existing security, gate, merge and external-action ownership still applies.

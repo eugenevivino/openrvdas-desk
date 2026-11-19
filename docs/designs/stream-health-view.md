@@ -1,6 +1,6 @@
 # Stream Health console view
 
-Slot 3 approved on November 19. This new view design awaits approval before implementation.
+Slot 3 and this view design were approved by Eugene on November 19 before implementation.
 
 ## Fixed target
 
