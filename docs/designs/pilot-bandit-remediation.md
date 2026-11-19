@@ -1,6 +1,6 @@
 # Pilot Bandit remediation
 
-Implementation owner: Codex. Security and installer review: owner of the critical merge. Fork branch: `deepsignal/pilot-bandit-remediation`. Base: `deepsignal/integration` at `1dc7a5e`. Design status: awaiting approval.
+Implementation owner: Codex. Security and installer review: owner of the critical merge. Fork branch: `deepsignal/pilot-bandit-remediation`. Base: `deepsignal/integration` at `1dc7a5e`. Design approved for implementation on 2026-11-19.
 
 ## Fixed target
 
