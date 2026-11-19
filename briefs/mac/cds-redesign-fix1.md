@@ -1,3 +1,11 @@
+---
+needs:
+  network: no
+  tools: python3.12, git
+  disk_gb: 1
+  ram_gb: 2
+  required_files: contrib/deepsignal/security/cds_gateway.py, contrib/deepsignal/docs/security-cds.md
+---
 # Brief: CDS gate redesign, fix round 1 (D-FASTREV1 pilot finding; CRITICAL, security)
 
 - Branch `deepsignal/sec-cds-joint` (the checked-out branch, after slice 3). Design note: desk `docs/designs/security-redesign.md`. Lane: Mac, `gpt-6.2-sol` high. Push-only, never auto-merged.
