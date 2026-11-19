@@ -28,4 +28,4 @@ Eight read-only tests and flake8 passed locally. The lead reports Mac acceptance
 
 Verdict: HOLD
 
-Lead note: Linux nginx runner 44426602772 at 82c8f3d: completed success contrib/deepsignal/console/install/test_nginx_site.py::InstallTests::test_real_197_gate_through_django_and_react_nginx PASSED [100%] ============= 1 passed, 14 deselected, 2 subtests passed in 1.42s ============== 
+Lead note: the chain picked up the old run 44426602772 by mistake; the correct Linux nginx run at 82c8f3d is 44434431936: test_real_197_gate_through_django_and_react_nginx PASSED (1 passed, 2 subtests).
