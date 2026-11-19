@@ -11,6 +11,10 @@ tag `deepsignal/pilot-candidate`). Each ticket gets a regression test that fails
 - T-CON-3 Map "Position aging" with zero track points: valid latitude and longitude at different timestamps
   give no track point but the notice says aging instead of NO DATA (`MapTile.tsx`).
 
+All three fixes are on fork topic `deepsignal/console-supervised-pilot` at `8652862`, pending integration.
+Both regression cases per ticket failed on the integration baseline and passed on the candidate.
+The Mac passed all nine commands in `docs/designs/console.md`. Release blockers are recorded in `docs/STATE.md`.
+
 ## Console UI hardening (triage tickets, research/2026-11-18-console-p1-triage.md rows 9 to 12)
 - T-CON-4 Self-test misses a manifest 404 with `pages: []` (`pages.ts`); one-line fix makes manifest fetches required.
 - T-CON-5 A mutated registered page object bypasses validation (`context.ts`); copy at registration.

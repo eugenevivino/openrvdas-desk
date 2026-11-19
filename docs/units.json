@@ -34,7 +34,7 @@
     }
    },
    "status": "ACTIVE (D-WIP3 slot 1: console pilot and follow-ups)",
-   "design_note": "none yet: required before more is built on the console (D-DESIGN1)",
+   "design_note": "docs/designs/console.md",
    "claimed_by": "unclaimed"
   },
   {
