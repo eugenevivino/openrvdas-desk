@@ -1,0 +1,34 @@
+# One-off advisory run (coordinator 2026-11-19): the #197 nginx integration test for the joint
+# CDS lockdown + console installer unit, on a Linux runner with nginx. Fork only; nothing upstream.
+name: sec-joint-nginx
+on:
+  push:
+    branches: [ci/sec-joint-nginx]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  nginx-gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: eugenevivino/openrvdas
+          ref: f38b52eb7e45b79f3cb87782c401966e9d0794dd
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install nginx and test dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q nginx
+          python -m pip install -q pytest==9.2.0 PyYAML==6.0.3 websockets==17.4
+          git rev-parse --short HEAD
+          nginx -v
+      - name: Run the #197 nginx integration test
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m pytest -p no:cacheprovider -v contrib/deepsignal/console/install/test_nginx_site.py -k real_197
