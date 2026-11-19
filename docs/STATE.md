@@ -4,10 +4,10 @@ Updated 2026-11-19 02:05Z by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
 ## Handoff (2026-11-19 03:42Z)
 - Eugene drives new work from the Codex GUI using docs/CODEX-HANDOVER.md; Codex takes unclaimed units.
-- Claimed by the MacBook Claude session: security redesign only (fork deepsignal/sec-cds-joint 814353a; review
-  PASS, nginx PASS; waiting for Eugene's merge mark). Claim: /private/tmp/deepsignal/claims/unit-security-redesign.
+- Security redesign MERGED into deepsignal/integration 1dc7a5e (Eugene approved 03:49Z), tag deepsignal/pilot-candidate-2;
+  claim released. Nothing is claimed by the MacBook Claude session now.
 - Everything else is unclaimed (units.json claimed_by), including the 24 h soak and the console follow-ups.
-- Counts: LANDED 1, QUALIFIED 1, FINISHED 0 (tools/finish-line.py).
+- Counts: see `python3 tools/finish-line.py` (LANDED 2 after the security merge).
 
 ## Landed (fork eugenevivino/openrvdas, branch deepsignal/integration, base contrib master 3b4b76e)
 - Console UI pilot candidate: integration 7c60dbf, tag deepsignal/pilot-candidate (D-PILOT1). From
