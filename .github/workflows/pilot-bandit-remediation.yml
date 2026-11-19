@@ -1,0 +1,71 @@
+name: Pilot Bandit remediation
+on:
+  push:
+    branches: [ci/pilot-bandit-remediation]
+permissions:
+  contents: read
+jobs:
+  validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: eugenevivino/openrvdas
+          ref: 8f0794ea62f935c9859ac8bc4c918dd6bfcd0a74
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prepare isolated Linux tools
+        run: |
+          test "$(git rev-parse HEAD)" = 8f0794ea62f935c9859ac8bc4c918dd6bfcd0a74
+          sudo apt-get update -q
+          sudo apt-get install -y -q supervisor nginx iproute2
+          python -m pip install -q -r utils/requirements.txt 'paho-mqtt<2' pytest==9.2.0 websockets==17.4 bandit==1.9.4
+      - name: Verify packaged executable locations
+        run: |
+          command -v ss supervisorctl nginx systemctl ps
+      - name: Read the running Supervisor fixture PID and environment
+        run: |
+          scratch="$RUNNER_TEMP/pilot-supervisor"
+          mkdir -p "$scratch"
+          cat > "$scratch/supervisord.conf" <<CONF
+          [unix_http_server]
+          file=$scratch/control.sock
+          [supervisorctl]
+          serverurl=unix://$scratch/control.sock
+          [supervisord]
+          logfile=$scratch/daemon.log
+          pidfile=$scratch/daemon.pid
+          childlogdir=$scratch
+          [rpcinterface:supervisor]
+          supervisor.rpcinterface_factory=supervisor.rpcinterface:make_main_rpcinterface
+          [program:cached_data_server]
+          command=/bin/sleep 90
+          environment=CDS_UDP_PORTS="6225",CDS_UDP_INTERFACE="127.0.0.1"
+          autostart=false
+          startsecs=0
+          CONF
+          sudo unshare --mount --net --propagation private -- /bin/bash -eu -c '
+            mount --bind "$1/supervisord.conf" /etc/supervisor/supervisord.conf
+            /usr/bin/supervisord -c "$1/supervisord.conf"
+            trap "/usr/bin/supervisorctl shutdown" EXIT
+            /usr/bin/supervisorctl start cached_data_server
+            "$2" -c "from contrib.deepsignal.security.probe_cds import supervisor_environment; actual=supervisor_environment(); assert actual == dict(CDS_UDP_PORTS=\"6225\", CDS_UDP_INTERFACE=\"127.0.0.1\"), actual; print(\"PASS running Supervisor PID and filtered fixture environment\")"
+          ' pilot "$scratch" "$(command -v python)"
+      - name: Run security and installer suites
+        run: |
+          python -m pytest -q contrib/deepsignal/test/security contrib/deepsignal/console/install contrib/deepsignal/test/console/test_install.py test/server/test_cached_data_server_host.py -k 'not real_197'
+      - name: Verify both real nginx configurations
+        run: |
+          python -m pytest -v contrib/deepsignal/console/install/test_nginx_site.py -k real_197
+      - name: Full-tree Bandit release result
+        if: always()
+        run: |
+          set +e
+          python -m bandit -q -r contrib/deepsignal -x '*/test/*,*/node_modules/*' -f json -o "$RUNNER_TEMP/bandit.json"
+          scan_rc=$?
+          set -e
+          python -c 'import json,sys; from collections import Counter; r=json.load(open(sys.argv[1])); print("Errors",r["errors"]); print("Findings",len(r["results"]),dict(Counter(i["test_id"] for i in r["results"])))' "$RUNNER_TEMP/bandit.json"
+          exit "$scan_rc"
