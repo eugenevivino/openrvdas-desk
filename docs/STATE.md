@@ -2,12 +2,13 @@
 
 Updated 2026-11-19 02:05Z by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
-## Supervised pilot console (2026-11-19 05:36Z)
+## Supervised pilot console (2026-11-19)
 
-- Fork topic `deepsignal/console-supervised-pilot` at `8652862` includes test-only T-CON-11 (`7b5f98e`) and the T-CON-1 through T-CON-3 fixes. Integration is at `1dc7a5e`.
-- All nine design commands passed. Mac recorded 188 frontend tests and 150 Python tests. Linux recorded 150 passes and two additional fresh-start source-loss/recovery passes. All ten shipped modules passed Chromium checks on each OS. [Linux run](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44465499779)
-- Held before independent review. Bandit reports the same 188 low and two medium findings on integration and the candidate. The self-check also flags existing em dashes in rebuilt assets and replay pacing in the fixture. See `receipts/pre-review-8652862.txt` and `receipts/self-check-8652862.txt` under the desk job root.
-- Security-scope decision pending. Console claim released for the handoff. The 24-hour soak is on hold.
+- Fork topic `deepsignal/console-supervised-pilot` is at `fc31b54`, based on integration `1dc7a5e`. It contains T-CON-11 (`7b5f98e`) and the three operator-data fixes.
+- Mac passed all nine design commands. The updated suite covers 190 frontend tests and 158 Python tests, including ten shipped modules in Chromium. The compiled assets preserve the missing-value and degree symbols, the replay reader can cancel a pending read, and the workstation demo uses the same-origin read-only gateway.
+- The installer quick-start links to the maintained guide. The HTTP and HTTPS examples passed the packaged site renderer. Linux passed 158 with zero skips, two fresh recovery repeats, and live Weather through nginx over HTTP and HTTPS. [Exact commit run](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44470682027).
+- Bandit is the sole red machine check. Integration and candidate have the same 188 low and two medium findings. All five affected files are identical. The self-check passes all individual console checklist items. Exact receipts are `receipts/pre-review-fc31b54.txt` and `receipts/self-check-fc31b54.txt` under the job root.
+- The [owner proposal](../research/2026-11-19-pilot-bandit-owner-proposal.md) is on desk main. Once an owner-approved resolution lands, re-cut the tested console changes on the new integration tip, rerun the full installed gate, then request independent P1 review. The 24-hour soak remains on hold.
 
 ## Handoff (2026-11-19 03:42Z)
 - Eugene drives new work from the Codex GUI using docs/CODEX-HANDOVER.md; Codex takes unclaimed units.

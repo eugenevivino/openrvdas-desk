@@ -11,7 +11,7 @@ tag `deepsignal/pilot-candidate`). Each ticket gets a regression test that fails
 - T-CON-3 Map "Position aging" with zero track points: valid latitude and longitude at different timestamps
   give no track point but the notice says aging instead of NO DATA (`MapTile.tsx`).
 
-All three fixes are on fork topic `deepsignal/console-supervised-pilot` at `8652862`, pending integration.
+All three fixes are on fork topic `deepsignal/console-supervised-pilot` at `fc31b54`, pending integration.
 Both regression cases per ticket failed on the integration baseline and passed on the candidate.
 The Mac passed all nine commands in `docs/designs/console.md`. Release blockers are recorded in `docs/STATE.md`.
 
