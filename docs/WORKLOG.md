@@ -14,3 +14,4 @@ One line per finished item: `YYYY-MM-DD | what | branch or PR | PASS, FAIL, or P
 
 2026-11-19 | Pilot hardening: 204 Mac and 206 Ubuntu tests passed, including live Supervisor and both nginx configurations on Ubuntu. Installed Bandit remains RED with 188 findings. Separate policy tests passed on Mac (43) and Ubuntu (four scenarios). Security-owner decisions pending on both drafts. | fork PR #1 8f0794e, desk PR #3 d06ad2d, desk issue #2 | PARKED before release approval
 2026-11-19 | Pilot cloud verification dispatcher built and exercised through the isolated desk launcher. Owner review and hosted overlap pending. | desk deepsignal/cloud-verification-dispatch candidate at ba5d407 | local PASS, hosted NOT RUN
+2026-11-19 | Pilot cloud verification admission fixed. Fixture regressions cover caller state, WIP exemptions, job claims and foreign unit reservations. | desk deepsignal/cloud-verification-dispatch worktree at b174fb0 | local PASS, hosted NOT RUN

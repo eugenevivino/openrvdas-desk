@@ -4,8 +4,8 @@ Updated 2026-11-19 02:05Z by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
 ## Pilot cloud verification dispatch (2026-11-19)
 
-- Candidate edits at detached desk base `ba5d407` for `deepsignal/cloud-verification-dispatch`. Isolated launcher tests pass. Hosted gate NOT RUN.
-- After owner review and publication of the exact desk topic, run the [isolated overlap rehearsal](../tools/pipe2/CLOUD-VERIFICATION.md) and save the Actions receipt.
+- Admission fix on detached desk base `b174fb0` for `deepsignal/cloud-verification-dispatch`. Isolated launcher tests pass with canonical WIP and claim refusals. Hosted gate NOT RUN.
+- After owner review and publication of the exact desk topic, run the [live overlap rehearsal](../tools/pipe2/CLOUD-VERIFICATION.md#live-overlap-rehearsal) through the candidate launcher and save the Actions receipt.
 
 ## Supervised pilot console (2026-11-19)
 

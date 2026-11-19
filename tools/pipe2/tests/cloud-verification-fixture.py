@@ -5,6 +5,8 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
+from shlex import quote
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -19,8 +21,58 @@ DESK_REF = "refs/heads/deepsignal/cloud-verification-dispatch"
 PRODUCT_REF = "refs/heads/deepsignal/console-supervised-pilot"
 WORKFLOW = ".github/workflows/cloud-verification.yml"
 LAUNCHER = Path("tools/fast-review/ds-launch-when-ok.sh").resolve()
+SOURCE_DESK = LAUNCHER.parents[2]
 COMMANDS = ("pin", "dependencies", "console-tests", "console-types")
 NEEDS = "---\nneeds:\n  network: no\n  tools: git, gh\n---\n"
+
+
+def stage(root):
+    """Stage the entry point and policy files before running any launcher."""
+    desk = root / "desk"
+    installed = root / "desk-main"
+    for target in (desk, installed):
+        shutil.copytree(SOURCE_DESK / "docs/designs", target / "docs/designs")
+    for name in ("preflight.sh", "cloud-verification-dispatch.py"):
+        target = desk / "tools/pipe2" / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(SOURCE_DESK / "tools/pipe2" / name, target)
+    shutil.copy2(desk / "tools/pipe2/preflight.sh", root / "preflight.sh")
+
+    launcher = desk / LAUNCHER.relative_to(SOURCE_DESK)
+    launcher.parent.mkdir(parents=True)
+    lines = LAUNCHER.read_text().splitlines(keepends=True)
+    root_line = "state=/private/tmp/deepsignal\n"
+    draft_line = "state=${DS_LAUNCH_STATE_DIR:-/private/tmp/deepsignal}\n"
+    state_lines = [index for index, line in enumerate(lines)
+                   if line in (root_line, draft_line)]
+    index, = state_lines
+    lines[index] = lines[index].replace(
+        "/private/tmp/deepsignal", quote(str(root)),
+    )
+    launcher.write_text("".join(lines))
+
+    bins = root / "bin"
+    bins.mkdir()
+    script = Path(__file__).resolve()
+    for tool in ("git", "gh"):
+        stub = bins / tool
+        stub.write_text(
+            f'#!/bin/bash\nexec "{sys.executable}" "{script}" '
+            'fake-host "$0" "$@"\n'
+        )
+        stub.chmod(0o700)
+    stub = bins / "perl"
+    stub.write_text(
+        '#!/bin/bash\n'
+        'if [[ ${2:-} == "alarm 9900; exec @ARGV" ]]; then\n'
+        f'  touch {quote(str(root / "mac-called"))}\n'
+        '  echo "fixture: blocked local Codex execution" >&2\n'
+        '  exit 99\n'
+        'fi\n'
+        'exec /usr/bin/perl "$@"\n'
+    )
+    stub.chmod(0o700)
+    return launcher
 
 
 def fake_host():
@@ -33,7 +85,7 @@ def fake_host():
         repo = None
         if args[:1] == ["-C"]:
             repo = (
-                DESK_REPO if Path(args[1]) == LAUNCHER.parents[2]
+                DESK_REPO if Path(args[1]) == root / "desk"
                 else PRODUCT_REPO
             )
             args = args[2:]
@@ -44,7 +96,7 @@ def fake_host():
                 print(DESK_SHA if repo == DESK_REPO else state["local"])
             case ["rev-parse", "--show-toplevel"]:
                 if repo == DESK_REPO:
-                    print(LAUNCHER.parents[2])
+                    print(root / "desk")
                 else:
                     print(root / "product")
             case ["status", "--porcelain", "--untracked-files=all"]:
@@ -134,8 +186,8 @@ def fake_host():
 
 class Fixture:
     def __init__(self, root):
-        assert "DS_LAUNCH_STATE_DIR" in LAUNCHER.read_text()
         self.root = root
+        self.launcher = stage(root)
         self.product = root / "product"
         self.product.mkdir()
         self.prompt = root / "pilot.md"
@@ -147,28 +199,18 @@ class Fixture:
         self.lock.joinpath("pid").write_text(str(os.getpid()))
         self.wip = root / "wip-units.txt"
         self.wip.write_text("console|/product$\n")
-        bin_dir = root / "bin"
-        bin_dir.mkdir()
-        script = Path(__file__).resolve()
-        for tool in ("git", "gh"):
-            stub = bin_dir / tool
-            stub.write_text(
-                f'#!/bin/bash\nexec "{sys.executable}" "{script}" '
-                'fake-host "$0" "$@"\n'
-            )
-            stub.chmod(0o700)
         # A cloud submission must never read the heavy-job count.
         heavy = root / "heavy-jobs.sh"
         called = root / "heavy-called"
         heavy.write_text(f'#!/bin/bash\ntouch "{called}"\necho 99\n')
         heavy.chmod(0o700)
         self.env = os.environ | {
-            "PATH": f"{bin_dir}:{os.environ['PATH']}",
-            "DS_LAUNCH_STATE_DIR": str(root),
+            "PATH": f"{root / 'bin'}:{os.environ['PATH']}",
             "DISPATCH_FIXTURE": str(root), "DS_POLL": "1",
         }
         self.env.pop("DS_REVIEW_ROUTE", None)
         self.env.pop("DS_WIP_EXEMPT", None)
+        self.env.pop("DS_LAUNCH_STATE_DIR", None)
         self.host = root / "host.json"
         self.update(
             local=PRODUCT_SHA, product=PRODUCT_SHA,
@@ -183,24 +225,27 @@ class Fixture:
 
     def invocation(self, label, cloud=True, sha=None):
         receipt = self.root / f"{label}.json"
-        args = ["bash", str(LAUNCHER), str(self.product), str(self.prompt),
-                str(receipt), "0"]
+        args = ["bash", str(self.launcher), str(self.product),
+                str(self.prompt), str(receipt), "0"]
         if cloud:
             args += ["--cloud-verify", DESK_SHA, sha or self.state()["local"]]
         else:
             args += ["--", "-m", "test-model", "-"]
         return args, receipt
 
-    def launch(self, label, expected, contains, cloud=True, sha=None):
+    def launch(self, label, expected, contains, cloud=True, sha=None,
+               **overrides):
         args, receipt = self.invocation(label, cloud, sha)
         result = subprocess.run(
-            args, env=self.env, text=True, capture_output=True, timeout=20,
+            args, env=self.env | overrides, text=True, capture_output=True,
+            timeout=20,
         )
         output = result.stdout + result.stderr
         self.root.joinpath(f"{label}.log").write_text(output)
         assert result.returncode == expected, (label, result, output)
         assert contains in output, (label, output)
         assert not self.root.joinpath("heavy-called").exists()
+        assert not self.root.joinpath("mac-called").exists()
         return json.loads(receipt.read_text()) if receipt.exists() else None
 
 
@@ -264,6 +309,70 @@ def preflight_and_claims(fixture):
     assert not list(fixture.claims.iterdir())
 
 
+def caller_state(fixture):
+    alternate = fixture.root / "caller-state"
+    alternate.mkdir()
+    alternate.joinpath("wip-units.txt").write_text("console|/product$\n")
+    return {"DS_LAUNCH_STATE_DIR": str(alternate)}
+
+
+def test_caller_state_cannot_bypass_wip(fixture):
+    fixture.wip.write_text("one|/one$\ntwo|/two$\nthree|/three$\n")
+    alternate = caller_state(fixture)
+    assert fixture.launch("caller-state-wip", 4, "D-WIP3", **alternate) is None
+    assert fixture.launch("caller-wip-exemption", 4, "D-WIP3", **alternate,
+                          DS_WIP_EXEMPT="caller-supplied exemption") is None
+    assert fixture.launch("caller-state-mac-wip", 4, "D-WIP3", cloud=False,
+                          **alternate) is None
+    assert not Path(alternate["DS_LAUNCH_STATE_DIR"], "claims").exists()
+    assert not list(fixture.claims.iterdir())
+    assert fixture.state()["pushes"] == []
+
+
+def test_caller_state_cannot_bypass_claim(fixture):
+    key = hashlib.sha1(f"{fixture.product}|{fixture.prompt}".encode())
+    claim = fixture.claims / key.hexdigest()[:16]
+    claim.mkdir()
+    pid = str(os.getpid())
+    claim.joinpath("pid").write_text(pid)
+    alternate = caller_state(fixture)
+    for route, cloud in (("cloud", True), ("mac", False)):
+        assert fixture.launch(f"caller-state-{route}-claim", 3,
+                              f"already claimed by pid {pid}", cloud=cloud,
+                              **alternate) is None
+    assert not Path(alternate["DS_LAUNCH_STATE_DIR"], "claims").exists()
+    assert list(fixture.claims.iterdir()) == [claim]
+    assert claim.joinpath("pid").read_text() == pid
+    assert fixture.state()["pushes"] == []
+
+
+def test_hosted_refuses_foreign_unit_claim(fixture):
+    claim = fixture.claims / "unit-console"
+    claim.mkdir()
+    owner = claim / "owner.txt"
+    owner.write_text("Foreign console owner | in progress\n")
+    assert fixture.launch("unit-claim", 3, "unit console already claimed",
+                          **caller_state(fixture)) is None
+    assert list(fixture.claims.iterdir()) == [claim]
+    assert owner.read_text() == "Foreign console owner | in progress\n"
+    assert fixture.state()["pushes"] == []
+
+
+def test_hosted_uses_installed_policy(fixture):
+    preflight = fixture.root / "preflight.sh"
+    preflight.rename(preflight.with_suffix(".held"))
+    assert fixture.launch("installed-preflight", 8, str(preflight)) is None
+    preflight.with_suffix(".held").rename(preflight)
+    for unit in ("console", "cloud-verification-dispatch"):
+        note = fixture.root / "desk-main/docs/designs" / f"{unit}.md"
+        note.rename(note.with_suffix(".held"))
+        result = fixture.launch(f"installed-design-{unit}", 6, str(note))
+        assert result is None
+        note.with_suffix(".held").rename(note)
+    assert not list(fixture.claims.iterdir())
+    assert fixture.state()["pushes"] == []
+
+
 def reconcile_and_receipts(fixture):
     fixture.update(uncertain=True, visible=False)
     pending = fixture.launch("uncertain-push", 75, "pending")
@@ -319,12 +428,27 @@ if __name__ == "__main__":
     if sys.argv[1] == "fake-host":
         sys.argv = sys.argv[2:]
         fake_host()
+    elif sys.argv[1] == "stage":
+        print(stage(Path(sys.argv[2])))
     else:
         case = sys.argv[1]
-        test = {
-            "overlap": overlap, "preflight-and-claims": preflight_and_claims,
-            "reconcile-and-receipts": reconcile_and_receipts,
+        tests = {
+            "overlap": [overlap],
+            "preflight-and-claims": [
+                preflight_and_claims, test_caller_state_cannot_bypass_wip,
+                test_caller_state_cannot_bypass_claim,
+                test_hosted_refuses_foreign_unit_claim,
+                test_hosted_uses_installed_policy,
+            ],
+            "reconcile-and-receipts": [reconcile_and_receipts],
+            "caller-state-wip": [test_caller_state_cannot_bypass_wip],
+            "caller-state-claim": [test_caller_state_cannot_bypass_claim],
+            "foreign-unit-claim": [test_hosted_refuses_foreign_unit_claim],
+            "installed-policy": [test_hosted_uses_installed_policy],
         }[case]
-        with TemporaryDirectory(prefix=f"{case}-") as directory:
-            test(Fixture(Path(directory)))
+        for test in tests:
+            with TemporaryDirectory(prefix=f"{case}-") as directory:
+                test(Fixture(Path(directory)))
+            if test.__name__.replace("_", "-") != case:
+                print(f"PASS {test.__name__}")
         print(f"PASS {case}")

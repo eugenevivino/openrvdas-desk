@@ -2,11 +2,12 @@
 # Refuse both missing and unmet needs before creating a claim.
 set -eu
 cd "$(dirname "$0")/../../.."
-export TMPDIR=/private/tmp/deepsignal/cloud-verification-dispatch/tmp
+export TMPDIR=${DS_PIPE2_TEST_TMPDIR:-/private/tmp/deepsignal/cloud-verification-dispatch/tmp}
+export PYTHONDONTWRITEBYTECODE=1
 T=$(mktemp -d "$TMPDIR/preflight-launch.XXXXXX")
 trap 'rm -rf "$T"' EXIT
-export DS_LAUNCH_STATE_DIR="$T" DS_POLL=1
-L=tools/fast-review/ds-launch-when-ok.sh
+L=$(/opt/homebrew/bin/python3.12 tools/pipe2/tests/cloud-verification-fixture.py stage "$T")
+export PATH="$T/bin:$PATH" DS_POLL=1
 : > "$T/wip-units.txt"
 printf '# brief without needs\n' > "$T/p.md"
 printf -- '---\nneeds:\n  tools: nosuchtool-zz\n---\n' > "$T/q.md"
@@ -20,3 +21,4 @@ for kind in missing unmet; do
     { echo "FAIL $kind needs rc=$rc: $out"; exit 1; }
   echo "PASS $kind needs refused with exit 8 before any claim: $out"
 done
+[ ! -e "$T/mac-called" ]

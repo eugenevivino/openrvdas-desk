@@ -25,8 +25,11 @@ approved brief with D-PIPE2 needs, and `job_dir` to an existing job directory. S
 bash tools/fast-review/ds-launch-when-ok.sh "$product" "$brief" "$job_dir/cloud.json" 900 --cloud-verify "$desk_sha" "$product_sha"
 ```
 
-The launcher uses its usual WIP and claim directory and checks the pilot and launcher
-designs in the pinned checkout. The existing `--` route selects a Mac job. Cloud
+The launcher reads the installed preflight, WIP slots and design notes under
+`/private/tmp/deepsignal` and uses that desk's claims. A reservation at
+`claims/unit-console` refuses hosted submission with exit 3. Coordinate with its desk
+owner. The reviewed checkout supplies the dispatcher and the pinned workflow. The
+existing `--` route selects a Mac job. Cloud
 verification exits 0 for complete success, 1 for a failed run or incomplete success
 evidence, 75 while the exact run or its evidence is pending, and 9 for a pin, trust,
 or transport error. The launcher keeps its existing admission exit
@@ -43,41 +46,34 @@ the receipt. The same pair of pins groups submissions across job directories. Th
 dispatcher never asks Actions to rerun a verification. An operator rerun of the same
 Actions run will produce a trust refusal on reconciliation.
 
-## Isolated live overlap rehearsal
+## Live overlap rehearsal
 
 Run this as the owner or outer launch operator after publishing the reviewed desk
-topic. Start in the clean checkout of that approved commit. Use the supervised
-pilot's approved product SHA and keep the displayed job directory as evidence.
-The owned lock fixture remains occupied through the hosted check and the timestamp
-comparison. It represents a local occupied slot without using the live lock,
-the installed launcher, or a real Codex process. Interrupting the procedure
-before the hosted check starts leaves an incomplete rehearsal.
-The state-directory override is reserved for this isolated rehearsal.
+topic. Start an approved, bounded Mac fixture job for another admitted unit
+through the installed launcher, using its own workdir and brief. Wait for its
+`ds-codex` process to hold the real Mac lock and run `codex exec`. Use that fixture's wrapper PID and
+its workdir below. Use the approved supervised pilot SHA and a pilot checkout whose
+absolute path matches the installed console WIP slot. Keep the rehearsal evidence
+outside the candidate desk checkout. The existing 1,261-second local wait is the
+baseline recorded in the design note.
 
 ```bash
 bash <<'BASH'
 set -euo pipefail
-export TMPDIR=/private/tmp/deepsignal/cloud-verification-dispatch/tmp
 export PYTHONDONTWRITEBYTECODE=1
-job_dir=$(mktemp -d "$TMPDIR/live-overlap.XXXXXX")
+job_dir=$(mktemp -d /private/tmp/deepsignal/cloud-verification-dispatch/tmp/live-overlap.XXXXXX)
 printf 'Evidence directory %s\n' "$job_dir"
 read -r -p 'Reviewed desk commit SHA: ' desk_sha </dev/tty
 read -r -p 'Approved pilot commit SHA: ' product_sha </dev/tty
+read -r -p 'Pilot checkout workdir: ' product </dev/tty
+read -r -p 'Approved Mac fixture workdir: ' mac_cwd </dev/tty
+read -r -p 'Approved Mac fixture ds-codex PID: ' mac_pid </dev/tty
 test "$(git rev-parse HEAD)" = "$desk_sha"
-product="$job_dir/console-supervised-pilot"
-git clone --single-branch --branch deepsignal/console-supervised-pilot \
-  https://github.com/eugenevivino/openrvdas.git "$product" >"$job_dir/clone.log" 2>&1
+test -z "$(git status --porcelain --untracked-files=all)"
+product=$(cd "$product" && pwd -P)
+mac_cwd=$(cd "$mac_cwd" && pwd -P)
 test "$(git -C "$product" rev-parse HEAD)" = "$product_sha"
-
-export DS_LAUNCH_STATE_DIR="$job_dir/launcher-state"
-export DS_POLL=1
-mkdir -p "$DS_LAUNCH_STATE_DIR/.ds-codex.lock"
-lock="$DS_LAUNCH_STATE_DIR/.ds-codex.lock"
-trap 'rm -f "$lock/pid"; rmdir "$lock"' EXIT
-trap 'exit 130' INT
-trap 'exit 143' TERM
-printf '%s\n' "$$" >"$lock/pid"
-printf 'console|/console-supervised-pilot$\n' >"$DS_LAUNCH_STATE_DIR/wip-units.txt"
+[[ "$mac_pid" =~ ^[1-9][0-9]*$ ]]
 brief="$job_dir/brief.md"
 cat >"$brief" <<'BRIEF'
 ---
@@ -89,12 +85,48 @@ needs:
 # Verify the approved supervised pilot over the hosted Linux lane
 BRIEF
 launcher=tools/fast-review/ds-launch-when-ok.sh
-date -u +%FT%TZ >"$job_dir/fixture-held"
-rc=0
-bash "$launcher" "$product" "$brief" "$job_dir/local-job.log" 2 -- -m gpt-6.2-sol - \
-  >"$job_dir/local-baseline.log" 2>&1 || rc=$?
-test "$rc" -eq 1
-[[ $(<"$job_dir/local-baseline.log") == *"NOT launched after 2s: lock=$$"* ]]
+lock=/private/tmp/deepsignal/.ds-codex.lock/pid
+find_codex() {
+  local node
+  pgrep -x -P "$mac_pid" codex && return 0
+  node=$(pgrep -x -P "$mac_pid" node) || return 1
+  [[ "$node" =~ ^[1-9][0-9]*$ ]] || return 1
+  pgrep -x -P "$node" codex
+}
+codex_pid=$(find_codex)
+[[ "$codex_pid" =~ ^[1-9][0-9]*$ ]]
+mac_launcher_pid=$(ps -p "$mac_pid" -o ppid= | tr -d ' ')
+[[ "$mac_launcher_pid" =~ ^[1-9][0-9]*$ ]]
+mac_launcher=$(ps -ww -p "$mac_launcher_pid" -o command=)
+[[ "$mac_launcher" == *"/private/tmp/deepsignal/ds-launch-when-ok.sh "* ]]
+mac_processes() {
+  ps -p "$mac_launcher_pid,$mac_pid,$codex_pid" -o pid=,ppid=,lstart=
+}
+identity=$(mac_processes)
+observe_mac() {
+  local wrapper child cwd
+  wrapper=$(ps -ww -p "$mac_pid" -o command=) || return 1
+  child=$(ps -ww -p "$codex_pid" -o command=) || return 1
+  cwd=$(lsof -a -p "$mac_pid" -d cwd -Fn | sed -n 's/^n//p') || return 1
+  [[ "$wrapper" == *"$HOME/bin/ds-codex --wait-ram="* ]] || return 1
+  [[ "$child" == *"/codex exec "* ]] || return 1
+  [ "$cwd" = "$mac_cwd" ] && [ "$(cat "$lock")" = "$mac_pid" ] &&
+    [ "$(find_codex)" = "$codex_pid" ] &&
+    [ "$(mac_processes)" = "$identity" ] || return 1
+  date -u +%FT%TZ
+}
+printf '%s\n%s\n' "$mac_cwd" "$identity" >"$job_dir/mac-fixture.txt"
+observations="$job_dir/mac-observations.log"
+observe_mac >"$observations"
+(while sleep 2 && observe_mac; do :; done) >>"$observations" &
+watch_pid=$!
+stop_watch() {
+  kill "$watch_pid" 2>/dev/null || true
+  wait "$watch_pid" 2>/dev/null || true
+}
+trap stop_watch EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 receipt="$job_dir/cloud.json"
 # An existing run is useful on retry, but only a fresh tag proves a new dispatch.
@@ -107,9 +139,8 @@ while :; do
   break
 done
 test "$rc" -eq 0
-test "$(cat "$lock/pid")" = "$$"
-kill -0 "$$"
-date -u +%FT%TZ >"$job_dir/fixture-releasing"
+stop_watch
+trap - EXIT
 python3.12 - "$job_dir" "$desk_sha" "$product_sha" <<'PY' | tee "$job_dir/overlap-result.log"
 import json
 from pathlib import Path
@@ -117,23 +148,23 @@ import sys
 
 job, desk_sha, product_sha = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
 receipt = json.loads(job.joinpath("cloud.json").read_text())
-held = job.joinpath("fixture-held").read_text().strip()
-releasing = job.joinpath("fixture-releasing").read_text().strip()
+observations = job.joinpath("mac-observations.log").read_text().splitlines()
+first, last = observations[0], observations[-1]
 assert receipt["desk_sha"] == desk_sha and receipt["product_sha"] == product_sha
 assert receipt["request_ref"] == f"refs/tags/cloud-verification/v1/{product_sha}-{desk_sha}"
 assert receipt["conclusion"] == "success"
 log = job.joinpath("cloud-launcher.log").read_text()
 assert f"request tag confirmed {receipt['request_ref']}" in log
 started = receipt["commands"]["console-tests"]["started_at"]
-assert held < receipt["created_at"] <= started < releasing, (held, started, releasing)
-print(f"PASS held {held}, console-tests started {started}, releasing {releasing}")
+assert first < receipt["created_at"] <= started < last, (first, started, last)
+print(f"PASS Mac job observed at {first} and {last}, console-tests started {started}")
 print(receipt["url"])
 PY
 BASH
 ```
 
-Keep the local baseline, launcher log, JSON receipt and overlap result together.
-If the run already executed before the fixture, use another approved pair of commits
-for fresh overlap evidence. A queued run or a created tag alone does not prove
-overlap. Simulated overlap passes in the workspace. The live rehearsal, actual
-hosted timings and sustained Actions capacity remain pending.
+Keep the Mac fixture launch receipt, process observations, hosted launcher log, JSON
+receipt and overlap result together. A fresh pair of approved commits is required
+when the existing run predates the Mac fixture. PASS requires the hosted test step
+to start between two observations of the same real Mac job. The live rehearsal
+and sustained Actions capacity remain pending.

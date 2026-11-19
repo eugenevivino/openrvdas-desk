@@ -14,14 +14,9 @@ case "$route" in
   --cloud-verify) [ "$#" = 2 ] || usage; cloud=1 ;;
   *) usage ;;
 esac
-state=${DS_LAUNCH_STATE_DIR:-/private/tmp/deepsignal}
-desk=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
+state=/private/tmp/deepsignal
 preflight="$state/preflight.sh"
 designs="$state/desk-main/docs/designs"
-if [ "$cloud" = 1 ] || [ -n "${DS_LAUNCH_STATE_DIR:-}" ]; then
-  preflight="$desk/tools/pipe2/preflight.sh"
-  designs="$desk/docs/designs"
-fi
 readonly_job=0
 if [ "$cloud" = 0 ]; then
   case " $* " in *" -s read-only "*|*" --sandbox read-only "*) readonly_job=1 ;; esac
@@ -29,10 +24,10 @@ fi
 # D-PIPE2 preflight: a build job (not read-only) must declare its needs in the brief's front matter, and they must be
 # met, before any WIP slot, design check or claim is taken (exit 8). Reviews and design-note jobs are exempt.
 if [ "$readonly_job" = 0 ]; then
-  pf=$(perl -e 'alarm 130; exec @ARGV' "$preflight" "$prompt" "$wd" 2>&1) || { echo "NOT launched: $pf"; exit 8; }
+  pf=$(perl -e 'alarm 130; exec @ARGV or die "cannot execute $ARGV[0]: $!\n"' "$preflight" "$prompt" "$wd" 2>&1) || { echo "NOT launched: $pf"; exit 8; }
 fi
-# D-WIP3: WIP cap of 3 path units; a non-path job is refused while all slots are taken (DS_WIP_EXEMPT=reason
-# lets an Eugene-requested one-off through, logged). Review routing: the Mac runs only math reviews; a read-only
+# D-WIP3: WIP cap of 3 path units; a non-path job is refused while all slots are taken. Mac jobs can log an
+# owner-approved DS_WIP_EXEMPT. Review routing: the Mac runs only math reviews; a read-only
 # job needs DS_REVIEW_ROUTE=math or DS_REVIEW_ROUTE=exempt:<reason>, otherwise it goes to cloud-review.sh.
 W3="$state/wip-units.txt"; WIP_CAP=3
 if [ "$cloud" = 1 ] && [ ! -r "$W3" ]; then echo "NOT launched: D-WIP3 WIP file unavailable ($W3)"; exit 4; fi
@@ -49,7 +44,12 @@ while IFS="|" read -r un ure || [ -n "$un" ]; do
   fi
 done < "$W3"
 if [ "$onpath" = 0 ] && [ "$nslots" -ge "$WIP_CAP" ]; then
-  if [ -n "${DS_WIP_EXEMPT:-}" ]; then echo "WIP cap exemption for $wd: $DS_WIP_EXEMPT"; else echo "NOT launched: D-WIP3 WIP cap ($nslots of $WIP_CAP path units active; $wd is not on the Nov 25 path)"; exit 4; fi
+  if [ "$cloud" = 0 ] && [ -n "${DS_WIP_EXEMPT:-}" ]; then
+    echo "WIP cap exemption for $wd: $DS_WIP_EXEMPT"
+  else
+    echo "NOT launched: D-WIP3 WIP cap ($nslots of $WIP_CAP path units active; $wd is not on the Nov 25 path)"
+    exit 4
+  fi
 fi
 if [ "$readonly_job" = 1 ]; then
   case "${DS_REVIEW_ROUTE:-}" in math|exempt:*) echo "review on the Mac: $DS_REVIEW_ROUTE";; *) echo "NOT launched: non-math review; route it to /private/tmp/deepsignal/cloud-review.sh (D-WIP3)"; exit 5;; esac
@@ -65,6 +65,12 @@ if [ "$cloud" = 1 ]; then
       echo "NOT launched: D-DESIGN1 design note missing ($designs/$required.md)"; exit 6
     fi
   done
+  # The desk owns unit reservations (owner.txt). Only the desk owner can release one.
+  unit_claim="$state/claims/unit-console"
+  if [ -e "$unit_claim" ] || [ -L "$unit_claim" ]; then
+    echo "NOT launched: unit console already claimed ($unit_claim); coordinate with the desk owner"
+    exit 3
+  fi
 fi
 # Claim file (D-PIPE1 rule 5): one claim per job (workdir plus prompt), taken atomically with mkdir and released on
 # exit, so two loops never launch the same job. A claim whose owner pid is gone is stale and is taken over.
@@ -90,6 +96,8 @@ trap 'exit 130' INT
 trap 'exit 143' TERM
 echo $$ > "$CL/pid" && printf "%s\n%s\n" "$wd" "$prompt" > "$CL/job" || exit 3
 if [ "$cloud" = 1 ]; then
+  # Policy comes from the installed desk. The reviewed candidate supplies the dispatcher.
+  desk=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd) || exit 9
   python3.12 -IB "$desk/tools/pipe2/cloud-verification-dispatch.py" "$desk" "$wd" "$runlog" "$maxwait" "$@"
   exit $?
 fi
@@ -101,10 +109,6 @@ while :; do
     [ $(( $(date +%s)-S )) -gt "$maxwait" ] && { echo "NOT launched after ${maxwait}s: lock=$([ -d "$L" ] && cat "$L/pid" || echo free) $last"; exit 1; }
     sleep ${DS_POLL:-30}
   done
-  if [ -n "${DS_LAUNCH_STATE_DIR:-}" ]; then
-    echo "NOT launched: isolated launcher state cannot start a Mac job"
-    exit 2
-  fi
   echo "launching after $(( $(date +%s)-S ))s ($last) at $(date -u +%FT%TZ)"
   cd "$wd" || exit 2
   T0=$(date +%s)
