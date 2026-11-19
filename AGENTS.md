@@ -132,5 +132,5 @@ Why: every small piece paid the full toll (queue, review, mark, gate, merge) and
 5. Launches never depend on a live chat session. One detached auto-launcher runs only approved jobs, and every launch takes a claim file (`/private/tmp/deepsignal/claims/<key>`, atomic mkdir, released on exit), so two loops never launch the same job. This extends the ds-codex lock, it does not replace it.
 6. The gate of record for a unit is its Linux CI job on the desk (advisory per D-GATE1 until Eugene makes it a required check). Local scripts such as accept.sh are pre-checks, not the gate.
 7. Brief done-lines work on macOS: `git status --short -uall`, never `grep -P`, pipe `wc -l` through `tr -d ' '`, Swift only if a unit has Swift.
-8. Shared machine: the heavy-job cap counts every project's jobs. Never touch another project's jobs or folders.
+8. Shared machine: the heavy-job cap counts every project's jobs (D-PIPE1a: one machine-wide total, default 2, counted read-only from the process list by `tools/heavy-jobs/heavy-jobs.sh`; ds-codex and the launcher wait at the cap). Never touch another project's jobs or folders.
 9. Every snag gets a permanent guard plus a line in `docs/INCIDENTS.md`.

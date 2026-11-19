@@ -1,0 +1,6 @@
+# Machine-wide heavy-job patterns (D-PIPE1a). One extended regex per line, matched against each process command
+# line from `ps -axo command=`. Read-only: the counter only reads the process list; it never signals, opens or
+# touches another project's jobs, folders or files. Count one process per job (the top-level worker).
+/bin/codex exec( |$)
+(^|/)xcodebuild( |$)
+(^|/)swift-build( |$)

@@ -36,3 +36,4 @@ The joint #197 work was built in a clone whose local branch was still named `dee
 - Orphaned fixture processes from old acceptance runs caused flaky scripted runs. Guard: heartbeat.sh reports orphaned fixture processes (ppid 1) every 15 minutes; the lead stops them (a soak legitimately runs 24 h, so nothing is killed automatically).
 - A chain recorded the previous CI run id instead of the new one (sec-cds-joint r2). Guard: chains record the previous run id and wait for a different one before reading results.
 - The session dropped during an 18:01Z to 20:34Z network outage. Guard: detached heartbeat.sh plus a session cron that does not need re-arming.
+- 2026-11-19 Rule 8 (shared machine) was enforced only through the memory gate. Guard: machine-wide heavy-job count (D-PIPE1a) in ds-codex and the launcher, with a sandboxed test that the counter writes nothing outside /private/tmp/deepsignal.
