@@ -33,7 +33,8 @@
      "at": "7c60dbf"
     }
    },
-   "status": "ACTIVE (D-WIP3 slot 1: console pilot and follow-ups)"
+   "status": "ACTIVE (D-WIP3 slot 1: console pilot and follow-ups)",
+   "design_note": "none yet: required before more is built on the console (D-DESIGN1)"
   },
   {
    "unit": "console-soak-24h",
@@ -67,7 +68,8 @@
      "evidence": "",
      "at": ""
     }
-   }
+   },
+   "design_note": "docs/designs/soak.md (Astra medium, queued on the Mac)"
   },
   {
    "unit": "app-ia",
@@ -2345,7 +2347,8 @@
      "at": ""
     }
    },
-   "status": "ACTIVE (D-WIP3 slot 2: security redesign)"
+   "status": "ACTIVE (D-WIP3 slot 2: security redesign)",
+   "design_note": "docs/designs/security-redesign.md (points to research/2026-11-19-cds-gate-redesign.md and briefs/mac/cds-redesign-1..3.md)"
   },
   {
    "unit": "ship-coupling",

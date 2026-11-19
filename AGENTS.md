@@ -134,3 +134,7 @@ Why: every small piece paid the full toll (queue, review, mark, gate, merge) and
 7. Brief done-lines work on macOS: `git status --short -uall`, never `grep -P`, pipe `wc -l` through `tr -d ' '`, Swift only if a unit has Swift.
 8. Shared machine: the heavy-job cap counts every project's jobs (D-PIPE1a: one machine-wide total, default 2, counted read-only from the process list by `tools/heavy-jobs/heavy-jobs.sh`; ds-codex and the launcher wait at the cap). Never touch another project's jobs or folders.
 9. Every snag gets a permanent guard plus a line in `docs/INCIDENTS.md`.
+
+## Design first (D-DESIGN1, Eugene 2026-11-19)
+
+Before Sol builds any unit, Astra writes a one-page testable design note at `docs/designs/<unit>.md` from `docs/designs/_TEMPLATE.md`: fixed target, acceptance tests as commands, out-of-scope list, prerequisites on trunk, who judges. Sol builds against the note and reviewers judge against it: a finding outside the note's scope is a ticket unless it meets D-P1DEF1 (a), (b) or (c). The Mac launcher refuses a build job for a unit whose note is missing (exit 6); reviews and design-note jobs are exempt.
