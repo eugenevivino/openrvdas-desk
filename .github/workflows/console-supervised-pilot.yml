@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: eugenevivino/openrvdas
-          ref: 12cf2f3727d3eed1f6867895e51eb0d8b0787850
+          ref: fc31b54cbefafa51f2257302ff6e7fb4741f3754
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
@@ -23,7 +23,7 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Exercise shipped console and replay directory
         run: |
-          test "$(git rev-parse HEAD)" = 12cf2f3727d3eed1f6867895e51eb0d8b0787850
+          test "$(git rev-parse HEAD)" = fc31b54cbefafa51f2257302ff6e7fb4741f3754
           python -m pytest -p no:cacheprovider -v contrib/deepsignal/test --junitxml="$RUNNER_TEMP/pilot-tests.xml"
           python -c 'import sys,xml.etree.ElementTree as ET; cases=[c for c in ET.parse(sys.argv[1]).iter("testcase") if c.get("classname","").endswith("test_pilot_modules_browser")]; print([c.get("name") for c in cases]); assert len(cases)==10 and all(c.find("skipped") is None for c in cases)' "$RUNNER_TEMP/pilot-tests.xml"
       - name: Confirm source loss and recovery across fresh fixture startups
