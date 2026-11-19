@@ -39,7 +39,7 @@ existing bridge display, not a cutover. Cutover only after the release checks in
 - **Security unit:** `deepsignal/sec-cds-joint` (critical, push-only). Head 5fb327f = slices 1 and 2 of the CDS gate
   redesign; slice 3 is building on the Mac.
 
-## 4. The three units in progress (D-WIP3; everything else is PAUSED)
+## 4. The three launcher slots (D-WIP3; everything else is paused except approved desk process tooling)
 
 1. **Console pilot candidate** (landed in integration, LANDED 1). Open items are tickets T-CON-1 to T-CON-10 in
    `docs/TICKETS.md` (late FAIL clears lastGood, learned period reset on page return, Map "Position aging" with no
@@ -47,13 +47,12 @@ existing bridge display, not a cutover. Cutover only after the release checks in
 2. **Security redesign**: MERGED into `deepsignal/integration` 1dc7a5e (Eugene approved 03:49Z), tag
    `deepsignal/pilot-candidate-2`. Linux nginx runtime probe PASS at 1dc7a5e. Claim released. Open: T-CON-11 (combined
    pytest run fails 12 tests from the global websockets shim in `test_ws_compat.py`), T-SEC-3 to T-SEC-6.
-3. **24 h soak** of the pilot candidate. Design note `docs/designs/soak.md` (DRAFT; criteria from D-SOAK1 and the soak
-   brief). Not started. D-RECOVER1: a killed logger is restarted by an operator or supervisord, not by our code.
+3. **Stream Health console view** (slot approved by Eugene on November 19). Read the current approval status in `docs/designs/stream-health-view.md`. The view consumes the published chain fields. The engine is a separate unit. The 24 h soak is held.
 
 ## Claims (2026-11-19 03:42Z)
 
 Units carry `claimed_by` in `docs/units.json`. Nothing is claimed now (the security redesign was merged and released).
-Everything else, including the 24 h soak and the console follow-ups, is unclaimed and free for Codex. Before starting
+Check the live claim directories and manifest before starting work. The 24 h soak is held. Before starting
 a unit, set its `claimed_by` and create `/private/tmp/deepsignal/claims/unit-<name>/owner.txt`; release both when done.
 
 ## 5. Decisions waiting on Eugene (short MORNING list)
@@ -76,7 +75,7 @@ a unit, set its `claimed_by` and create `/private/tmp/deepsignal/claims/unit-<na
   every snag gets a guard and an incident line.
 - **Heavy cap:** machine total 3 with 1 slot reserved for Kalon, so DeepSignal launches only while the total is
   under 2 (`DS_MACHINE_CAP=3`, `DS_KALON_RESERVED=1`).
-- **D-WIP3:** 3 units in progress (console, security redesign, soak); the launcher refuses others (exit 4).
+- **D-WIP3:** 3 reserved slots (console, security redesign, Stream Health view); the launcher refuses others (exit 4).
 - **Review routing and D-CLOUD1:** non-math reviews run in Codex cloud. **Cloud runs Sol on medium only** (a test on
   2026-11-19 showed `-c model=...` is ignored). Builds that touch data correctness run on the Mac with Sol high within
   the memory gate and our cap; everything else stays on cloud medium. The Mac runs math reviews and builds.
