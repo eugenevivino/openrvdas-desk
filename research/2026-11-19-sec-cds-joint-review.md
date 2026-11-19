@@ -1,0 +1,15 @@
+- **P1 blocking, VERIFIED by inspection.** A valid `/cds-ws` relay can pass while another route exposes port 8766. The checker leaves nginx includes unread, and the installer passes it only the selected virtual host. A direct route in an included file or a sibling host survives installation. [check_cds.py](/private/tmp/deepsignal/sec-joint-rr/contrib/deepsignal/security/check_cds.py:138) · [nginx-site.awk](/private/tmp/deepsignal/sec-joint-rr/contrib/deepsignal/console/install/nginx-site.awk:175)
+
+- **P1 blocking, VERIFIED by inspection.** The installer tracks named upstreams inside `http` but misses them inside `stream`. A UDP listener on a different public port can forward through a named upstream to the configured CDS UDP bind, even when the operator supplies both UDP flags. [nginx-site.awk](/private/tmp/deepsignal/sec-joint-rr/contrib/deepsignal/console/install/nginx-site.awk:51)
+
+- **P1 blocking, VERIFIED by inspection.** When `/cds-ws` is absent, the installer treats a variable-based proxy destination as safe and skips the real checker. It can write the fallback 503 while another location still resolves to publish-capable CDS. [nginx-site.awk](/private/tmp/deepsignal/sec-joint-rr/contrib/deepsignal/console/install/nginx-site.awk:35) · [install.sh](/private/tmp/deepsignal/sec-joint-rr/contrib/deepsignal/console/install/install.sh:197)
+
+- **P1 blocking, VERIFIED by inspection.** The gate accepts a relay without an Origin guard. Its live probe sends only the expected Origin, so a relay that also allows foreign browser origins to subscribe can pass. [check_cds.py](/private/tmp/deepsignal/sec-joint-rr/contrib/deepsignal/security/check_cds.py:127) · [install.sh](/private/tmp/deepsignal/sec-joint-rr/contrib/deepsignal/console/install/install.sh:182)
+
+- **P1 blocking, VERIFIED by inspection.** The source check stops partway through the `config` initializer. It reports that the console uses the same-origin URL even if `loadConsole` later reassigns `config.websocket` before returning it. [check_cds.py](/private/tmp/deepsignal/sec-joint-rr/contrib/deepsignal/security/check_cds.py:181)
+
+- **Ticket, VERIFIED.** The UDP regression combines HTTP `server` and `stream` blocks at the same level, which real nginx cannot load. The Django direct-8766 case already rejects at `edec001`, and the React template is absent there. [test_nginx_site.py](/private/tmp/deepsignal/sec-joint-rr/contrib/deepsignal/console/install/test_nginx_site.py:127)
+
+The real checker accepted both new flags and both shipped relay templates. Unknown and abbreviated flags exited 2. Five focused tests and flake8 passed. The positive integration test reloads the installer-written site for both templates and checks subscribe, publish refusal, and cache writes. I verified that sequence by reading it because nginx is unavailable on this Mac.
+
+Verdict: HOLD
