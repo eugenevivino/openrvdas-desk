@@ -57,6 +57,8 @@ These rules govern every DeepSignal build from now on. Full texts and dates are 
 
 7. **Progress counts.** Progress is reported as three numbers computed by script from the unit manifest, never from PR or branch counts: LANDED (moved), QUALIFIED (tested and fixed) and FINISHED (all five stamps).
 
+8. **D-FASTREV1, fast review (target 10 to 20 minutes per round).** Machine checks run first and must be green before any model review: tests, type checks, linters and the security scanners that are installed. The builder runs the same review checklist on its own work and gets a self-check receipt; a review request without one is refused. Reviewers judge only against the unit's design note (its acceptance tests and fixed target) plus the D-P1DEF1 list; everything else becomes a ticket. The diff is split by path into parts (logic, UI, install or security) and one cloud reviewer per part runs in parallel; a cheap first pass (Sol low) handles each part, and Astra is called only when the first pass escalates or for security or math code. A small merge step turns the part reviews into one verdict and the ticket list.
+
 ## 3. How work flows
 
 ```
