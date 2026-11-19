@@ -80,7 +80,7 @@ existing bridge display, not a cutover. Cutover only after the release checks in
 - **D-DESIGN1:** a one-page design note (`docs/designs/<unit>.md`) before any build; the launcher refuses builds
   without it (exit 6). **D-FIX1:** every fix needs a production-path regression plus one variation that keeps the
   same answer. **D-FASTREV1:** machine checks first, self-check receipt, parallel per-part cloud reviewers.
-- **D-PIPE2 (in progress):** briefs carry a `needs:` front-matter block checked by preflight (exit 8); mac-build pins
+- **D-PIPE2 (done, tests in `tools/pipe2/tests`):** briefs carry a `needs:` front-matter block checked by preflight (exit 8); mac-build pins
   HEAD and writes per-command receipts (`--rerun-skipped`); never merge trunk into a unit branch (pre-push hook).
 
 ## 7. Tools and how to run them (all in `/private/tmp/deepsignal/`; desk copies in `tools/`)
