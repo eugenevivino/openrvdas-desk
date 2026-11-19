@@ -29,3 +29,10 @@ its `--enable` refusals (see `tools/ds-codex.sh`). Eugene decides whether Kalon 
 
 ## 2026-11-19 console-mvp received the joint security commits (build lead)
 The joint #197 work was built in a clone whose local branch was still named `deepsignal/console-mvp`. The hourly sync pushes every local `deepsignal/*` branch ahead of origin, so it pushed edec001 (merge of #197, which changes core) and f38b52e onto fork `deepsignal/console-mvp`. Effect: console-mvp head is f38b52e instead of 0fd4dee. Nothing was merged anywhere; the UI pilot was built from 0fd4dee directly. Fix applied: that clone is detached; other clones audited. Restoring console-mvp to 0fd4dee needs a force push, which is Eugene-only; until then use 0fd4dee or `deepsignal/integration` for the console. Rule: build on a local branch with the same name as the branch you push to, or detach.
+
+## 2026-11-18 and 19 snags and their guards (D-PIPE1 rule 9, build lead)
+- Acceptance heading glued to the previous line, so 0 commands were parsed (fault-bench fix2, ship-coupling fix3). Guard: mac-build.sh refuses to launch a brief with 0 parsed acceptance commands; template says the heading starts its own line.
+- A manual push went out before flake8 finished (console fix3-c, E501). Guard: /private/tmp/deepsignal/lead-push.sh runs flake8 on contrib/deepsignal before any manual push.
+- Orphaned fixture processes from old acceptance runs caused flaky scripted runs. Guard: heartbeat.sh reports orphaned fixture processes (ppid 1) every 15 minutes; the lead stops them (a soak legitimately runs 24 h, so nothing is killed automatically).
+- A chain recorded the previous CI run id instead of the new one (sec-cds-joint r2). Guard: chains record the previous run id and wait for a different one before reading results.
+- The session dropped during an 18:01Z to 20:34Z network outage. Guard: detached heartbeat.sh plus a session cron that does not need re-arming.

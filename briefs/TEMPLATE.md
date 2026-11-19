@@ -70,3 +70,8 @@ send to the decision desk through the lead.
 - Gate receipt sha256 and verdict:
 - What changed, in three lines:
 - Open questions:
+
+## Done-line rules (D-PIPE1 rule 7) and claims (rule 5)
+- Done-lines must work on macOS: `git status --short -uall`; never `grep -P`; pipe `wc -l` through `tr -d ' '`; no Swift unless the unit has Swift.
+- The `## Acceptance` heading starts its own line; each command is on its own line in a fenced block (a brief with zero parsed commands is not launched).
+- Jobs are launched only by the detached launcher, which takes a claim file per job; never launch the same job from a second loop.

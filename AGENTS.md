@@ -122,3 +122,15 @@ Each module ships as ONE unit:
 - Report progress as modules landed and modules finished, not pieces.
 
 Why: every small piece paid the full toll (queue, review, mark, gate, merge) and collided with others in shared files.
+
+## Pipeline rules (D-PIPE1, Eugene 2026-11-19, adopted from Kalon's pipeline)
+
+1. Whole units only (D-UNITS1).
+2. Finish line, five stamps per unit, each with evidence at the unit head: moved (on fork `deepsignal/integration`), tested (unit and acceptance green at the unit head), fixed (review PASS, no open P1 under D-P1DEF1), in the app (served by the console or installed in the fixture on the Mac), tested in the app (a browser or black-box test passes against that app). Report LANDED (moved), QUALIFIED (tested plus fixed) and FINISHED (all five) every time, computed by `python3 tools/finish-line.py` from `docs/units.json`, never from PR or branch counts.
+3. Old small PRs and branches never block a unit. List them as SUPERSEDED-BY-UNIT in `docs/UNITS.md`; fold one in only if the unit needs the fix; retire them after the unit lands.
+4. Check a unit's prerequisites on trunk (fork `deepsignal/integration`) before starting it.
+5. Launches never depend on a live chat session. One detached auto-launcher runs only approved jobs, and every launch takes a claim file (`/private/tmp/deepsignal/claims/<key>`, atomic mkdir, released on exit), so two loops never launch the same job. This extends the ds-codex lock, it does not replace it.
+6. The gate of record for a unit is its Linux CI job on the desk (advisory per D-GATE1 until Eugene makes it a required check). Local scripts such as accept.sh are pre-checks, not the gate.
+7. Brief done-lines work on macOS: `git status --short -uall`, never `grep -P`, pipe `wc -l` through `tr -d ' '`, Swift only if a unit has Swift.
+8. Shared machine: the heavy-job cap counts every project's jobs. Never touch another project's jobs or folders.
+9. Every snag gets a permanent guard plus a line in `docs/INCIDENTS.md`.

@@ -1,0 +1,2437 @@
+{
+ "generated": "D-PIPE1 one-off generator; stamps only with logged evidence at the exact head",
+ "units": [
+  {
+   "unit": "console-ui",
+   "branch": "deepsignal/integration",
+   "head": "7c60dbf",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": true,
+     "evidence": "merged into fork deepsignal/integration 7c60dbf, tag deepsignal/pilot-candidate (D-PILOT1)",
+     "at": "7c60dbf"
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "merged tree: tsc clean, vitest 178, build ok, pytest contrib/deepsignal/test 35 passed, flake8 clean (desk docs/DECISIONS.md D-PILOT1)",
+     "at": "7c60dbf"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "final review HOLD (2 open, 2 new P1, ticketed T-CON-1 to T-CON-3 under D-PILOT1): desk research/2026-11-18-console-final-review.md",
+     "at": ""
+    },
+    "in_app": {
+     "ok": true,
+     "evidence": "dist served by the test-side same-origin relay (test/console/browser_server.py) against the NBP1406 replay fixture on the Mac",
+     "at": "7c60dbf"
+    },
+    "tested_in_app": {
+     "ok": true,
+     "evidence": "lead_run browser tests (test_console_live, test_bridge_browser, test_source_loss_browser) passed in the 35-pass run on the merged tree",
+     "at": "7c60dbf"
+    }
+   }
+  },
+  {
+   "unit": "app-ia",
+   "branch": "deepsignal/app-ia",
+   "head": "7c166e0",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "correction-ledger",
+   "branch": "deepsignal/correction-ledger",
+   "head": "59b061b",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "dependency-graph",
+   "branch": "deepsignal/dependency-graph",
+   "head": "3b4b76e",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "docs-journeys",
+   "branch": "deepsignal/docs-journeys",
+   "head": "449d0ea",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "fault-bench",
+   "branch": "deepsignal/fault-bench",
+   "head": "58e66c8",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "mac-builds.log 17:52:50Z fault-bench-fix3: PUSHED 58e66c8 (3/3 acceptance)",
+     "at": "58e66c8"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "HOLD after round 3, 6 P1: desk research/2026-11-18-fault-bench-fix3-review.md",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "instrument-history",
+   "branch": "deepsignal/instrument-history",
+   "head": "973a87a",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-adcp-health",
+   "branch": "deepsignal/p2-adcp-health",
+   "head": "b3ccabc",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log adcp-health: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: adcp-health (cloud build)\"",
+     "at": "b3ccabc"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-ai-triage",
+   "branch": "deepsignal/p2-ai-triage",
+   "head": "7a572e7",
+   "critical": true,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log ai-triage: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: ai-triage (cloud build)\"",
+     "at": "7a572e7"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-archive-compress",
+   "branch": "deepsignal/p2-archive-compress",
+   "head": "0fa1d53",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log archive-compress: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: archive-compress (cloud build)\"",
+     "at": "0fa1d53"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-archive-readiness",
+   "branch": "deepsignal/p2-archive-readiness",
+   "head": "72e6d7a",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log archive-readiness: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: archive-readiness (cloud build)\"",
+     "at": "72e6d7a"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-best-source",
+   "branch": "deepsignal/p2-best-source",
+   "head": "090e208",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "desk resume/OVERNIGHT.md \"Pushed since 07:30Z (cloud builds, lead acceptance passed)\" lists best-source 090e208",
+     "at": "090e208"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-cal-units-registry",
+   "branch": "deepsignal/p2-cal-units-registry",
+   "head": "5792924",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log cal-units-registry: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: cal-units-registry (cloud build)\"",
+     "at": "5792924"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-cast-view",
+   "branch": "deepsignal/p2-cast-view",
+   "head": "8f55b51",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-component-catalog",
+   "branch": "deepsignal/p2-component-catalog",
+   "head": "a226798",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log component-catalog: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: component-catalog (cloud build)\"",
+     "at": "a226798"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-config-from-inventory",
+   "branch": "deepsignal/p2-config-from-inventory",
+   "head": "fe54b5d",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log config-from-inventory: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: config-from-inventory (cloud build)\"",
+     "at": "fe54b5d"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-config-lint",
+   "branch": "deepsignal/p2-config-lint",
+   "head": "2f15cb8",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log config-lint: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: config-lint (cloud build)\"",
+     "at": "2f15cb8"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-config-provenance",
+   "branch": "deepsignal/p2-config-provenance",
+   "head": "d73939a",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log config-provenance: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: config-provenance (cloud build)\"",
+     "at": "d73939a"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-console-chain",
+   "branch": "deepsignal/p2-console-chain",
+   "head": "4bfd755",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-console-trust",
+   "branch": "deepsignal/p2-console-trust",
+   "head": "4bfd755",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-cruise-context",
+   "branch": "deepsignal/p2-cruise-context",
+   "head": "6037a9d",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log cruise-context: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: cruise-context (cloud build)\"",
+     "at": "6037a9d"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-cruise-meta",
+   "branch": "deepsignal/p2-cruise-meta",
+   "head": "4550458",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log cruise-meta: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: cruise-meta (cloud build)\"",
+     "at": "4550458"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-depth-consensus",
+   "branch": "deepsignal/p2-depth-consensus",
+   "head": "4e606db",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log depth-consensus: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: depth-consensus (cloud build)\"",
+     "at": "4e606db"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-device-pack",
+   "branch": "deepsignal/p2-device-pack",
+   "head": "1a6f1ed",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-device-servers",
+   "branch": "deepsignal/p2-device-servers",
+   "head": "3b4b76e",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-doc-store",
+   "branch": "deepsignal/p2-doc-store",
+   "head": "3f8322a",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-eez-mode",
+   "branch": "deepsignal/p2-eez-mode",
+   "head": "3b4b76e",
+   "critical": true,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-erddap",
+   "branch": "deepsignal/p2-erddap",
+   "head": "a4f8e4c",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "desk resume/OVERNIGHT.md \"Pushed since 07:30Z (cloud builds, lead acceptance passed)\" lists erddap a4f8e4c",
+     "at": "a4f8e4c"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-event-timeline",
+   "branch": "deepsignal/p2-event-timeline",
+   "head": "a5a9e0f",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log event-timeline: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: event-timeline (cloud build)\"",
+     "at": "a5a9e0f"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-flow-state",
+   "branch": "deepsignal/p2-flow-state",
+   "head": "2df7bd5",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "desk resume/OVERNIGHT.md \"Pushed since 07:30Z (cloud builds, lead acceptance passed)\" lists flow-state 2df7bd5",
+     "at": "2df7bd5"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-geometry",
+   "branch": "deepsignal/p2-geometry",
+   "head": "7b024d7",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "mac-builds.log 11:32:18Z geometry: PUSHED 7b024d7 (2/2 acceptance)",
+     "at": "7b024d7"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-grafana-quality",
+   "branch": "deepsignal/p2-grafana-quality",
+   "head": "b7d4daf",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log grafana-quality: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: grafana-quality (cloud build)\"",
+     "at": "b7d4daf"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-host-health",
+   "branch": "deepsignal/p2-host-health",
+   "head": "683398a",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log host-health: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: host-health (cloud build)\"",
+     "at": "683398a"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-iec450-bridge",
+   "branch": "deepsignal/p2-iec450-bridge",
+   "head": "3b4b76e",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-install-defaults",
+   "branch": "deepsignal/p2-install-defaults",
+   "head": "21e6bf8",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-instrument-init",
+   "branch": "deepsignal/p2-instrument-init",
+   "head": "f5f8c95",
+   "critical": true,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log instrument-init: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: instrument-init (cloud build)\"",
+     "at": "f5f8c95"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-link-health",
+   "branch": "deepsignal/p2-link-health",
+   "head": "3b4b76e",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-met-formulas",
+   "branch": "deepsignal/p2-met-formulas",
+   "head": "371284a",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-met-reports",
+   "branch": "deepsignal/p2-met-reports",
+   "head": "ceb5c8b",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log met-reports: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: met-reports (cloud build)\"",
+     "at": "ceb5c8b"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-onboard-wizard",
+   "branch": "deepsignal/p2-onboard-wizard",
+   "head": "9533ff6",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log onboard-wizard: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: onboard-wizard (cloud build)\"",
+     "at": "9533ff6"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-openvdm-bridge",
+   "branch": "deepsignal/p2-openvdm-bridge",
+   "head": "81b7748",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-release-policy",
+   "branch": "deepsignal/p2-release-policy",
+   "head": "6b19de4",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "desk resume/OVERNIGHT.md \"Pushed since 07:30Z (cloud builds, lead acceptance passed)\" lists release-policy 6b19de4",
+     "at": "6b19de4"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-rest-api",
+   "branch": "deepsignal/p2-rest-api",
+   "head": "8756fed",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "desk resume/OVERNIGHT.md \"Pushed since 07:30Z (cloud builds, lead acceptance passed)\" lists rest-api 8756fed",
+     "at": "8756fed"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-roles",
+   "branch": "deepsignal/p2-roles",
+   "head": "0fffb9b",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-route-eta",
+   "branch": "deepsignal/p2-route-eta",
+   "head": "2a8037e",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "mac-builds.log 11:12:04Z route-eta: PUSHED 2a8037e (3/3 acceptance)",
+     "at": "2a8037e"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-runbooks",
+   "branch": "deepsignal/p2-runbooks",
+   "head": "357fd03",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log runbooks: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: runbooks (cloud build)\"",
+     "at": "357fd03"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-scoreboard-alpha-codec",
+   "branch": "deepsignal/p2-scoreboard-alpha-codec",
+   "head": "f9f42eb",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log scoreboard-alpha-codec: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: scoreboard-alpha-codec (cloud build)\"",
+     "at": "f9f42eb"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-scoreboard-modbus-codec",
+   "branch": "deepsignal/p2-scoreboard-modbus-codec",
+   "head": "6ec287c",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log scoreboard-modbus-codec: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: scoreboard-modbus-codec (cloud build)\"",
+     "at": "6ec287c"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-scoreboard-profiles",
+   "branch": "deepsignal/p2-scoreboard-profiles",
+   "head": "dd3f23a",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log scoreboard-profiles: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: scoreboard-profiles (cloud build)\"",
+     "at": "dd3f23a"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-scoreboard-text-codec",
+   "branch": "deepsignal/p2-scoreboard-text-codec",
+   "head": "b989dfa",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log scoreboard-text-codec: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: scoreboard-text-codec (cloud build)\"",
+     "at": "b989dfa"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-scoreboard-transports",
+   "branch": "deepsignal/p2-scoreboard-transports",
+   "head": "4c113f7",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log scoreboard-transports: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: scoreboard-transports (cloud build)\"",
+     "at": "4c113f7"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-sealog-bridge",
+   "branch": "deepsignal/p2-sealog-bridge",
+   "head": "3b4b76e",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-seep-repeatability",
+   "branch": "deepsignal/p2-seep-repeatability",
+   "head": "01dd803",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-seismic-shot-qc",
+   "branch": "deepsignal/p2-seismic-shot-qc",
+   "head": "0310dc6",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log seismic-shot-qc: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: seismic-shot-qc (cloud build)\"",
+     "at": "0310dc6"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-shore-snapshot",
+   "branch": "deepsignal/p2-shore-snapshot",
+   "head": "159240c",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "desk resume/OVERNIGHT.md \"Pushed since 07:30Z (cloud builds, lead acceptance passed)\" lists shore-snapshot 159240c",
+     "at": "159240c"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-sounding-uncertainty",
+   "branch": "deepsignal/p2-sounding-uncertainty",
+   "head": "cde3852",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-stream-discovery",
+   "branch": "deepsignal/p2-stream-discovery",
+   "head": "9a9e183",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log stream-discovery: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: stream-discovery (cloud build)\"",
+     "at": "9a9e183"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-stream-health",
+   "branch": "deepsignal/p2-stream-health",
+   "head": "0f2137c",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log stream-health: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: stream-health (cloud build)\"",
+     "at": "0f2137c"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-subbottom-reflectors",
+   "branch": "deepsignal/p2-subbottom-reflectors",
+   "head": "7e2a0e9",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-sv-consistency",
+   "branch": "deepsignal/p2-sv-consistency",
+   "head": "cfead37",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log sv-consistency: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: sv-consistency (cloud build)\"",
+     "at": "cfead37"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-sv-manager",
+   "branch": "deepsignal/p2-sv-manager",
+   "head": "57391de",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "mac-builds.log 13:22:15Z sv-manager: PUSHED 57391de (2/2 acceptance)",
+     "at": "57391de"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-swath-refraction",
+   "branch": "deepsignal/p2-swath-refraction",
+   "head": "a337760",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-time-health",
+   "branch": "deepsignal/p2-time-health",
+   "head": "e1b0e14",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log time-health: AUTOPUSHED (all acceptance commands rc 0); head subject \"DeepSignal: time-health (cloud build)\"",
+     "at": "e1b0e14"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-vocab",
+   "branch": "deepsignal/p2-vocab",
+   "head": "9749bdb",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "desk resume/OVERNIGHT.md \"Pushed since 07:30Z (cloud builds, lead acceptance passed)\" lists vocab 9749bdb",
+     "at": "9749bdb"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "p2-weighted-depth",
+   "branch": "deepsignal/p2-weighted-depth",
+   "head": "6c3e518",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "post-cruise-drift",
+   "branch": "deepsignal/post-cruise-drift",
+   "head": "3b4b76e",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "qartod-flags",
+   "branch": "deepsignal/qartod-flags",
+   "head": "736ef2e",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "accept-results.log qartod-final: AUTOPUSHED attempt 2 (unittest 50 OK, flake8 clean) at 736ef2e",
+     "at": "736ef2e"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "HOLD, final unit review, 4 P1: desk research/2026-11-18-qartod-final-review.md",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "sec-cds-joint",
+   "branch": "deepsignal/sec-cds-joint",
+   "head": "82c8f3d",
+   "critical": true,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "mac-builds.log 00:56:16Z sec-cds-joint-r2: PUSHED 82c8f3d (2/2 acceptance)",
+     "at": "82c8f3d"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "HOLD round 2, 10 P1; redesign in progress: desk research/2026-11-19-sec-cds-joint-review-r2.md",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "ship-coupling",
+   "branch": "deepsignal/ship-coupling",
+   "head": "4882b47",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": true,
+     "evidence": "mac-builds.log 17:31:20Z ship-coupling-fix3: PUSHED 4882b47 (3/3 acceptance, run by lead after heading fix)",
+     "at": "4882b47"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "HOLD after fix round 3, 7 P1: desk research/2026-11-18-ship-coupling-final-review.md",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  },
+  {
+   "unit": "vector-wind",
+   "branch": "deepsignal/vector-wind",
+   "head": "03ca54c",
+   "critical": false,
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   }
+  }
+ ],
+ "superseded": [
+  {
+   "branch": "deepsignal/console-contract",
+   "head": "4bfd755",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-core",
+   "head": "82ec7ca",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-core-v2",
+   "head": "2ebdf91",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-core-v2-a",
+   "head": "82ec7ca",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-core-v2-b",
+   "head": "82ec7ca",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-core-v2-c",
+   "head": "82ec7ca",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-harness-fixture",
+   "head": "307ba2b",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-harness-soak",
+   "head": "ca98149",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-harness-source-loss",
+   "head": "307ba2b",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-install",
+   "head": "c32b6c9",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-mod-auto-pages",
+   "head": "bc6c864",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-mod-bridge",
+   "head": "585ca4c",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-mod-chart",
+   "head": "f24f23b",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-mod-health",
+   "head": "991e456",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-mod-kiosk-night",
+   "head": "ed61d5f",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-mod-map",
+   "head": "8f6a226",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-mod-stale-banner",
+   "head": "8e1c58b",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-mvp",
+   "head": "f38b52e",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/console-visual-gate",
+   "head": "4bfd755",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "console-ui"
+  },
+  {
+   "branch": "deepsignal/sec-cds-lockdown",
+   "head": "eadb0a2",
+   "status": "SUPERSEDED-BY-UNIT",
+   "unit": "sec-cds-joint"
+  }
+ ]
+}
