@@ -26,6 +26,11 @@ H=$(git -C "$R" rev-parse --short HEAD); OUT=$D/receipts/self-check-$H.txt; mkdi
   git -C "$R" diff "$BASE" HEAD -U0 -- '*test*' | grep -E '^\+[^+]' | grep -E 'time\.sleep\(|setTimeout\(|await asyncio\.sleep\([1-9]' > /dev/null && { echo "FAIL checklist: sleep added in tests"; red=1; } || echo "PASS checklist: no sleeps added in tests"
   echo "$added" | grep -E '^\+\s*except\s*:' > /dev/null && { echo "FAIL checklist: bare except"; red=1; } || echo "PASS checklist: no bare except"
   echo "$added" | grep -q $'\xe2\x80\x94' && { echo "FAIL checklist: em dash in added lines"; red=1; } || echo "PASS checklist: no em dashes"
+  # D-FIX1 (heuristic): code changes need a production-path regression plus one preserving variation, so at least
+  # two new test functions when non-test code changed.
+  code=$(git -C "$R" diff --name-only "$BASE" HEAD | grep -vE '(^|/)(test_[^/]*\.py|[^/]*\.test\.tsx?)$|/dist/|\.md$' | grep -c . | tr -d ' ')
+  newt=$(git -C "$R" diff "$BASE" HEAD -U0 | grep -cE '^\+\s*(def test_|async def test_|it\(|test\()' | tr -d ' ')
+  if [ "$code" -gt 0 ] && [ "$newt" -lt 2 ]; then echo "FAIL checklist D-FIX1: $code non-test files changed but only $newt new tests (need a regression plus a preserving variation)"; red=1; else echo "PASS checklist D-FIX1 (heuristic): $newt new tests for $code changed code files"; fi
   [ $red = 0 ] && echo "RESULT GREEN" || echo "RESULT RED"
 } > "$OUT"
 cat "$OUT"

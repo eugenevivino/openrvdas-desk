@@ -23,8 +23,9 @@ red=0; T0=$(date +%s)
   fi
   tests=$(echo "$changed" | grep -E '(^|/)test_[^/]*\.py$' | while read -r f; do [ -f "$R/$f" ] && echo "$f"; done | tr '\n' ' ')
   [ -n "$tests" ] && run pytest-changed bash -c "cd '$R' && perl -e 'alarm 1800; exec @ARGV' $PY -m pytest -p no:cacheprovider -q -k 'not real_197' $tests"
-  if $PY -c 'import bandit' 2>/dev/null; then run bandit bash -c "cd '$R' && $PY -m bandit -q -r contrib/deepsignal -x '*/test/*,*/node_modules/*'"; else echo "SKIP bandit (not installed; installing needs Eugene)"; fi
-  if $PY -c 'import pip_audit' 2>/dev/null; then run pip-audit bash -c "$PY -m pip_audit -l"; else echo "SKIP pip-audit (not installed; installing needs Eugene)"; fi
+  SC=/private/tmp/deepsignal/venv-scan/bin/python; [ -x $SC ] || SC=$PY
+  if $SC -c 'import bandit' 2>/dev/null; then run bandit bash -c "cd '$R' && $SC -m bandit -q -r contrib/deepsignal -x '*/test/*,*/node_modules/*'"; else echo "SKIP bandit (not installed: the Mac permission check refused venv-scan, D-SCAN1; runs in the cloud review)"; fi
+  if $SC -c 'import pip_audit' 2>/dev/null; then run pip-audit bash -c "$SC -m pip_audit -l"; else echo "SKIP pip-audit (not installed: the Mac permission check refused venv-scan, D-SCAN1; runs in the cloud review)"; fi
   if echo "$changed" | grep -q '^contrib/deepsignal/console/'; then out=$(cd "$R/contrib/deepsignal/console" && npm audit --offline --audit-level=high 2>&1) && echo "PASS npm-audit-offline" || echo "ADVISORY npm-audit-offline (not counted; offline data may be missing): $(echo "$out" | tail -2 | tr '\n' ' ')"; fi
   echo "TOTAL $(( $(date +%s)-T0 ))s"
   [ $red = 0 ] && echo "RESULT GREEN" || echo "RESULT RED"

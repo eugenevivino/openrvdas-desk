@@ -78,3 +78,4 @@ send to the decision desk through the lead.
 
 ## Design note (D-DESIGN1)
 - Design note: `docs/designs/<unit>.md` (required before a build; reviewers judge against it).
+- D-FIX1: every fix needs a production-path regression plus one variation that must keep the same answer; name both tests here.

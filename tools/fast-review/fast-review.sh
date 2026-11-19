@@ -29,6 +29,9 @@ Judge ONLY against (a) the design note below (its acceptance tests and its fixed
 a P1 blocks only if it shows an operator wrong or misleading data with valid inputs in normal operation, is a security
 or install-gate hole, or crashes or hangs on inputs the real CDS can produce. Everything else is a TICKET.
 Machine checks already passed (tests, linters, scanners that are installed); do not repeat them, do not restyle code.
+Security scanners (D-SCAN1): if the environment allows, run `pip install bandit pip-audit` in your task (not in the repo),
+then `python -m bandit -q -r <the Python files of this part>` and `python -m pip_audit -l`; add one line
+"SCAN: bandit <n high> <n medium>; pip-audit <n vulns>" or "SCAN: not run (<reason>)". Do not commit anything they write.
 $3
 Write REVIEW-$1.md with: a list of blocking P1s (each: file:line, one sentence, the valid input that triggers it,
 VERIFIED or INFERRED); a list of TICKET lines (each line starting with "TICKET: "); then exactly one line
@@ -61,7 +64,7 @@ for p in $parts; do
   f="$O/REVIEW-$p.md"; [ -s "$O/REVIEW-$p-astra.md" ] && f="$O/REVIEW-$p-astra.md"
   v=$(grep -oE 'Verdict: (PASS|HOLD)' "$f" 2>/dev/null | tail -1); [ "$v" = "Verdict: PASS" ] || verdict=HOLD
   echo "$p: ${v:-no verdict} ($(basename "$f"))" >> "$O/parts.txt"
-  grep -h '^TICKET: ' "$O"/REVIEW-$p*.md 2>/dev/null | sed "s/^TICKET: /- [$UNIT $p] /" >> "$O/tickets.md"
+  grep -h '^TICKET: ' "$O"/REVIEW-$p*.md 2>/dev/null | grep -viE "^TICKET: *(none|n/a)\.?$" | sed "s/^TICKET: /- [$UNIT $p] /" >> "$O/tickets.md"
 done
 T4=$(date +%s)
 { echo "unit $UNIT head $H base $BASE"; echo "queue/setup $((T1-T0))s"; cat "$O/timing-parts.txt"; echo "first pass wall $((T2-T1))s"; echo "escalation wall $((T3-T2))s"; echo "merge $((T4-T3))s"; echo "total $((T4-T0))s"; } > "$O/timing.txt"
