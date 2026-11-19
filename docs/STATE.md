@@ -2,6 +2,11 @@
 
 Updated 2026-11-19 02:05Z by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
+## Pilot cloud verification dispatch (2026-11-19)
+
+- Candidate edits at detached desk base `ba5d407` for `deepsignal/cloud-verification-dispatch`. Isolated launcher tests pass. Hosted gate NOT RUN.
+- After owner review and publication of the exact desk topic, run the [isolated overlap rehearsal](../tools/pipe2/CLOUD-VERIFICATION.md) and save the Actions receipt.
+
 ## Supervised pilot console (2026-11-19)
 
 - Fork topic `deepsignal/console-supervised-pilot` is at `fc31b54`, based on integration `1dc7a5e`. It contains T-CON-11 (`7b5f98e`) and the three operator-data fixes.

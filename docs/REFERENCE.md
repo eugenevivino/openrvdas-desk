@@ -205,6 +205,7 @@ How DeepSignal plugs into the rest of the OceanDataTools stack. Detail: `docs/EC
 | Gate contrib mode (#49) | Runs `contrib/deepsignal/` tests, not only core `test/` | PROPOSED | 11-21 | `docs/IDEAS.md` |
 | Target-parity scorecard generator | Generates `docs/TARGET-PARITY.md` from scored rows | DONE | done | `tools/target-parity/gen.py` |
 | Reference check | Flags IDEAS numbers and briefs missing from this file | DONE | done | `tools/reference-check.py` |
+| Pilot cloud verification dispatch | Runs pinned Linux console checks while the Mac slot is occupied | BUILT in isolated checkout, hosted overlap and owner review pending | supervised pilot | `docs/designs/cloud-verification-dispatch.md`, `tools/pipe2/CLOUD-VERIFICATION.md` |
 | Public sample data catalog | Real-format sample files for tests (data stays on the shared mount, not in git) | DONE | done | `docs/SAMPLE-DATA.md` |
 | ds-codex launcher | RAM-gated Mac launcher, separate Codex home, pinned sub-agents | DONE (desk 2c228e2, not yet on main) | done | D-SEP1, D-SUB1, `docs/CODEX.md` |
 | Fork integration branch (D-INTEG1) | Merge target for non-critical modules that pass Astra ultra review (D-REVIEW1); one merge commit per module; never fork dev or master | CREATED 2026-11-18 from contrib master 3b4b76e (fork-only; recreated from dev 1a6f1edb before any merge) | done | fork:deepsignal/integration |
