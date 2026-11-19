@@ -516,3 +516,6 @@ From the why-reviews analysis (research/2026-11-19-why-reviews-fail.md): builder
 
 ### D-SCAN1 Security scanners (2026-11-19, Eugene's standing "smart and non-blocking" rule via the coordinator)
 bandit and pip-audit were to go into a DeepSignal-owned venv (`/private/tmp/deepsignal/venv-scan`). The Mac permission check refused creating it ("Undermining Oversight"), as it did for venv-sci, so it was not worked around: the scanners run inside each fast-review cloud task where the cloud allows (`SCAN:` line in each REVIEW file), and `pre-review.sh` reports SKIP on the Mac with that reason. Installing on the Mac needs Eugene himself (MORNING line).
+
+### D-CLOUD1 Cloud runs Sol on medium only (2026-11-19, Eugene via the coordinator)
+Codex cloud runs Sol on medium only: a test on 2026-11-19 (two tiny tasks, with and without `-c model="gpt-6.2-astra"`) reported "GPT-5.6 Sol" both times, so the `-c model` override is ignored and cloud "escalation" is not a stronger model. Builds that touch data correctness run on the Mac with Sol high within the memory gate and the DeepSignal cap of 2; everything else stays on cloud medium. Recorded in `docs/CODEX.md` and `docs/CODEX-HANDOVER.md`.

@@ -202,3 +202,6 @@ Kalon yields first on conflict.
   (or `DS_REVIEW_ROUTE=exempt:<reason>` for an Eugene-requested one-off); the launcher refuses others (exit 5).
 - WIP cap: at most 3 units in progress, all on the Nov 25 path (`/private/tmp/deepsignal/wip-units.txt`); the
   launcher refuses jobs for other units while all slots are taken (exit 4).
+
+## Cloud model (D-CLOUD1, tested 2026-11-19)
+Codex cloud ignores `-c model=...`: tasks with and without an Astra override both reported Sol. Treat cloud as Sol medium only. Data-correctness builds run on the Mac with Sol high.
