@@ -1,10 +1,12 @@
 # Design note: Console UI pilot follow-up
 
-Status: DRAFT, approval required. Launcher unit: `console`. Tickets: T-CON-1 to T-CON-3.
+Status: approved for the Nov 25 supervised pilot. Launcher unit: `console`. Tickets: T-CON-1 to T-CON-3 and the T-CON-11 test prerequisite.
 
 ## Fixed target
 
 For the Nov 25 supervised pilot, the console must display the latest defensible reading status on valid CDS data. A late FAIL for an older reading must preserve the newest usable reading. Returning to a page must retain its learned sample period and report freshness from that period and actual sample age. The Map must show NO DATA when valid coordinates yield no paired track points.
+
+Prove one visible behavior in a real browser for each of the ten shipped console modules. Use the served distribution, production registry and an isolated CDS fixture. Record the exact SHA and the module-specific assertions.
 
 ## Acceptance tests
 
@@ -18,6 +20,8 @@ cd contrib/deepsignal/console && npm test
 cd contrib/deepsignal/console && npm run lint
 cd contrib/deepsignal/console && npm run type-check
 cd contrib/deepsignal/console && npm run build
+python3 -m pytest -v contrib/deepsignal/test/console/test_pilot_modules_browser.py
+python3 -m pytest -q contrib/deepsignal/test
 ```
 
 - T-CON-1: feed a late FAIL for an evicted sample through the CDS ingestion path and assert the exposed last-good reading survives. Repeat at a different valid rollover offset.
@@ -30,7 +34,7 @@ T-CON-4 through T-CON-10 remain tickets. Installer, relay, security redesign, th
 
 ## Prerequisites on trunk
 
-Fork integration was verified remotely at `7c60dbfa7e9b23f16aef608f8e0e5d509ca56f9c`. Before starting, recheck the head and claims, verify the console source and lockfile, and create an isolated checkout from that integration commit. Keep the checkout detached to avoid the hourly sync. Use the pinned Node dependencies and normal launcher admission.
+Fork integration was verified remotely at `1dc7a5e001f9535520ac8986922253c2ea20e01e`. Before starting, recheck the head and claims, verify the console source and lockfile, and create an isolated checkout from that integration commit. Keep the checkout detached to avoid the hourly sync. Use the pinned Node dependencies and normal launcher admission. Include the verified T-CON-11 test fix on the candidate. Cover Auto Pages, Bridge, Chart, Example, Health, Kiosk/Night, Map, Number, Self-Test and Stale Banner. Every module needs an assertion against its own observable behavior.
 
 ## Who judges
 
