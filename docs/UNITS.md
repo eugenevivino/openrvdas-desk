@@ -8,13 +8,14 @@ only from logged evidence at the exact head; never mark a stamp without evidence
 | Unit | Branch | Head | Status |
 |---|---|---|---|
 | console-ui | `deepsignal/integration` | 7c60dbf | ACTIVE (D-WIP3 slot 1: console pilot and follow-ups) |
-| console-soak-24h | `deepsignal/integration` | 7c60dbf | ACTIVE (D-WIP3 slot 3: 24 h soak of the pilot candidate; not started) |
+| stream-health-view | `deepsignal/stream-health-view` | pending | ACTIVE (D-WIP3 slot 3: presentation only) |
 | sec-cds-joint | `deepsignal/sec-cds-joint` | 82c8f3d | ACTIVE (D-WIP3 slot 2: security redesign) |
 
 ## PAUSED (D-WIP3: launch nothing new; in-flight jobs finish as they are)
 
 | Unit | Branch | Head |
 |---|---|---|
+| console-soak-24h | `deepsignal/integration` | 7c60dbf |
 | app-ia | `deepsignal/app-ia` | 7c166e0 |
 | correction-ledger | `deepsignal/correction-ledger` | 59b061b |
 | dependency-graph | `deepsignal/dependency-graph` | 3b4b76e |

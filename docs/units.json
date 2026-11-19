@@ -42,7 +42,7 @@
    "branch": "deepsignal/integration",
    "head": "7c60dbf",
    "critical": false,
-   "status": "ACTIVE (D-WIP3 slot 3: 24 h soak of the pilot candidate; not started)",
+   "status": "PAUSED (soak held by Eugene; slot 3 reassigned to Stream Health view)",
    "stamps": {
     "moved": {
      "ok": false,
@@ -71,6 +71,42 @@
     }
    },
    "design_note": "docs/designs/soak.md (Astra medium, queued on the Mac)",
+   "claimed_by": "unclaimed"
+  },
+  {
+   "unit": "stream-health-view",
+   "branch": "deepsignal/stream-health-view",
+   "head": "",
+   "critical": false,
+   "status": "ACTIVE (D-WIP3 slot 3: Stream Health console view)",
+   "design_note": "docs/designs/stream-health-view.md",
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   },
    "claimed_by": "unclaimed"
   },
   {
@@ -2506,6 +2542,42 @@
      "ok": true,
      "evidence": "tools/pipe2/tests: 5 of 5 pass on the MacBook 2026-11-19",
      "at": "desk"
+    },
+    "fixed": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested_in_app": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    }
+   },
+   "claimed_by": "unclaimed"
+  },
+  {
+   "unit": "cloud-verification-dispatch",
+   "branch": "deepsignal/cloud-verification-dispatch",
+   "head": "",
+   "critical": true,
+   "status": "Process tooling outside WIP (D-PIPE2)",
+   "design_note": "docs/designs/cloud-verification-dispatch.md",
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
+    },
+    "tested": {
+     "ok": false,
+     "evidence": "",
+     "at": ""
     },
     "fixed": {
      "ok": false,
