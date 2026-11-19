@@ -59,8 +59,10 @@ def main(argv=None):
         totals['QUALIFIED'] += qualified
         totals['FINISHED'] += finished
         rows.append((unit, marks, notes))
-    print('LANDED %d  QUALIFIED %d  FINISHED %d  (of %d units; %d superseded branches)'
-          % (totals['LANDED'], totals['QUALIFIED'], totals['FINISHED'], len(units), len(data.get('superseded', []))))
+    active = sum(1 for u in units if str(u.get('status', '')).startswith('ACTIVE'))
+    print('LANDED %d  QUALIFIED %d  FINISHED %d  (of %d units: %d active, %d paused; %d superseded branches)'
+          % (totals['LANDED'], totals['QUALIFIED'], totals['FINISHED'], len(units), active,
+             len(units) - active, len(data.get('superseded', []))))
     print('stamps: M moved, T tested, F fixed, A in app, P tested in app; X counted, . not')
     for unit, marks, notes in rows:
         if args.unit and unit.get('unit') != args.unit:

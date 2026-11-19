@@ -192,3 +192,13 @@ free RAM at least 4 GB and swap under 3.8 GB. Mini: free RAM at least 2 GB and s
 `DS_MAX_SWAP_MB=2457`, pressure level 1). One heavy job per project per machine, re-check right before launch,
 Kalon yields first on conflict.
 
+
+## Review routing (D-WIP3, Eugene 2026-11-19; supersedes earlier "Astra on the Mac" review routing)
+
+- Non-math reviews run in Codex cloud (`/private/tmp/deepsignal/cloud-review.sh <fork-branch> <prompt> <out>`):
+  the reviewer writes its whole review to `REVIEW.md` and changes nothing else; any other path rejects it. The
+  prompt carries the spec inline (the cloud cannot see the desk or the Mac).
+- The Mac runs only math reviews and build work. A read-only job on the Mac must set `DS_REVIEW_ROUTE=math`
+  (or `DS_REVIEW_ROUTE=exempt:<reason>` for an Eugene-requested one-off); the launcher refuses others (exit 5).
+- WIP cap: at most 3 units in progress, all on the Nov 25 path (`/private/tmp/deepsignal/wip-units.txt`); the
+  launcher refuses jobs for other units while all slots are taken (exit 4).
