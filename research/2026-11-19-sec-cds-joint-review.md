@@ -13,3 +13,5 @@
 The real checker accepted both new flags and both shipped relay templates. Unknown and abbreviated flags exited 2. Five focused tests and flake8 passed. The positive integration test reloads the installer-written site for both templates and checks subscribe, publish refusal, and cache writes. I verified that sequence by reading it because nginx is unavailable on this Mac.
 
 Verdict: HOLD
+
+Lead note: the live nginx gate test test_real_197_gate_through_django_and_react_nginx PASSED on GitHub ubuntu-24.04 with nginx 1.24.0 (desk run 44426602772, branch ci/sec-joint-nginx, fork f38b52e; Django and React subtests).
