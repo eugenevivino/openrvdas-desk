@@ -77,3 +77,18 @@ boot-session UUID for the local swap-observation cache. Versioned cache starts
 with an ordinary five-minute warmup; pressure, swap, job and ownership guards
 remain. Focused19 admission/measurement checks passed; live performance benefit
 is not yet measured.
+
+
+### 2026-11-20: plan interpreter and repair qualification
+
+Compiling a plan with macOS default Python3.9 pinned that interpreter into the
+adapter command even though the controller ranPython3.12. Its process-relative
+monotonic values prevented cross-worker swap evidence reuse. Relay247f58f adds
+an early Python3.12 minimum at plan compilation; the new test first failed then
+passed. Owned prelaunch22797/22798 was cancelled and retirement verified before
+replacement; no native command or claim had started. Runtime-v11 now uses3.12.
+
+Final repair9935ed82 passes223frontend tests, both existing native acceptance
+contracts and exact Linux44718633913. Old failures, fixture synchronization errors
+and the temporary QC-only cache regression remain recorded. Fresh Astra Ultra
+review is active; original HOLD is still authoritative until explicit clearance.
