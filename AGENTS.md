@@ -8,7 +8,10 @@ private memory. `CLAUDE.md` imports this file and adds nothing.
 
 1. Read `docs/STATE.md`, `docs/RULES.md`, and the `docs/DECISIONS.md` entries
    your task touches. Read `docs/OPERATING-SYSTEM.md` the first time and
-   whenever your task touches process, machines, or the gate.
+   whenever your task touches process, machines, or the gate. For every pipeline
+   continuation, read its **Deterministic orchestration** section and the dated
+   Relay checkpoint in `docs/CODEX-HANDOVER.md` before acting on queued work. Mini
+   admission uses the documented authorized floor only after common-policy verification.
 2. Inspect the real checkout: branch, head sha, dirty files, remotes. A plan in
    a doc is not evidence of what the code does now.
 3. If you were handed a brief, read it fully and work only inside its scope.
@@ -49,9 +52,9 @@ writes no production code, tests or gate code. Read `docs/BUILDERS.md`.
 
 ## Codex
 
-Codex jobs follow `docs/CODEX.md`: launch through `~/bin/codex-run`, right-size
-the model, one bounded task per fresh session, tight briefs, one job at a time
-on the Mini and none during a Kalon gate.
+Codex jobs follow `docs/CODEX.md` and D-SEP1: use `~/bin/ds-codex` with
+`~/.codex-deepsignal`, an explicit right-sized model and a bounded brief.
+Admission follows the current approved machine guards and existing job ownership.
 
 ## How work flows
 
