@@ -1,0 +1,20 @@
+{
+  "scope": "Observed supervisor worker times; host admission and command start are separate",
+  "workers": [
+    {
+      "job": "deepsignal.test.cadence-baseline.00f731a31248dc06",
+      "worker_started_at": 1795170038.2540832,
+      "worker_finished_at": 1795170041.590552,
+      "returncode": 1,
+      "path": "integration-repair-check2-state/attempts/faa4272e6fd1213f7a88/000001-000001/worker-result.json"
+    },
+    {
+      "job": "deepsignal.test.combined-pilot.9ebec2f1d37405cc",
+      "worker_started_at": 1795170041.6522062,
+      "worker_finished_at": 1795170055.628066,
+      "returncode": 1,
+      "path": "integration-repair-check2-state/attempts/515edb1e3dd5a31aa4cc/000001-000001/worker-result.json"
+    }
+  ],
+  "handoff_s": 0.061654090881347656
+}

@@ -8,11 +8,13 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 - Streama3532f3: full Mac acceptance GREEN, Linux44712385947 PASS; source/artifact reviews PASS.
 - Combined2ea3e609: both Mac design checks PASS; Linux44714303424 attempt2 all3 jobs PASS after checkout-only failure.
 - Fresh standalone Astra Ultra integration review HOLD: outage navigation loses report history, delayed return distorts cadence, valid `_QC_` stream names lose QC subscription. No merge; targeted regression/repairs active.
-- Current source47b9295d adds two producer-name regressions. Relay `integration-qc-red-state` owns its guarded run. Inspect current receipts before resuming.
+- Candidate9935ed82 passed all gates but R2 held3 variations. Six new regressions RED then229frontend/lint/type checks PASS; two corrected-replay variants also repaired.
+- Final bundle4f28b56d: both full Mac checks PASS; Linux44720535508 all3 jobs PASS,231frontend tests. R3 review terminal HOLD on four valid-input variations; no integration.
 - See CODEX-HANDOVER.md for immutable evidence and review provenance. Newly qualified0, integrated0; original failures/HOLDs preserved.
-- Relay source38baeff: stable boot identity for swap evidence; focused tests PASS. Six measured v9 handoffs median0.044s/max0.058s after Relay reservation waits; no machine-throughput gain claimed.
+- Repair80abbf83 adds eight regressions for cached-return cadence, historical QC alignment, configured QC suffixes and ordered stderr callbacks; 239frontend tests, lint/type PASS. Bundlea284c1c7 is published; both full Mac checks PASS. Linux44723265628 and fresh independent R4 review active.
+- Relay source247f58f: Python3.12 plan guard and stable boot identity for swap evidence; focused tests PASS. Six measured v9 handoffs median0.044s/max0.058s after Relay reservation waits; no machine-throughput gain claimed.
 - Mini1GiB common policy pinned; no admitted Mini job or live shared allocator activation. Kalon remains allocator owner.
-- Codex verified5% remaining; retain1% reserve. Any authorized ready successor is optional after exhaustion; no takeover.
+- Codex verified4% remaining; retain1% reserve. Any authorized ready successor is optional after exhaustion; no takeover.
 - Existing supervisors and Kalon playback untouched. The24-hour soak remains held. Topic-branch sync only; direct desk-main push rejected.
 
 ## Handoff (2026-11-19 03:42Z)
@@ -47,4 +49,4 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 - #121 and #139 downloads; venv-sci install (sonar estimators); nginx not installed on the Mac (by decision).
 
 ## Sync (D-SYNC1)
-- Last sync 2026-11-20T09:22:59Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
+- Last sync 2026-11-20T10:23:04Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.

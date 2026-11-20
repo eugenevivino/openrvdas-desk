@@ -5,15 +5,37 @@ Self-contained. Read this first, then `docs/STATE.md`, `docs/DECISIONS.md` and `
 ## Relay checkpoint (2026-11-20; inspect live state before continuing)
 
 Continue DeepSignal product work. Provider succession is only a contingency after
-Codex exhaustion; Claude is optional. Codex was verified at 5% remaining during
+Codex exhaustion; Claude is optional. Codex was verified at 4% remaining during
 this checkpoint; retain the 1% reserve and recheck before any new model job.
 No successor takeover or Claude engineering job is claimed.
 
 Authoritative desk: `/private/tmp/deepsignal/desk-main`. Relay source:
-`/private/tmp/deepsignal/relay-20261120/repo` at `38baeff`. Immutable runtime-v8
-continues owning its existing pilot jobs; do not edit live runtimes or clear
+`/private/tmp/deepsignal/relay-20261120/repo` at `247f58f`. Immutable runtime-v11
+owns the current guarded validation; do not edit live runtimes or clear
 uncertain claims. Kalon owns the shared allocator. Existing supervisors remain
 in charge; Relay is PILOT/STAGED, not production.
+
+Latest update: R2 at9935ed82 returned HOLD on sparse-cadence, QC-only-history and
+catalog-collision variations. Its original answer is preserved as
+`research/2026-11-20-relay-pilots/combined-astra-r2-hold.md`. No integration occurred.
+All six variations reproduced atf09ff838, then repaired sourcee388d666 passed229
+frontend tests, lint and type checks. Two timestamp-correction replay variants
+reproduced at39062221;2eaaf01a fixes their observation-epoch retention.
+Final generated bundle `4f28b56d58c562ae7419475c05da7794a403c973` is published on
+`deepsignal/relay-combined-pilot-20261120`. `combined-final-release-state` completed both unchanged full Mac design checks,
+PASS. Linux44720535508 (workflow58ae2a9) all3 jobs PASS,231frontend tests.
+R3 is terminal HOLD; answer preserved in `research/2026-11-20-relay-pilots/combined-astra-r3-hold.md`.
+Eight new regressions at80dd74db reproduced cached-return cadence, historical QC
+alignment, configured suffix collisions and stderr replay ordering. Source80abbf83
+repairs these; `integration-r3-green-state` completed239frontend/lint/type PASS.
+Generateda284c1c7 is published on the existing pilot topic. Both full native checks in
+`combined-r4-release-state` PASS (151.8s and31.1s). Exact Linux44723265628
+(workflowc9db041) remains active. Fresh independent R4 review owns
+`native-review-r4/state`, job88fcbdb8f725e0f4988077f6, session
+01a1f89a-ba02-7512-b351-9ba4932af994. Read-only Astra Ultra headers verified.
+Next: collect explicit review and exact Linux verdicts, then judge integration.
+Do not integrate while HOLD remains. Codex remains4%, with1% reserved.
+All older observations below are historical evidence.
 
 Product evidence (all paths below relative to `/private/tmp/deepsignal/relay-20261120`):
 
@@ -45,10 +67,33 @@ Product evidence (all paths below relative to `/private/tmp/deepsignal/relay-202
   ultra, read-only. Installed ds-codex was not changed: a hashed private copy
   retained its safety checks and delegated claim ownership to Relay. Provenance
   and bounded logs are in `native-review/`. No review subagent credit was used.
-- Current repair source starts at `47b9295d874b90affae0d61589ddd014ea00f412`
-  in `modules/combined-pilot`: two producer-name regression variations only.
-  `integration-qc-red-plan.json` / `integration-qc-red-state` run them through
-  Relay with normal admission; inspect the actual terminal result before repair.
+- Repaired final candidate `9935ed82d949f0ba057164d24cce502eca9110a4` is published
+  on `deepsignal/relay-combined-pilot-20261120`. Source23abbd04 repairs all3 reported
+  cases and preserves QC-only semantics. All223 frontend tests passed, both full
+  Mac design self-checks passed, and exact Linux44718633913 all3 jobs PASS. The
+  workflow source pin is2de07681382205209bf3ebf8f30c8d316d340343. Evidence snapshots
+  are `research/2026-11-20-relay-pilots/repaired-{native-checks,linux-jobs}.json`.
+- Historical native fresh independent Astra Ultra re-review is terminal HOLD in `native-review-r2/state`,
+  job `deepsignal.final-integration-review.d99a8ae3eededc4d799cbe50`, supervisor68735,
+  session `01a1f87c-fe63-7c61-9ca4-d82834ddacad`. Verify actual terminal state and
+  answer before any integration. The original HOLD remains until explicit PASS.
+- Focused red evidence is retained in integration-qc-red-state (2fail),
+  integration-outage-red3-state (2Missing failures) and integration-repair-check2-state
+  (2cadence failures: LIVE with30s/60s instead ofSTALE with1s/2s). Intermediate
+  fixture mistakes and the full-suite regression are retained, never relabeled.
+  The repaired frontend suite passed223 tests; unsupported role-option type error
+  was removed at23abbd04, then final full gates reran on the generated bundle.
+- Runtime-v11 pins required Python3.12 and stable boot UUID. Earlier plans built
+  with Xcode Python3.9 used process-relative clock samples and repeatedly warmed
+  up. Sole owned prelaunch supervisor22797 was cancelled before any native test,
+  its child22798 was verified retired, and the original terminal receipt retained.
+  No foreign claim or protected worker was touched. Relay247f58f refuses plan
+  generation belowPython3.12; regression was RED then2focused tests PASS.
+- Measured worker handoff: failed cadence regression to next independent frontend
+  worker0.061654s. Source is two worker-result.json timestamps, preserved in
+  `research/2026-11-20-relay-pilots/independent-job-handoff.json`. This measures
+  supervisor start; command startup and host safety waits remain separate.
+
 
 No new module is integrated or qualified by this checkpoint. Current P1 findings
 block both pilot release stamps; preserve the registry's older historical stamps.
