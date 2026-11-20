@@ -4,16 +4,16 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
 ## Relay pilots (2026-11-20)
 
-- Latest combined candidateb67f3072 is published on the authorized pilot topic; source73d97e74.
-- All272frontend tests, lint/types PASS. Both full native gates are active; exact Linux workflow07f277e dispatched.
-- Prior R8 review HOLD1: corrected QC lost observation provenance. Two real regressions RED, then fixed. R9 review prepared only; requires full native PASS and fresh quota before launch.
-- All prior HOLDs/raw failures remain in research/2026-11-20-relay-pilots and immutable Relay states. No HOLD treated as PASS.
-- Console and Stream view remain claimed by this Relay chat. Newly qualified0/integrated0. Finish-line registry: LANDED2, QUALIFIED0, FINISHED0 of74.
-- Relay source247f58f requires Python3.12 and stable boot UUID. Measured queued independent worker handoff0.061654s; no machine/module throughput gain claimed yet.
-- Mini1GiB policy pinned; allocator still Kalon's. No admitted DeepSignal Mini job or shared scheduling activation.
-- Codex last verified3%; reserve1%. Provider-neutral successor optional after exhaustion; no takeover or Claude setup underway.
-- Existing supervisors/protected playback untouched;24-hour soak held. Topic sync only; direct desk-main push was rejected.
-- Current ownership, exact receipts and next actions: CODEX-HANDOVER.md.
+- Console and Stream Health view FINISHED as fixture pilots at b67f3072 on fork deepsignal/integration. Normal fast-forward verified remotely; no upstream/default-branch change.
+- All 272 frontend tests, lint/types, both unchanged full native design checks and Linux 44732250214 all 3 jobs PASS at that exact candidate.
+- Fresh standalone Astra Ultra R9 PASS, CRITICAL:no, no blocking P1; D-REVIEW1 approval logged. Original HOLDs/raw failures remain preserved.
+- Both unit claims released after verified completion. Finish-line manifest updated with exact five stamps; compute counts with tools/finish-line.py.
+- Relay source 247f58f requires Python 3.12/stable boot UUID. Queued independent worker handoff measured 0.061654 s. Two pilots newly finished; no machine-utilization percentage claimed.
+- Relay remains PILOT/STAGED: typed gate import/policy version handling, forced-termination retirement and authoritative shared leases/ownership transfer still need qualification before production dispatch.
+- Mini 1 GiB policy pinned; Kalon owns allocator. No admitted DeepSignal Mini job or shared scheduling activation. Protected playback and existing supervisors untouched.
+- Codex last verified 2%; preserve 1%. Successor provider optional after exhaustion; no takeover or Claude setup underway.
+- Live deployment/installer activation, Stream Health engine and 24-hour soak are not included. Existing scientific/security/approval holds remain.
+- Current receipts and next actions: CODEX-HANDOVER.md. Desk topic sync only; direct desk-main push was rejected.
 
 ## Handoff (2026-11-19 03:42Z)
 - Eugene drives new work from the Codex GUI using docs/CODEX-HANDOVER.md; Codex takes unclaimed units.

@@ -4,38 +4,76 @@
   {
    "unit": "console-ui",
    "branch": "deepsignal/integration",
-   "head": "7c60dbf",
+   "head": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
    "critical": false,
    "stamps": {
     "moved": {
      "ok": true,
-     "evidence": "merged into fork deepsignal/integration 7c60dbf, tag deepsignal/pilot-candidate (D-PILOT1)",
-     "at": "7c60dbf"
+     "at": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
+     "evidence": "Normal fast-forward pushed and remote verified at b67f3072daee63d0d307a16bc1d34e24b3c75002 on eugenevivino/openrvdas:deepsignal/integration; D-REVIEW1 approval logged."
     },
     "tested": {
      "ok": true,
-     "evidence": "merged tree: tsc clean, vitest 178, build ok, pytest contrib/deepsignal/test 35 passed, flake8 clean (desk docs/DECISIONS.md D-PILOT1)",
-     "at": "7c60dbf"
+     "at": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
+     "evidence": "Both exact native design self-checks PASS,272frontend/lint/types PASS; Linux all3jobs PASS: https://github.com/eugenevivino/openrvdas-desk/actions/runs/44732250214; research/2026-11-20-relay-pilots/r9-native-checks.json and r9-linux-jobs.json."
     },
     "fixed": {
-     "ok": false,
-     "evidence": "final review HOLD (2 open, 2 new P1, ticketed T-CON-1 to T-CON-3 under D-PILOT1): desk research/2026-11-18-console-final-review.md",
-     "at": ""
+     "ok": true,
+     "at": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
+     "evidence": "Fresh standalone gpt-6.2-astra ultra read-only session01a1f8d7-55fd-7622-b89f-7de9ad0cd9fd: PASS, CRITICAL:no, no blocking P1; research/2026-11-20-relay-pilots/combined-astra-r9-pass.md."
     },
     "in_app": {
      "ok": true,
-     "evidence": "dist served by the test-side same-origin relay (test/console/browser_server.py) against the NBP1406 replay fixture on the Mac",
-     "at": "7c60dbf"
+     "at": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
+     "evidence": "Exact generated console dist served by isolated Mac browser/replay fixtures in both full design checks; r9-native-checks.json records exact candidate."
     },
     "tested_in_app": {
      "ok": true,
-     "evidence": "lead_run browser tests (test_console_live, test_bridge_browser, test_source_loss_browser) passed in the 35-pass run on the merged tree",
-     "at": "7c60dbf"
+     "at": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
+     "evidence": "Actual Chromium fixture browser acceptance PASS at exact candidate in native self-checks and Linux pilot job: https://github.com/eugenevivino/openrvdas-desk/actions/runs/44732250214; includes Stream Health and all existing pilot module checks."
     }
    },
-   "status": "ACTIVE (D-WIP3 slot 1: console pilot and follow-ups)",
+   "status": "FINISHED (qualified fixture pilot; live production activation remains separate)",
    "design_note": "docs/designs/console.md",
-   "claimed_by": "unclaimed"
+   "claimed_by": "",
+   "history": [
+    {
+     "unit": "console-ui",
+     "branch": "deepsignal/integration",
+     "head": "7c60dbf",
+     "critical": false,
+     "stamps": {
+      "moved": {
+       "ok": true,
+       "evidence": "merged into fork deepsignal/integration 7c60dbf, tag deepsignal/pilot-candidate (D-PILOT1)",
+       "at": "7c60dbf"
+      },
+      "tested": {
+       "ok": true,
+       "evidence": "merged tree: tsc clean, vitest 178, build ok, pytest contrib/deepsignal/test 35 passed, flake8 clean (desk docs/DECISIONS.md D-PILOT1)",
+       "at": "7c60dbf"
+      },
+      "fixed": {
+       "ok": false,
+       "evidence": "final review HOLD (2 open, 2 new P1, ticketed T-CON-1 to T-CON-3 under D-PILOT1): desk research/2026-11-18-console-final-review.md",
+       "at": ""
+      },
+      "in_app": {
+       "ok": true,
+       "evidence": "dist served by the test-side same-origin relay (test/console/browser_server.py) against the NBP1406 replay fixture on the Mac",
+       "at": "7c60dbf"
+      },
+      "tested_in_app": {
+       "ok": true,
+       "evidence": "lead_run browser tests (test_console_live, test_bridge_browser, test_source_loss_browser) passed in the 35-pass run on the merged tree",
+       "at": "7c60dbf"
+      }
+     },
+     "status": "ACTIVE (D-WIP3 slot 1: console pilot and follow-ups)",
+     "design_note": "docs/designs/console.md",
+     "superseded_at": "2026-11-20T12:09:46.169550+00:00"
+    }
+   ]
   },
   {
    "unit": "console-soak-24h",
@@ -75,39 +113,77 @@
   },
   {
    "unit": "stream-health-view",
-   "branch": "deepsignal/stream-health-view",
-   "head": "9f156fa",
+   "branch": "deepsignal/integration",
+   "head": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
    "critical": false,
-   "status": "ACTIVE (slot 3, fork PR #2 awaiting release gate)",
+   "status": "FINISHED (qualified fixture pilot; live production activation remains separate)",
    "design_note": "docs/designs/stream-health-view.md",
    "stamps": {
     "moved": {
-     "ok": false,
-     "evidence": "",
-     "at": ""
+     "ok": true,
+     "at": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
+     "evidence": "Normal fast-forward pushed and remote verified at b67f3072daee63d0d307a16bc1d34e24b3c75002 on eugenevivino/openrvdas:deepsignal/integration; D-REVIEW1 approval logged."
     },
     "tested": {
      "ok": true,
-     "at": "9f156fa",
-     "evidence": "Mac and Ubuntu passed 186 frontend tests and Chromium with two stock-CDS fixture streams. Linux run 44571508115. Installed Bandit remains red."
+     "at": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
+     "evidence": "Both exact native design self-checks PASS,272frontend/lint/types PASS; Linux all3jobs PASS: https://github.com/eugenevivino/openrvdas-desk/actions/runs/44732250214; research/2026-11-20-relay-pilots/r9-native-checks.json and r9-linux-jobs.json."
     },
     "fixed": {
-     "ok": false,
-     "evidence": "",
-     "at": ""
+     "ok": true,
+     "at": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
+     "evidence": "Fresh standalone gpt-6.2-astra ultra read-only session01a1f8d7-55fd-7622-b89f-7de9ad0cd9fd: PASS, CRITICAL:no, no blocking P1; research/2026-11-20-relay-pilots/combined-astra-r9-pass.md."
     },
     "in_app": {
-     "ok": false,
-     "evidence": "",
-     "at": ""
+     "ok": true,
+     "at": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
+     "evidence": "Exact generated console dist served by isolated Mac browser/replay fixtures in both full design checks; r9-native-checks.json records exact candidate."
     },
     "tested_in_app": {
-     "ok": false,
-     "evidence": "",
-     "at": ""
+     "ok": true,
+     "at": "b67f3072daee63d0d307a16bc1d34e24b3c75002",
+     "evidence": "Actual Chromium fixture browser acceptance PASS at exact candidate in native self-checks and Linux pilot job: https://github.com/eugenevivino/openrvdas-desk/actions/runs/44732250214; includes Stream Health and all existing pilot module checks."
     }
    },
-   "claimed_by": "unclaimed"
+   "claimed_by": "",
+   "history": [
+    {
+     "unit": "stream-health-view",
+     "branch": "deepsignal/stream-health-view",
+     "head": "9f156fa",
+     "critical": false,
+     "status": "ACTIVE (slot 3, fork PR #2 awaiting release gate)",
+     "design_note": "docs/designs/stream-health-view.md",
+     "stamps": {
+      "moved": {
+       "ok": false,
+       "evidence": "",
+       "at": ""
+      },
+      "tested": {
+       "ok": true,
+       "at": "9f156fa",
+       "evidence": "Mac and Ubuntu passed 186 frontend tests and Chromium with two stock-CDS fixture streams. Linux run 44571508115. Installed Bandit remains red."
+      },
+      "fixed": {
+       "ok": false,
+       "evidence": "",
+       "at": ""
+      },
+      "in_app": {
+       "ok": false,
+       "evidence": "",
+       "at": ""
+      },
+      "tested_in_app": {
+       "ok": false,
+       "evidence": "",
+       "at": ""
+      }
+     },
+     "superseded_at": "2026-11-20T12:09:46.169550+00:00"
+    }
+   ]
   },
   {
    "unit": "app-ia",

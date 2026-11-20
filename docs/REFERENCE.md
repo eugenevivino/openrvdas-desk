@@ -64,10 +64,12 @@ Today's numbers are "core plus built DeepSignal". Re-score with `tools/target-pa
 
 ## 3. MVP #1: the Console (target Tue 2026-11-25, Pacific)
 
-2026-11-20 checkpoint: Combinedb67f3072 repairs the sole R8 QC-provenance HOLD.
-Source73d97e74 passes272frontend/lint/type checks. Full native/Linux gates active;
-fresh independent R9 review prepared only. No new integration or qualification.
-Current state: CODEX-HANDOVER.md; original findings: research/2026-11-20-relay-pilots.
+2026-11-20 checkpoint: Console and Stream Health view are QUALIFIED and FINISHED
+as fixture pilots at b67f3072, now on fork deepsignal/integration. All 272 frontend
+checks, both full native design gates and Linux 44732250214 all 3 jobs PASS. Fresh
+independent Astra Ultra R9 PASS cleared the final P1 and recommended integration.
+Live deployment, installer activation and24-hour soak remain separate held gates.
+Evidence and current status: CODEX-HANDOVER.md and research/2026-11-20-relay-pilots.
 
 Native console (React, TypeScript, Vite, Tailwind, uPlot) reading CachedDataServer. Quality bar: "gorgeous
 and functional" (D-VISUAL1, checks V1 to V9). "Stable integration" is five tests, all must pass (ROADMAP "MVP #1").
@@ -75,23 +77,23 @@ Rulebook: `design/console-DESIGN.md`. Task table: `briefs/console/INDEX.md`. Int
 
 | Feature | What it does | Status | Target | Link |
 |---|---|---|---|---|
-| Console core (plugin host, data adapter) | App shell, module plugin host, CachedDataServer adapter, page files, freshness LIVE / AGING / STALE / NO DATA | PILOT CANDIDATE (D-PILOT1, integration 7c60dbf) | 11-20 | fork:deepsignal/console-core, `briefs/console/core-v2.md` |
-| Console contract | Shared types and module interface every console module builds against | BUILT (4bfd755) | done | fork:deepsignal/console-contract |
-| Charts | Time-series charts with uPlot, scrub, multiple fields | PILOT CANDIDATE (D-PILOT1, integration 7c60dbf) | 11-19 | fork:deepsignal/console-mod-chart, `briefs/console/charts.md` |
-| Health page | Every sensor: last value, age, QC flag, alarm state (#12) | PILOT CANDIDATE (D-PILOT1, integration 7c60dbf) | 11-19 | fork:deepsignal/console-mod-health, `briefs/console/health.md` |
-| Bridge page | Night-safe huge readouts, relative wind, stale shown as stale (#13) | PILOT CANDIDATE (D-PILOT1, integration 7c60dbf) | 11-19 | fork:deepsignal/console-mod-bridge, `briefs/console/bridge.md` |
-| Auto pages | Builds starter pages from whatever fields the ship publishes | PILOT CANDIDATE (D-PILOT1, integration 7c60dbf) | 11-19 | fork:deepsignal/console-mod-auto-pages, `briefs/console/auto-pages.md` |
-| Stale banner | Page-wide banner when a source goes stale or silent | PILOT CANDIDATE (D-PILOT1, integration 7c60dbf) | 11-19 | fork:deepsignal/console-mod-stale-banner, `briefs/console/stale-banner.md` |
-| Kiosk with auto night | Locked bridge kiosk; night palette switches automatically, one tap always; red default (D-CONSOLE2) | PILOT CANDIDATE (D-PILOT1, integration 7c60dbf) | 11-19 | fork:deepsignal/console-mod-kiosk-night, `briefs/console/kiosk-night.md` |
+| Console core (plugin host, data adapter) | App shell, module plugin host, CachedDataServer adapter, page files, freshness LIVE / AGING / STALE / NO DATA | QUALIFIED FIXTURE PILOT (integration b67f3072) | 11-20 | fork:deepsignal/console-core, `briefs/console/core-v2.md` |
+| Console contract | Shared types and module interface every console module builds against | BUILT/QUALIFIED (b67f3072) | done | fork:deepsignal/console-contract |
+| Charts | Time-series charts with uPlot, scrub, multiple fields | QUALIFIED FIXTURE PILOT (integration b67f3072) | 11-19 | fork:deepsignal/console-mod-chart, `briefs/console/charts.md` |
+| Health page | Every sensor: last value, age, QC flag, alarm state (#12) | QUALIFIED FIXTURE PILOT (integration b67f3072) | 11-19 | fork:deepsignal/console-mod-health, `briefs/console/health.md` |
+| Bridge page | Night-safe huge readouts, relative wind, stale shown as stale (#13) | QUALIFIED FIXTURE PILOT (integration b67f3072) | 11-19 | fork:deepsignal/console-mod-bridge, `briefs/console/bridge.md` |
+| Auto pages | Builds starter pages from whatever fields the ship publishes | QUALIFIED FIXTURE PILOT (integration b67f3072) | 11-19 | fork:deepsignal/console-mod-auto-pages, `briefs/console/auto-pages.md` |
+| Stale banner | Page-wide banner when a source goes stale or silent | QUALIFIED FIXTURE PILOT (integration b67f3072) | 11-19 | fork:deepsignal/console-mod-stale-banner, `briefs/console/stale-banner.md` |
+| Kiosk with auto night | Locked bridge kiosk; night palette switches automatically, one tap always; red default (D-CONSOLE2) | QUALIFIED FIXTURE PILOT (integration b67f3072) | 11-19 | fork:deepsignal/console-mod-kiosk-night, `briefs/console/kiosk-night.md` |
 | One-command install plus self-test | `install.sh` then open `/console/` then read the self-test page: the 3 actions of D-SETUP1 | HELD, CRITICAL: installer stays on fork:deepsignal/sec-cds-joint; redesign per research/2026-11-19-cds-gate-redesign.md (D-PILOT1) | 11-19 | fork:deepsignal/console-install, `briefs/console/install.md` |
-| Map (#107) | Offline map, track, data colored on track, events, cached basemaps | PILOT CANDIDATE (D-PILOT1, integration 7c60dbf) | 11-21 | fork:deepsignal/console-mod-map, `briefs/console/map.md` |
-| Stream health chain view v0 (#162) | Console view of each stream's stages and root cause; stretch on the same rule as the map (MVP only if green by 11-21) | BUILT/TESTED a3532f3; combinedb67f3072 rebuilt after R8 HOLD;272frontend PASS, full gates/review pending | 11-21 | section 12, `docs/PAIN-POINTS-MAP.md`, `research/2026-11-20-relay-pilots/combined-astra-hold.md` |
+| Map (#107) | Offline map, track, data colored on track, events, cached basemaps | QUALIFIED FIXTURE PILOT (integration b67f3072) | 11-21 | fork:deepsignal/console-mod-map, `briefs/console/map.md` |
+| Stream health chain view v0 (#162) | Console view of each stream's stages and root cause; stretch on the same rule as the map (MVP only if green by 11-21) | QUALIFIED/FINISHED fixture pilot, integration b67f3072; independent R9 PASS | 11-21 | section 12, `docs/PAIN-POINTS-MAP.md`, `research/2026-11-20-relay-pilots/combined-astra-r9-pass.md` |
 | Test fixture | Stock OpenRVDAS logger on NBP1406 replay feeding the console | PILOT CANDIDATE (D-PILOT1) | 11-19 | fork:deepsignal/console-harness-fixture, `briefs/console/fixture.md`, `briefs/console/fixture-ws-shim.md` |
 | 24-hour soak | Real-rate replay, memory sampled every minute; growth under 5% after warm-up | BUILT runner (in pilot candidate); 24 h run NOT DONE | 11-22 to 11-24 | `briefs/console/soak.md`, D-SOAK1 |
 | Source-loss test | Kill the logger: STALE within 10 s, recover with no restart, garbage input never crashes | BUILT; recovery after a manager restart (D-RECOVER1); flaky under load (T-CON-6) | 11-24 | `briefs/console/source-loss.md` |
 | Visual gate | V1 to V9 checks plus contact sheet review before the MVP merge | BUILDING | 11-24 | fork:deepsignal/console-visual-gate, `briefs/console/visual-gate.md`, `design/console-VISUAL-GATE.md` |
 | Design polish pass | Impeccable critique, typeset, polish, audit after integration | BRIEFED | 11-22 to 11-24 | ROADMAP "Design-polish pass" |
-| Integration branch | All modules merged, full suite, Astra review | PILOT CANDIDATE: console UI merged into fork:deepsignal/integration 7c60dbf, tag deepsignal/pilot-candidate (D-PILOT1); console-mvp 0fd4dee is the source | 11-20 | fork:deepsignal/integration, `docs/TICKETS.md` |
+| Integration branch | All modules merged, full suite, Astra review | QUALIFIED FIXTURE PILOTS: Console and Stream Health view integrated at b67f3072 under D-REVIEW1; live production remains separate | 11-20 | fork:deepsignal/integration, `docs/TICKETS.md` |
 
 Planned console follow-ups (after MVP): calibration view (#52), corrections approve and roll back (#56),
 drift view (#54), host health tiles (#119), emulated badge, routes on the map (#108), setup wizard pages
