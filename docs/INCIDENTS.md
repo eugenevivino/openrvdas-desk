@@ -92,3 +92,16 @@ Final repair9935ed82 passes223frontend tests, both existing native acceptance
 contracts and exact Linux44718633913. Old failures, fixture synchronization errors
 and the temporary QC-only cache regression remain recorded. Fresh Astra Ultra
 review is active; original HOLD is still authoritative until explicit clearance.
+
+## 2026-11-20: independent pilot review R3/R4 data variations
+Fresh native Astra Ultra held4f28b56d thena284c1c7 despite exact native/Linux PASS.
+R3's four cases reproduced in8tests. R4's five cases reproduced in10production-mode
+tests atd6253b3a; earlier fixture-mode evidence is retained, not claimed equivalent.
+Repair01e83671 excludes return-cache intervals, preserves ordered logger replay,
+requests manager QC, avoids catalog QC recursion and retains accepted null reports.
+Two complete per-test catalog variants remain RED at1490e537 before the last fix.
+Strict request expectations now include mandatory manager QC; no assertion was
+removed or weakened. Unknown/unpublished companion fields still count toward the
+existing200-field gateway budget; catalogs beyond that effective budget are not
+qualified by these tests. Full frontend/native/Linux and independent re-review
+are still required before integration. All HOLDs and raw failures are preserved.

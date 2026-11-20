@@ -4,3 +4,5 @@ date	brief	tool	model	effort	wall_s	tok_in	tok_out	tok_cached	note
 2026-11-20	combined-pilot-final-integration-review	codex-native-relay	gpt-6.2-astra	ultra	276.109				Terminal HOLD; CLI reports total69910 tokens without input/output/cache split; session01a1f85f-ade6-7941-be5a-bbad3b48e162
 2026-11-20	combined-pilot-integration-r2	codex-native-relay	gpt-6.2-astra	ultra	270.047				Terminal HOLD; CLI total71,419 tokens, input/output/cache split unavailable; session01a1f87c-fe63-7c61-9ca4-d82834ddacad
 2026-11-20	combined-pilot-integration-r3	codex-native-relay	gpt-6.2-astra	ultra	309.430				Terminal HOLD; CLI total77,186 tokens, split unavailable; session01a1f889-531d-71d3-9562-fd291b27d3bd
+2026-11-20	combined-pilot-integration-r4	codex-native-relay	gpt-6.2-astra	ultra	295.049				Terminal HOLD; CLI total97,418 tokens, split unavailable; session01a1f89a-ba02-7512-b351-9ba4932af994
+2026-11-20	combined-pilot-integration-r5	codex-native-relay	gpt-6.2-astra	ultra	216.777				Terminal HOLD; CLI total67,003 tokens, split unavailable; session01a1f8a9-c199-7941-a43b-d4a25da1a6a5

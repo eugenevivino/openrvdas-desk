@@ -64,12 +64,11 @@ Today's numbers are "core plus built DeepSignal". Re-score with `tools/target-pa
 
 ## 3. MVP #1: the Console (target Tue 2026-11-25, Pacific)
 
-2026-11-20 checkpoint: Console57182e5 and Streama3532f3 pass individual Mac/Linux
-checks and reviews. Combineda284c1c7 repairs the latest R3 HOLD at4f28b56d;
-239frontend tests and both full Mac design checks PASS. Linux44723265628 and
-fresh independent R4 review remain active. No new integration or qualification.
-See `docs/CODEX-HANDOVER.md` and the preserved reviews in
-`research/2026-11-20-relay-pilots/`.
+2026-11-20 checkpoint: Console57182e5 and Streama3532f3 pass individual checks.
+Combined3db4e630 repairs latest R4 HOLD;251frontend/lint/type and both complete
+native design checks PASS. Linux44725528266 all3 jobs PASS; fresh independent
+R5 review returned HOLD2variations; repair85e9307e passes255frontend/lint/types; bundle9b344665 full gates active. No new integration or qualification. See CODEX-HANDOVER.md and
+preserved reviews in `research/2026-11-20-relay-pilots/`.
 
 Native console (React, TypeScript, Vite, Tailwind, uPlot) reading CachedDataServer. Quality bar: "gorgeous
 and functional" (D-VISUAL1, checks V1 to V9). "Stable integration" is five tests, all must pass (ROADMAP "MVP #1").
@@ -87,7 +86,7 @@ Rulebook: `design/console-DESIGN.md`. Task table: `briefs/console/INDEX.md`. Int
 | Kiosk with auto night | Locked bridge kiosk; night palette switches automatically, one tap always; red default (D-CONSOLE2) | PILOT CANDIDATE (D-PILOT1, integration 7c60dbf) | 11-19 | fork:deepsignal/console-mod-kiosk-night, `briefs/console/kiosk-night.md` |
 | One-command install plus self-test | `install.sh` then open `/console/` then read the self-test page: the 3 actions of D-SETUP1 | HELD, CRITICAL: installer stays on fork:deepsignal/sec-cds-joint; redesign per research/2026-11-19-cds-gate-redesign.md (D-PILOT1) | 11-19 | fork:deepsignal/console-install, `briefs/console/install.md` |
 | Map (#107) | Offline map, track, data colored on track, events, cached basemaps | PILOT CANDIDATE (D-PILOT1, integration 7c60dbf) | 11-21 | fork:deepsignal/console-mod-map, `briefs/console/map.md` |
-| Stream health chain view v0 (#162) | Console view of each stream's stages and root cause; stretch on the same rule as the map (MVP only if green by 11-21) | BUILT/TESTED a3532f3; combineda284c1c7 Mac PASS, independent clearance/Linux pending | 11-21 | section 12, `docs/PAIN-POINTS-MAP.md`, `research/2026-11-20-relay-pilots/combined-astra-hold.md` |
+| Stream health chain view v0 (#162) | Console view of each stream's stages and root cause; stretch on the same rule as the map (MVP only if green by 11-21) | BUILT/TESTED a3532f3; combined9b344665 rebuilt after R5 HOLD;255frontend PASS, full gates/review pending | 11-21 | section 12, `docs/PAIN-POINTS-MAP.md`, `research/2026-11-20-relay-pilots/combined-astra-hold.md` |
 | Test fixture | Stock OpenRVDAS logger on NBP1406 replay feeding the console | PILOT CANDIDATE (D-PILOT1) | 11-19 | fork:deepsignal/console-harness-fixture, `briefs/console/fixture.md`, `briefs/console/fixture-ws-shim.md` |
 | 24-hour soak | Real-rate replay, memory sampled every minute; growth under 5% after warm-up | BUILT runner (in pilot candidate); 24 h run NOT DONE | 11-22 to 11-24 | `briefs/console/soak.md`, D-SOAK1 |
 | Source-loss test | Kill the logger: STALE within 10 s, recover with no restart, garbage input never crashes | BUILT; recovery after a manager restart (D-RECOVER1); flaky under load (T-CON-6) | 11-24 | `briefs/console/source-loss.md` |
