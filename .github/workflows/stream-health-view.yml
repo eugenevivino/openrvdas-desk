@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: eugenevivino/openrvdas
-          ref: 8e00f48f8c793ecd25468fcf59248c0d4ccb06cf
+          ref: a3532f38c78305aa3a07d6f8be5d3c76ed6ae6c0
           persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
@@ -24,14 +24,14 @@ jobs:
         id: bundle
         working-directory: contrib/deepsignal/console
         run: |
-          test "$(git rev-parse HEAD)" = 8e00f48f8c793ecd25468fcf59248c0d4ccb06cf
+          test "$(git rev-parse HEAD)" = a3532f38c78305aa3a07d6f8be5d3c76ed6ae6c0
           npm ci --no-audit --no-fund
           npm run lint
           npm run type-check
           npm run build
       - name: Run Stream Health in Chromium
         env:
-          STREAM_HEALTH_TESTED_COMMIT: 8e00f48f8c793ecd25468fcf59248c0d4ccb06cf
+          STREAM_HEALTH_TESTED_COMMIT: a3532f38c78305aa3a07d6f8be5d3c76ed6ae6c0
         run: |
           python -m pip install -q -r utils/requirements.txt 'paho-mqtt<2' pytest==9.2.0 playwright==1.64.1 websockets==17.4
           python -m playwright install --with-deps chromium
