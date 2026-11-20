@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: eugenevivino/openrvdas
-          ref: fc31b54cbefafa51f2257302ff6e7fb4741f3754
+          ref: 50f3d46526b97d05c23187224626a7b6a9c8c06c
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
@@ -23,8 +23,8 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Exercise shipped console and replay directory
         run: |
-          test "$(git rev-parse HEAD)" = fc31b54cbefafa51f2257302ff6e7fb4741f3754
-          python -m pytest -p no:cacheprovider -v contrib/deepsignal/test --junitxml="$RUNNER_TEMP/pilot-tests.xml"
+          test "$(git rev-parse HEAD)" = 50f3d46526b97d05c23187224626a7b6a9c8c06c
+          python -m pytest -p no:cacheprovider -v contrib/deepsignal/test contrib/deepsignal/console/install/test_nginx_site.py::test_readme_routes_initial_setup_through_the_relay_gate --junitxml="$RUNNER_TEMP/pilot-tests.xml"
           python -c 'import sys,xml.etree.ElementTree as ET; cases=[c for c in ET.parse(sys.argv[1]).iter("testcase") if c.get("classname","").endswith("test_pilot_modules_browser")]; print([c.get("name") for c in cases]); assert len(cases)==10 and all(c.find("skipped") is None for c in cases)' "$RUNNER_TEMP/pilot-tests.xml"
       - name: Confirm source loss and recovery across fresh fixture startups
         run: |
@@ -120,3 +120,82 @@ jobs:
           if __name__ == "__main__":
               main()
           PYDEMO
+  hardening:
+    defaults:
+      run:
+        working-directory: product
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: product
+          repository: eugenevivino/openrvdas
+          ref: 50f3d46526b97d05c23187224626a7b6a9c8c06c
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: desk
+          ref: 460914c40ec02ddb8509be1994d5642174937469
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prepare isolated Linux tools
+        run: |
+          test "$(git rev-parse HEAD)" = 50f3d46526b97d05c23187224626a7b6a9c8c06c
+          sudo apt-get update -q
+          sudo apt-get install -y -q supervisor nginx iproute2
+          python -m pip install -q -r utils/requirements.txt 'paho-mqtt<2' pytest==9.2.0 websockets==17.4 bandit==1.9.4
+      - name: Verify packaged executable locations
+        run: |
+          command -v ss supervisorctl nginx systemctl ps
+      - name: Read the running Supervisor fixture PID and environment
+        run: |
+          scratch="$RUNNER_TEMP/pilot-supervisor"
+          mkdir -p "$scratch"
+          cat > "$scratch/supervisord.conf" <<CONF
+          [unix_http_server]
+          file=$scratch/control.sock
+          [supervisorctl]
+          serverurl=unix://$scratch/control.sock
+          [supervisord]
+          logfile=$scratch/daemon.log
+          pidfile=$scratch/daemon.pid
+          childlogdir=$scratch
+          [rpcinterface:supervisor]
+          supervisor.rpcinterface_factory=supervisor.rpcinterface:make_main_rpcinterface
+          [program:cached_data_server]
+          command=/bin/sleep 90
+          environment=CDS_UDP_PORTS="6225",CDS_UDP_INTERFACE="127.0.0.1"
+          autostart=false
+          startsecs=0
+          CONF
+          sudo unshare --mount --net --propagation private -- /bin/bash -eu -c '
+            mount --bind "$1/supervisord.conf" /etc/supervisor/supervisord.conf
+            /usr/bin/supervisord -c "$1/supervisord.conf"
+            trap "/usr/bin/supervisorctl shutdown" EXIT
+            /usr/bin/supervisorctl start cached_data_server
+            "$2" -c "from contrib.deepsignal.security.probe_cds import supervisor_environment; actual=supervisor_environment(); assert actual == dict(CDS_UDP_PORTS=\"6225\", CDS_UDP_INTERFACE=\"127.0.0.1\"), actual; print(\"PASS running Supervisor PID and filtered fixture environment\")"
+          ' pilot "$scratch" "$(command -v python)"
+      - name: Run security and installer suites
+        run: |
+          python -m pytest -q contrib/deepsignal/test/security contrib/deepsignal/console/install contrib/deepsignal/test/console/test_install.py test/server/test_cached_data_server_host.py -k 'not real_197'
+      - name: Verify both real nginx configurations
+        run: |
+          python -m pytest -v contrib/deepsignal/console/install/test_nginx_site.py -k real_197
+      - name: Verify raw Bandit and approved policy for this commit
+        run: |
+          mkdir "$RUNNER_TEMP/pilot-scan"
+          python -I -B ../desk/tools/fast-review/bandit-policy.py "$(command -v python)" "$PWD" 50f3d46526b97d05c23187224626a7b6a9c8c06c "$RUNNER_TEMP/pilot-scan"
+          python - <<'PYTHON'
+          import json, os
+          from pathlib import Path
+          d = Path(os.environ["RUNNER_TEMP"]) / "pilot-scan"
+          raw = json.loads((d / "bandit-raw-50f3d46526b97d05c23187224626a7b6a9c8c06c.json").read_text())
+          decision = json.loads((d / "bandit-policy-50f3d46526b97d05c23187224626a7b6a9c8c06c.json").read_text())
+          assert raw["candidate_head"] == decision["candidate_head"] == "50f3d46526b97d05c23187224626a7b6a9c8c06c"
+          assert raw["run_id"] == decision["run_id"]
+          assert raw["exit_status"] == 1 and decision["finding_count"] == 188 and decision["verdict"] == "PASS"
+          print("Verified raw 188 and policy PASS for 50f3d46526b97d05c23187224626a7b6a9c8c06c")
+          PYTHON
