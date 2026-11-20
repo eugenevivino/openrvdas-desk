@@ -532,3 +532,7 @@ Eugene approved the Stream Health view design. For comparable non-critical scope
 ### November 20: Pilot release approvals
 
 Eugene identified himself as the final reviewer and approved landing product hardening 8f0794e and desk policy d06ad2d. Fork integration advanced to bff54ec and desk main to 460914c. The installed gate matched the approved files and passed on the integration commit with 188 individually matched findings. The original scanner report is retained.
+
+### November 20: One focused pilot round
+
+Eugene authorized one focused correction and re-review of the page-return last-good defect on b19dde0. Keep the pilot unmerged until the review passes. The existing T-CON-1 target and D-FIX1 apply.
