@@ -105,3 +105,13 @@ removed or weakened. Unknown/unpublished companion fields still count toward the
 existing200-field gateway budget; catalogs beyond that effective budget are not
 qualified by these tests. Full frontend/native/Linux and independent re-review
 are still required before integration. All HOLDs and raw failures are preserved.
+
+## 2026-11-20: pilot history provenance after repeated cursor replay
+R6-R8 independent reviews remained HOLD despite exact native/Linux PASS. Corrected
+production fixtures reproduced all findings; raw initial fixture failures retained.
+Cadence now distinguishes cached timestamps across replay and derives bounded
+interval endpoints. Self-test explicitly requests raw catalog fields; normal
+measurements always request QC. Raw updates preserve shared history. R8's sole
+remaining QC correction error reproduced twice atab1d6560;73d97e74 retains its
+original observation epoch. All272frontend/lint/type checks PASS; full qualification
+and fresh independent review still required. No target integration or gate change.

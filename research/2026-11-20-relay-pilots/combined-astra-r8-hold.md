@@ -1,0 +1,11 @@
+**CRITICAL: no. One operator-facing P1 keeps fork integration on HOLD.**
+
+**Observed.** HEAD `9e416feb7aa11daad39f1e0d2bc10caf0ce76bf6`, tree `b76dd81d4946c24ece6d364cce5c6c0ef2a6362f`, clean worktree. Base `bff54ec722bd8bf2c0ee949c91528642e0140e26` is an ancestor. The final commit changes only Console `dist`. Both exact-candidate native checks exited 0 with `RESULT GREEN`. Exact Linux PASS remains unverified. [Native receipt](/private/tmp/deepsignal/relay-20261120/combined-r8-release-state/attempts/5e56dff8822eb4c70951/000001-000001/adapter-result.json)
+
+**Inferred from production source.** Both R7 cases are repaired. Duplicate cache replies preserve the learned 1 s and 2 s periods, cadence retention stays bounded at 41 observations, and successive raw Self-test replies preserve `DEGRADED` as the last usable report after `OK` receives FAIL.
+
+**P1 — A corrected QC flag can make a rejected `OK` appear usable.** With `history: 0`, observe sensor `OFF` at 999, then `OK` at 1000. QC `3` at 1000.5 marks `OK` suspect. Leave Stream Health while `DEGRADED` arrives at 1002. After CDS acknowledges the return subscription and before its first data reply, it receives corrected QC `4` for 1000.5 and QC `4` for 1002. Its cursor permits both flags in that reply. [CDS subscription cursor:641](server/cached_data_server.py:641) · [Reply selection:731](server/cached_data_server.py:731)
+
+At 1008, **expected** `Stale · FAIL · Last reported: DEGRADED · Last usable: OFF`. **Actual, by source trace,** `Stale · FAIL · Last reported: DEGRADED · Last usable: OK`. Replacing the flag at 1000.5 assigns it the return subscription’s epoch. The gap check then skips that flag, so `OK` enters accepted history even though both its original and corrected flags reject it. [Flag replacement:68](contrib/deepsignal/console/src/field-data.ts:68) · [Epoch assignment:128](contrib/deepsignal/console/src/field-data.ts:128) · [Gap check:186](contrib/deepsignal/console/src/field-data.ts:186) · [Operator display:47](contrib/deepsignal/console/src/modules/stream-health/page.tsx:47)
+
+**Verdict: HOLD**
