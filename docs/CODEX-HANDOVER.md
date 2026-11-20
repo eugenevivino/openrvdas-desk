@@ -8,16 +8,19 @@ Read [OPERATING-SYSTEM.md, Deterministic orchestration](OPERATING-SYSTEM.md#dete
 for the standing architecture and boundaries. Authoritative desk:
 `/private/tmp/deepsignal/desk-main`. Staged Relay source:
 `/private/tmp/deepsignal/relay-20261120/repo`, commit
-`c5e45ffcd7404a30528cbea48f9417732c15f0c0`. Preserved runtime/state evidence is at
+`ad5ddcff92953f5472d43fdeca3388f0235852bd`. Preserved earlier runtime/state evidence is at
 `/private/tmp/deepsignal/relay-20261120/runtime-v6` and `release-state-v6` beside it.
 The lead cancelled only its own v6 prelaunch waits: installed `ds-codex` dry-run
 lines 183-187 could remove an ambiguous foreign lock. No native build started.
-Keep that runtime/evidence immutable. Nonmutating admission, per-job identity and
-invalidation, and retry/recovery fixes are underway; reconcile claims and qualify
-those fixes before resumption. Existing supervisors retain ownership.
+Keep that runtime/evidence immutable. Nonmutating admission, atomic complete claims,
+scoped identity/invalidation and transactional retry repairs passed their tests.
+The lead resumed `runtime-v7` / `release-state-v7` with the same full pilot checks.
+Its worker was observed waiting for a fresh swap baseline; inspect current state.
+Existing supervisors retain ownership; no production transfer is approved.
 
-Evidence under `/private/tmp/deepsignal/relay-20261120/`: core 71 PASS in
-`core-tests-python312.log`; adapter 52 PASS in `adapter-hardening-tests.log`.
+Evidence under `/private/tmp/deepsignal/relay-20261120/`: core 74 PASS in
+`evidence/core-final-repair-tests.log`; adapter 105 PASS in
+`evidence/adapter-final-repair-tests.log`.
 Console `da7384617f05100458c267f9253c0d2f7518bc25` has 205 frontend tests plus type/lint
 PASS; its full native acceptance and exact-candidate required reviews remain to be
 reconciled. Stream `61ba756717bde7c7680ca1aef78fa2ec5be87541` passed full Mac checks
@@ -29,8 +32,12 @@ Old green receipts cannot approve changed source. The cancelled v6 waits confer
 no native acceptance.
 The sub-agent audits are diagnostic evidence, not D-SUB1 independent-review credit;
 formal fresh-session reviews remain required (`evidence/review-provenance.json`).
-Mini lightweight work awaits Kalon's verified common policy despite the authorized
-1 GiB floor; see OPERATING-SYSTEM for per-job headroom and reservation requirements.
+Mini lightweight work awaits admitted locking/smoke receipts and a compatible
+reservation despite the authorized 1 GiB floor. Its thin client binds common
+commit `a54ebb87`, blob `3a2ae7c1`, SHA-256 `c9547b03...f1b064`, extracted from
+the owner's immutable Git object. `mini-job/manifest.json` prepares 19 Store/retry
+fixtures at `b843ac9`, 128 MiB peak budget, one CPU, 60 s, zero native slots.
+Local preflight passed; no DeepSignal Mini execution is claimed.
 
 Next: reconcile those existing attempts, repair actionable failures, collect missing
 native/Linux evidence and required reviews, then assemble compatible qualified

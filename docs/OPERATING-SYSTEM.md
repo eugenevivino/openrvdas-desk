@@ -47,7 +47,7 @@ preserve active workers and reconcile claims instead of starting another pilot.
   acceptable pressure/swap growth, an available budget and valid reservations.
   The Kalon lead remains sole allocator owner; actual Mini dispatch waits for its
   verified common policy. The staged DeepSignal client calls the owner's pinned
-  `mini_light_admission.py` (`a2b0c482...ba9f9`) directly: page size multiplied by
+  `mini_light_admission.py` (`c9547b03...f1b064`, owner commit `a54ebb87`) directly: page size multiplied by
   free + inactive + speculative pages, checked against physical memory. It adds
   neither file-backed nor purgeable pages. Policy/client boundary tests pass;
   live verification and compatible reservations remain required before Mini work.
@@ -75,7 +75,7 @@ Status vocabulary applies to each capability, never to the whole system by proxy
 | Status | Evidence and current limit |
 |---|---|
 | IMPLEMENTED | Code exists; Relay scheduling, receipts, identity and recovery paths are present. |
-| TESTED | Named checks passed for named source; core 71 and adapter 52 test receipts are recorded in the handover. This does not qualify product modules. |
+| TESTED | Named checks passed for named source; core 74 and adapter 105 test receipts are recorded in the handover. This does not qualify product modules. |
 | PILOT | Isolated Console and Stream workflows have exercised the controller; v6 prelaunch was cancelled before native execution. Existing supervisor ownership remains. |
 | STAGED | Committed implementation and capacity client await qualification and deliberate owner transfer; production authority is absent. |
 | PRODUCTION | Requires verified transfer and operational qualification. Relay has not reached this status. |
