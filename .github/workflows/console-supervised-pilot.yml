@@ -1,7 +1,7 @@
 name: Supervised pilot console
 on:
   push:
-    branches: [ci/relay-console-20261120]
+    branches: [ci/relay-combined-20261120]
 permissions:
   contents: read
 jobs:
@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: eugenevivino/openrvdas
-          ref: 57182e5eb5c7a76fdecd918d7b6de259762084fd
+          ref: 2ea3e609cef657398681adc5a0b2c866d0132a69
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
@@ -23,7 +23,7 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Exercise shipped console and replay directory
         run: |
-          test "$(git rev-parse HEAD)" = 57182e5eb5c7a76fdecd918d7b6de259762084fd
+          test "$(git rev-parse HEAD)" = 2ea3e609cef657398681adc5a0b2c866d0132a69
           python -m pytest -p no:cacheprovider -v contrib/deepsignal/test contrib/deepsignal/console/install/test_nginx_site.py::test_readme_routes_initial_setup_through_the_relay_gate --junitxml="$RUNNER_TEMP/pilot-tests.xml"
           python -c 'import sys,xml.etree.ElementTree as ET; cases=[c for c in ET.parse(sys.argv[1]).iter("testcase") if c.get("classname","").endswith("test_pilot_modules_browser")]; print([c.get("name") for c in cases]); assert len(cases)==10 and all(c.find("skipped") is None for c in cases)' "$RUNNER_TEMP/pilot-tests.xml"
       - name: Confirm source loss and recovery across fresh fixture startups
@@ -131,7 +131,7 @@ jobs:
         with:
           path: product
           repository: eugenevivino/openrvdas
-          ref: 57182e5eb5c7a76fdecd918d7b6de259762084fd
+          ref: 2ea3e609cef657398681adc5a0b2c866d0132a69
           persist-credentials: false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -143,7 +143,7 @@ jobs:
           python-version: '3.12'
       - name: Prepare isolated Linux tools
         run: |
-          test "$(git rev-parse HEAD)" = 57182e5eb5c7a76fdecd918d7b6de259762084fd
+          test "$(git rev-parse HEAD)" = 2ea3e609cef657398681adc5a0b2c866d0132a69
           sudo apt-get update -q
           sudo apt-get install -y -q supervisor nginx iproute2
           python -m pip install -q -r utils/requirements.txt 'paho-mqtt<2' pytest==9.2.0 websockets==17.4 bandit==1.9.4
@@ -187,17 +187,17 @@ jobs:
       - name: Verify raw Bandit and approved policy for this commit
         run: |
           mkdir "$RUNNER_TEMP/pilot-scan"
-          python -I -B ../desk/tools/fast-review/bandit-policy.py "$(command -v python)" "$PWD" 57182e5eb5c7a76fdecd918d7b6de259762084fd "$RUNNER_TEMP/pilot-scan"
+          python -I -B ../desk/tools/fast-review/bandit-policy.py "$(command -v python)" "$PWD" 2ea3e609cef657398681adc5a0b2c866d0132a69 "$RUNNER_TEMP/pilot-scan"
           python - <<'PYTHON'
           import json, os
           from pathlib import Path
           d = Path(os.environ["RUNNER_TEMP"]) / "pilot-scan"
-          raw = json.loads((d / "bandit-raw-57182e5eb5c7a76fdecd918d7b6de259762084fd.json").read_text())
-          decision = json.loads((d / "bandit-policy-57182e5eb5c7a76fdecd918d7b6de259762084fd.json").read_text())
-          assert raw["candidate_head"] == decision["candidate_head"] == "57182e5eb5c7a76fdecd918d7b6de259762084fd"
+          raw = json.loads((d / "bandit-raw-2ea3e609cef657398681adc5a0b2c866d0132a69.json").read_text())
+          decision = json.loads((d / "bandit-policy-2ea3e609cef657398681adc5a0b2c866d0132a69.json").read_text())
+          assert raw["candidate_head"] == decision["candidate_head"] == "2ea3e609cef657398681adc5a0b2c866d0132a69"
           assert raw["run_id"] == decision["run_id"]
           assert raw["exit_status"] == 1 and decision["finding_count"] == 188 and decision["verdict"] == "PASS"
-          print("Verified raw 188 and policy PASS for 57182e5eb5c7a76fdecd918d7b6de259762084fd")
+          print("Verified raw 188 and policy PASS for 2ea3e609cef657398681adc5a0b2c866d0132a69")
           PYTHON
   frontend:
     runs-on: ubuntu-24.04
@@ -206,7 +206,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: eugenevivino/openrvdas
-          ref: 57182e5eb5c7a76fdecd918d7b6de259762084fd
+          ref: 2ea3e609cef657398681adc5a0b2c866d0132a69
           persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
@@ -214,7 +214,7 @@ jobs:
       - name: Verify and test the production console with one worker
         working-directory: contrib/deepsignal/console
         run: |
-          test "$(git rev-parse HEAD)" = 57182e5eb5c7a76fdecd918d7b6de259762084fd
+          test "$(git rev-parse HEAD)" = 2ea3e609cef657398681adc5a0b2c866d0132a69
           npm ci --no-audit --no-fund
           npm run lint
           npm run type-check
