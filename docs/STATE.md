@@ -11,10 +11,10 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 - Candidate9935ed82 passed all gates but R2 held3 variations. Six new regressions RED then229frontend/lint/type checks PASS; two corrected-replay variants also repaired.
 - Final bundle4f28b56d: both full Mac checks PASS; Linux44720535508 all3 jobs PASS,231frontend tests. R3 review terminal HOLD on four valid-input variations; no integration.
 - See CODEX-HANDOVER.md for immutable evidence and review provenance. Newly qualified0, integrated0; original failures/HOLDs preserved.
-- Repair80abbf83 adds eight regressions for cached-return cadence, historical QC alignment, configured QC suffixes and ordered stderr callbacks; 239frontend tests, lint/type PASS. Bundlea284c1c7 is published; both full Mac checks PASS. Linux44723265628 and fresh independent R4 review active.
+- Repair80abbf83 adds eight regressions for cached-return cadence, historical QC alignment, configured QC suffixes and ordered stderr callbacks; 239frontend tests, lint/type PASS. Bundlea284c1c7 is published; both full Mac checks PASS. Linux44723265628 all3 jobs PASS; R4 terminal HOLD; all10 reported variants reproduced then repaired. Source01e83671 passes251frontend/lint/types. Bundle3db4e630 published; both full native PASS, Linux44725528266 all3 PASS; R5 terminal HOLD2variations; four regressions RED, repair85e9307e passes255frontend/lint/types. Bundle9b344665 full native/Linux active; R6 review prepared.
 - Relay source247f58f: Python3.12 plan guard and stable boot identity for swap evidence; focused tests PASS. Six measured v9 handoffs median0.044s/max0.058s after Relay reservation waits; no machine-throughput gain claimed.
 - Mini1GiB common policy pinned; no admitted Mini job or live shared allocator activation. Kalon remains allocator owner.
-- Codex verified4% remaining; retain1% reserve. Any authorized ready successor is optional after exhaustion; no takeover.
+- Codex verified3% remaining; retain1% reserve. Any authorized ready successor is optional after exhaustion; no takeover.
 - Existing supervisors and Kalon playback untouched. The24-hour soak remains held. Topic-branch sync only; direct desk-main push rejected.
 
 ## Handoff (2026-11-19 03:42Z)
