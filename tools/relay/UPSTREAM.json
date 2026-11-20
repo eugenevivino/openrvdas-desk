@@ -1,0 +1,12 @@
+{
+  "archive": "kalon-relay-0.1.0.zip",
+  "sha256": "25b164f9f1cb70e64627c6f03cfcf3880f1ff6f955a8fb79d78f2fe4a623135b",
+  "version": "0.1.0",
+  "origin": "user-supplied archive",
+  "changes": [
+    "synchronized crash-recoverable plan activation",
+    "bounded worker output",
+    "DeepSignal adapters and tests"
+  ],
+  "license_note": "No LICENSE file supplied. Preserve attribution; confirm redistribution license before public release."
+}

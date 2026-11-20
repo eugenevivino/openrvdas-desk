@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "project": "demo",
+  "workspace": "..",
+  "policy_version": "fixture-only-v1",
+  "environment_id": "fixture-python3-stdlib-v1",
+  "capacities": {
+    "cpu": 4,
+    "integration": 1
+  },
+  "max_parallel": 4,
+  "adapters": {
+    "piece": {
+      "command": [
+        "python3",
+        "examples/demo_adapter.py",
+        "piece"
+      ],
+      "version": "89e6c989c7cbf8ea26d0ad1baeaad1ae5bb6dd3180ffe96958b337ee829a8cff",
+      "actor": "fixture-builder",
+      "timeout_s": 10,
+      "resources": {
+        "cpu": 1
+      }
+    },
+    "assemble": {
+      "command": [
+        "python3",
+        "examples/demo_adapter.py",
+        "assemble"
+      ],
+      "version": "89e6c989c7cbf8ea26d0ad1baeaad1ae5bb6dd3180ffe96958b337ee829a8cff",
+      "actor": "fixture-builder",
+      "timeout_s": 10,
+      "resources": {
+        "cpu": 1
+      }
+    },
+    "test": {
+      "command": [
+        "python3",
+        "examples/demo_adapter.py",
+        "test"
+      ],
+      "version": "89e6c989c7cbf8ea26d0ad1baeaad1ae5bb6dd3180ffe96958b337ee829a8cff",
+      "actor": "fixture-builder",
+      "timeout_s": 10,
+      "resources": {
+        "cpu": 1
+      }
+    },
+    "review": {
+      "command": [
+        "python3",
+        "examples/demo_adapter.py",
+        "review"
+      ],
+      "version": "89e6c989c7cbf8ea26d0ad1baeaad1ae5bb6dd3180ffe96958b337ee829a8cff",
+      "actor": "fixture-reviewer",
+      "timeout_s": 10,
+      "resources": {
+        "cpu": 1
+      }
+    },
+    "batch": {
+      "command": [
+        "python3",
+        "examples/demo_adapter.py",
+        "batch"
+      ],
+      "version": "89e6c989c7cbf8ea26d0ad1baeaad1ae5bb6dd3180ffe96958b337ee829a8cff",
+      "actor": "fixture-builder",
+      "timeout_s": 10,
+      "resources": {
+        "integration": 1
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "math-add",
+      "adapter": "piece",
+      "identity": {
+        "fixture": "89e6c989c7cbf8ea26d0ad1baeaad1ae5bb6dd3180ffe96958b337ee829a8cff",
+        "module": "math",
+        "piece": "add"
+      },
+      "inputs": {
+        "module": "math",
+        "piece": "add"
+      }
+    },
+    {
+      "id": "math-multiply",
+      "adapter": "piece",
+      "identity": {
+        "fixture": "89e6c989c7cbf8ea26d0ad1baeaad1ae5bb6dd3180ffe96958b337ee829a8cff",
+        "module": "math",
+        "piece": "multiply"
+      },
+      "inputs": {
+        "module": "math",
+        "piece": "multiply"
+      }
+    },
+    {
+      "id": "display-render",
+      "adapter": "piece",
+      "identity": {
+        "fixture": "89e6c989c7cbf8ea26d0ad1baeaad1ae5bb6dd3180ffe96958b337ee829a8cff",
+        "module": "display",
+        "piece": "render"
+      },
+      "inputs": {
+        "module": "display",
+        "piece": "render"
+      }
+    },
+    {
+      "id": "display-unwrap",
+      "adapter": "piece",
+      "identity": {
+        "fixture": "89e6c989c7cbf8ea26d0ad1baeaad1ae5bb6dd3180ffe96958b337ee829a8cff",
+        "module": "display",
+        "piece": "unwrap"
+      },
+      "inputs": {
+        "module": "display",
+        "piece": "unwrap"
+      }
+    }
+  ],
+  "modules": [
+    {
+      "id": "math",
+      "pieces": [
+        "math-add",
+        "math-multiply"
+      ],
+      "assemble": "assemble",
+      "test": "test",
+      "review": "review",
+      "acceptance": {
+        "fixture_only": true
+      },
+      "compatibility_key": "fixture-python-v1"
+    },
+    {
+      "id": "display",
+      "pieces": [
+        "display-render",
+        "display-unwrap"
+      ],
+      "assemble": "assemble",
+      "test": "test",
+      "review": "review",
+      "acceptance": {
+        "fixture_only": true
+      },
+      "compatibility_key": "fixture-python-v1"
+    }
+  ],
+  "batch": {
+    "adapter": "batch",
+    "max_size": 5,
+    "integration_mode": "test_only"
+  }
+}

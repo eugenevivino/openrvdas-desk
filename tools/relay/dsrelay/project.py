@@ -1,0 +1,113 @@
+"""Compile DeepSignal contracts into Relay's existing job graph."""
+import json
+import platform
+from pathlib import Path
+import sys
+from .common import owned, sha, digest, git, file_record, verify_files, tree_manifest, verify_tree, load_contract, code_version
+from relay.plan import validate, compile_plan, module_status, submit_plan, batch_callback
+from relay.cli import install_plan, plan_lock, metrics
+from relay.engine import run
+from relay.store import Store
+from relay.worker import atomic_json
+
+PACKAGE = Path(__file__).resolve().parent.parent
+DESK = Path('/private/tmp/deepsignal/desk-main')
+
+
+def build_plan(contracts):
+    version=code_version()
+    adapters={}
+    for stage in ('piece','assemble','test','review','batch'):
+        resources={'local_test':1} if stage in ('test','assemble') else {'metadata':1}
+        if stage=='batch': resources={'local_test':1,'integration':1}
+        adapters[stage]={'command':[sys.executable,'-m','dsrelay.adapter'],'version':version,
+                         'actor':'existing-independent-review-evidence' if stage=='review' else 'deepsignal-candidate-adapter',
+                         'timeout_s':600,'resources':resources,'max_attempts':3,'retry_exit_codes':[75]}
+    pieces=[]; modules=[]
+    for path in contracts:
+        r=file_record(path); c=load_contract({'contract':r}); name=c['module']
+        pieces.append({'id':name+'-source','adapter':'piece','identity':{'commit':c['commit'],'tree':c['tree'],'contract':r['sha256']},'inputs':{'contract':r}})
+        modules.append({'id':name,'pieces':[name+'-source'],'assemble':'assemble','test':'test','review':'review',
+                        'inputs':{'contract':r},'acceptance':c['acceptance'],
+                        'compatibility_key':c['integration_base']+':'+c['commit']})
+    plan={'schema':1,'project':'deepsignal','workspace':str(PACKAGE),'policy_version':'deepsignal-relay-shadow-v1',
+          'environment_id':digest({'python':platform.python_version(),'executable':str(Path(sys.executable).resolve()),'platform':platform.platform()}),
+          'capacities':{'metadata':2,'local_test':1,'integration':1},'max_parallel':3,
+          'adapters':adapters,'pieces':pieces,'modules':modules,'batch':{'adapter':'batch','max_size':5,'integration_mode':'test_only'}}
+    validate(plan); return plan
+
+
+def audit_cached(store):
+    for row in store.jobs():
+        if row['state']!='passed': continue
+        data=row['result']['receipt']['data']; verify_files(data['artifacts'])
+        if 'source_manifest' in data:
+            from .adapter import verify_candidate
+            verify_candidate(data)
+
+
+def execute(plan,state):
+    if any(a['version']!=code_version() for a in plan['adapters'].values()): raise ValueError('implementation changed; compile a new plan')
+    state=owned(state); store=install_plan(plan,state)
+    with plan_lock(state):
+        live=json.loads((state/'plan.json').read_text())
+        if digest(live)!=digest(plan): raise ValueError('plan changed before dispatch')
+        submit_plan(store,live)
+        for p in live['pieces']: load_contract(p['inputs'])
+        audit_cached(store)
+        result=run(store,state,live['capacities'],max_parallel=live['max_parallel'],poll_s=0.05,batch_callback=batch_callback(live))
+        audit_cached(store)
+        report=measure(store,live)
+        atomic_json(state/'report.json',report)
+        return report
+
+
+def measure(store,plan):
+    rows=store.jobs(); blocked={'resources':[],'evidence':[],'other':[]}
+    for r in rows:
+        if r['state']=='blocked':
+            reason=r.get('reason',''); group='resources' if reason.startswith('resource:') else 'evidence' if reason.startswith('evidence:') else 'other'
+            blocked[group].append({'id':r['id'],'reason':reason})
+    from .latency import samples, summarize
+    handoffs=samples(rows,plan['capacities'],plan['max_parallel'])
+    return {'capacity_available_handoff_s':summarize([x['capacity_available_to_start_s'] for x in handoffs]),'handoff_samples':handoffs,'schema':1,'mode':'test_only','modules':module_status(store,plan),'metrics':metrics(store),
+            'attempts':sum(r['attempt'] for r in rows),'failed_attempts':sum(r['attempt'] for r in rows if r['state']=='failed'),
+            'ai_calls':sum((r.get('result') or {}).get('receipt',{}).get('data',{}).get('ai_calls',0) for r in rows),
+            'ai_implementation_review_seconds':None,'repeated_model_reviews':0,
+            'integrated_modules':0,'integrated_modules_per_day':0,
+            'blocked':blocked,'ready_undispatched':[r['id'] for r in rows if r['state']=='queued' and r.get('ready_at') is not None],
+            'ownership':'existing dispatcher retained; no transfer or publication',
+            'release_requirements_remaining':'product gates in contracts, independent controller review, Linux qualification, complete pilot and verified transfer',
+            'note':'AI authoring time is not measured by the queue. Zero integration is observed for this pilot, not a throughput projection.'}
+
+
+def prepare(root):
+    root=owned(root); root.mkdir(parents=True,exist_ok=True); inputs=root/'inputs'; inputs.mkdir(exist_ok=True)
+    specs=[('console-ui','/private/tmp/deepsignal/pilot-combination-20261120/recut/repo','bff54ec722bd8bf2c0ee949c91528642e0140e26','console.md',
+            ['/private/tmp/deepsignal/pilot-combination-20261120/return-qualification/candidate.sha','/private/tmp/deepsignal/pilot-combination-20261120/return-qualification/self-check.log','/private/tmp/deepsignal/pilot-combination-20261120/return-decision/answer.md'],
+            [{'name':'independent-review','status':'hold','reason':'Exact-head independent HOLD: three operator-display findings; recorded in return-decision/answer.md','independent':True},
+             {'name':'linux-release-gate','status':'missing','reason':'Existing Linux run 44695593537 must be imported with authenticated workflow and exact-candidate binding'}]),
+           ('stream-health-view','/private/tmp/deepsignal/stream-health-view/repo','1dc7a5e001f9535520ac8986922253c2ea20e01e','stream-health-view.md',
+            ['/private/tmp/deepsignal/stream-health-view/qualification/candidate.sha','/private/tmp/deepsignal/stream-health-view/qualification/self-check.log','/private/tmp/deepsignal/stream-health-view/qualification/linux-final.log'],
+            [{'name':'current-integration','status':'missing','reason':'Re-cut from old 1dc7a5e base onto current integration and qualify combined source'},
+             {'name':'machine-release-gate','status':'hold','reason':'Historical self-check is RED; new policy passing elsewhere does not qualify this source'},
+             {'name':'independent-review','status':'missing','reason':'No independent final review exists for this candidate','independent':True}])]
+    contracts=[]
+    for name,repo,base,design,evidence,gates in specs:
+        repo=owned(repo); commit=git(repo,'rev-parse','HEAD')
+        policy=[DESK/'docs/designs'/design,DESK/'docs/RULES.md',DESK/'docs/DECISIONS.md']
+        deps=repo/'contrib/deepsignal/console/node_modules'
+        accepts=[{'name':'frontend-unit-tests','cwd':'contrib/deepsignal/console','argv':['npm','test','--','--maxWorkers=1'],'timeout_s':180},
+                 {'name':'frontend-lint','cwd':'contrib/deepsignal/console','argv':['npm','run','lint'],'timeout_s':60},
+                 {'name':'frontend-type-check','cwd':'contrib/deepsignal/console','argv':['npm','run','type-check'],'timeout_s':90}]
+        c={'schema':1,'project':'deepsignal','module':name,'mode':'test_only','repository':str(repo),'commit':commit,'tree':git(repo,'rev-parse',commit+'^{tree}'),
+           'integration_base':base,'policy_files':[file_record(p) for p in policy],'prior_evidence':[file_record(p) for p in evidence],
+           'acceptance':accepts,'required_gates':gates,'scientific_change':False,'author_runs':['existing-product-authors'],
+           'dependency_copies':[{'source':str(deps),'destination':'contrib/deepsignal/console/node_modules','tree_digest':digest(tree_manifest(deps,links=True)),
+                                 'lockfiles':[file_record(repo/'contrib/deepsignal/console/package-lock.json')]}],
+           'scope':'controller pilot verification of existing exact source; full design/browser/security/Linux gates remain separate'}
+        path=inputs/(name+'.json'); atomic_json(path,c); contracts.append(path)
+    manifest=json.loads((DESK/'docs/units.json').read_text())
+    atomic_json(root/'inventory.json',{'desk_commit':git(DESK,'rev-parse','HEAD'),'units':manifest['units'],'selected':[x[0] for x in specs],
+                                     'scope':'existing approved candidates only; paused modules remain paused'})
+    plan=build_plan(contracts); atomic_json(root/'plan.json',plan); return plan
