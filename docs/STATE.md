@@ -4,14 +4,16 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
 ## Relay pilots (2026-11-20)
 
-- Console candidate5b892601: full Mac self-check GREEN, 205 frontend tests. Linux44708749952 pilot and hardening PASS; frontend204 PASS/1FAIL (Self-test socket readiness fixture). Correction in progress, no gate weakened.
-- Independent Console cloud review task_e_6b000f5c4134832fbe92c376a32815ec PASS at5b892601; final Astra Ultra approval remains.
-- Stream candidate75a71c1: full Mac self-check and Linux44709129369 PASS; fresh independent review task_e_6b000f9fd45c832fa1e37fecce36b4e7 HOLD (expired observation hidden). Repair in progress.
-- Relay v7 terminal:6 stages PASS,2 review gates BLOCKED; active unit claims retained by this Relay chat. Newly qualified0, integrated0. See CODEX-HANDOVER.md for exact source and evidence.
-- Relay source/tests synced on desk deepsignal/relay-pilot-20261120; fork candidates on deepsignal/relay-console-20261120 and deepsignal/relay-stream-health-20261120. Default-branch push rejected; use separate branch.
-- Mini1GiB common policy pinned; no DeepSignal Mini job or live shared-allocator activation. Await owner verified policy/leases and local admission.
-- Codex last observed7% remaining; preserve1% reserve. Successor provider optional, handoff ready; Claude auth not a dependency of current work.
-- Kalon playback and existing supervisors untouched. The 24-hour soak remains held.
+- Console57182e5: full Mac acceptance GREEN, Linux44710257259 all3 jobs PASS; individual independent review PASS.
+- Streama3532f3: full Mac acceptance GREEN, Linux44712385947 PASS; source/artifact reviews PASS.
+- Combined2ea3e609: both Mac design checks PASS; Linux44714303424 attempt2 all3 jobs PASS after checkout-only failure.
+- Fresh standalone Astra Ultra integration review HOLD: outage navigation loses report history, delayed return distorts cadence, valid `_QC_` stream names lose QC subscription. No merge; targeted regression/repairs active.
+- Current source47b9295d adds two producer-name regressions. Relay `integration-qc-red-state` owns its guarded run. Inspect current receipts before resuming.
+- See CODEX-HANDOVER.md for immutable evidence and review provenance. Newly qualified0, integrated0; original failures/HOLDs preserved.
+- Relay source38baeff: stable boot identity for swap evidence; focused tests PASS. Six measured v9 handoffs median0.044s/max0.058s after Relay reservation waits; no machine-throughput gain claimed.
+- Mini1GiB common policy pinned; no admitted Mini job or live shared allocator activation. Kalon remains allocator owner.
+- Codex verified5% remaining; retain1% reserve. Any authorized ready successor is optional after exhaustion; no takeover.
+- Existing supervisors and Kalon playback untouched. The24-hour soak remains held. Topic-branch sync only; direct desk-main push rejected.
 
 ## Handoff (2026-11-19 03:42Z)
 - Eugene drives new work from the Codex GUI using docs/CODEX-HANDOVER.md; Codex takes unclaimed units.
@@ -45,4 +47,4 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 - #121 and #139 downloads; venv-sci install (sonar estimators); nginx not installed on the Mac (by decision).
 
 ## Sync (D-SYNC1)
-- Last sync 2026-11-20T08:22:54Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
+- Last sync 2026-11-20T09:22:59Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
