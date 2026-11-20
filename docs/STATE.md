@@ -4,18 +4,16 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
 ## Relay pilots (2026-11-20)
 
-- Console57182e5: full Mac acceptance GREEN, Linux44710257259 all3 jobs PASS; individual independent review PASS.
-- Streama3532f3: full Mac acceptance GREEN, Linux44712385947 PASS; source/artifact reviews PASS.
-- Combined2ea3e609: both Mac design checks PASS; Linux44714303424 attempt2 all3 jobs PASS after checkout-only failure.
-- Fresh standalone Astra Ultra integration review HOLD: outage navigation loses report history, delayed return distorts cadence, valid `_QC_` stream names lose QC subscription. No merge; targeted regression/repairs active.
-- Candidate9935ed82 passed all gates but R2 held3 variations. Six new regressions RED then229frontend/lint/type checks PASS; two corrected-replay variants also repaired.
-- Final bundle4f28b56d: both full Mac checks PASS; Linux44720535508 all3 jobs PASS,231frontend tests. R3 review terminal HOLD on four valid-input variations; no integration.
-- See CODEX-HANDOVER.md for immutable evidence and review provenance. Newly qualified0, integrated0; original failures/HOLDs preserved.
-- Repair80abbf83 adds eight regressions for cached-return cadence, historical QC alignment, configured QC suffixes and ordered stderr callbacks; 239frontend tests, lint/type PASS. Bundlea284c1c7 is published; both full Mac checks PASS. Linux44723265628 all3 jobs PASS; R4 terminal HOLD; all10 reported variants reproduced then repaired. Source01e83671 passes251frontend/lint/types. Bundle3db4e630 published; both full native PASS, Linux44725528266 all3 PASS; R5 terminal HOLD2variations; four regressions RED, repair85e9307e passes255frontend/lint/types. Bundle9b344665 full native/Linux active; R6 review prepared.
-- Relay source247f58f: Python3.12 plan guard and stable boot identity for swap evidence; focused tests PASS. Six measured v9 handoffs median0.044s/max0.058s after Relay reservation waits; no machine-throughput gain claimed.
-- Mini1GiB common policy pinned; no admitted Mini job or live shared allocator activation. Kalon remains allocator owner.
-- Codex verified3% remaining; retain1% reserve. Any authorized ready successor is optional after exhaustion; no takeover.
-- Existing supervisors and Kalon playback untouched. The24-hour soak remains held. Topic-branch sync only; direct desk-main push rejected.
+- Latest combined candidateb67f3072 is published on the authorized pilot topic; source73d97e74.
+- All272frontend tests, lint/types PASS. Both full native gates are active; exact Linux workflow07f277e dispatched.
+- Prior R8 review HOLD1: corrected QC lost observation provenance. Two real regressions RED, then fixed. R9 review prepared only; requires full native PASS and fresh quota before launch.
+- All prior HOLDs/raw failures remain in research/2026-11-20-relay-pilots and immutable Relay states. No HOLD treated as PASS.
+- Console and Stream view remain claimed by this Relay chat. Newly qualified0/integrated0. Finish-line registry: LANDED2, QUALIFIED0, FINISHED0 of74.
+- Relay source247f58f requires Python3.12 and stable boot UUID. Measured queued independent worker handoff0.061654s; no machine/module throughput gain claimed yet.
+- Mini1GiB policy pinned; allocator still Kalon's. No admitted DeepSignal Mini job or shared scheduling activation.
+- Codex last verified3%; reserve1%. Provider-neutral successor optional after exhaustion; no takeover or Claude setup underway.
+- Existing supervisors/protected playback untouched;24-hour soak held. Topic sync only; direct desk-main push was rejected.
+- Current ownership, exact receipts and next actions: CODEX-HANDOVER.md.
 
 ## Handoff (2026-11-19 03:42Z)
 - Eugene drives new work from the Codex GUI using docs/CODEX-HANDOVER.md; Codex takes unclaimed units.
@@ -49,4 +47,4 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 - #121 and #139 downloads; venv-sci install (sonar estimators); nginx not installed on the Mac (by decision).
 
 ## Sync (D-SYNC1)
-- Last sync 2026-11-20T10:23:04Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
+- Last sync 2026-11-20T11:23:11Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
