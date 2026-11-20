@@ -1,5 +1,7 @@
 # Morning queue for Eugene (newest first)
 
+- Nov 25 supervised pilot disposition at da4aa5e. All ten browser modules passed on Mac and Linux. Astra Ultra held the merge because a previously failed depth can reappear as usable, a valid last depth can disappear, and a quick page return can show NO DATA. The approved round is complete. The proposed next decision is a re-brief covering missing measurements and quality history. [Evidence](../research/2026-11-20-pilot-page-return.md)
+
 - Linux gate (D-GATE1): r5 review HOLD again (5 new P1s), so the verdict gate is dropped. A small ADVISORY workflow (raw pytest and flake8 output, no GREEN/RED) is on branch gate/linux-advisory once built; it needs a merge to desk main before any dispatch works. Approve that merge, or say stop spending on the Linux gate.
 
 - D-SEC1 adopt the security architecture and its MVP cut (docs/SECURITY-ARCHITECTURE.md section 12). Security code merges wait for you.
