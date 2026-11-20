@@ -19,6 +19,10 @@ DESK = Path('/private/tmp/deepsignal/desk-main')
 
 
 def build_plan(contracts):
+    # Older macOS Python uses a process-relative monotonic clock. Its samples
+    # cannot establish the cross-worker swap window required by admission.
+    if sys.version_info < (3, 12):
+        raise ValueError('Python 3.12 or newer is required to compile Relay plans')
     version=code_version()
     adapters={}
     for stage in ('piece','assemble','test','review','batch'):

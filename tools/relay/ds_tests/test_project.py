@@ -16,6 +16,13 @@ class ProjectTests(unittest.TestCase):
   self.c={'schema':1,'project':'deepsignal','module':'alpha','mode':'test_only','repository':str(self.repo),'commit':self.pin,'tree':git('rev-parse','HEAD^{tree}'),'integration_base':self.pin,'policy_files':[file_record(self.policy)],'prior_evidence':[],'acceptance':[{'name':'check','argv':[sys.executable,'-c','from module import VALUE; assert VALUE == 42']}],'required_gates':[{'name':'independent-review','status':'missing','reason':'review missing','independent':True}]}
   self.path=self.root/'contract.json'; self.path.write_text(json.dumps(self.c))
  def tearDown(self): self.temp.cleanup()
+ def test_plan_refuses_process_relative_clock_runtime(self):
+  with patch('dsrelay.project.sys.version_info',(3,9,6)):
+   with self.assertRaisesRegex(ValueError,'Python 3.12'):
+    build_plan([self.path])
+ def test_plan_pins_supported_runtime(self):
+  plan=build_plan([self.path])
+  self.assertTrue(all(a['command'][0]==sys.executable for a in plan['adapters'].values()))
  def candidate(self):
   a=self.root/'piece'; a.mkdir(); d=adapter.piece(self.c,a); b=self.root/'assemble'; b.mkdir(); return adapter.assemble(self.c,[d],b)
  def checks(self,data):
