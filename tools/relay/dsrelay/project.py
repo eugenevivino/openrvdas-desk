@@ -42,8 +42,27 @@ def build_plan(contracts):
 
 
 class Snapshot:
-    def __init__(self, rows): self.rows=rows
+    def __init__(self, rows, attempt_events=None):
+        self.rows = rows
+        self.attempt_events = attempt_events
+
     def jobs(self): return self.rows
+
+
+def _read_snapshot(conn):
+    conn.row_factory = sqlite3.Row
+    # Job rows and the matching attempt history must come from one SQLite view.
+    with conn:
+        conn.execute('BEGIN')
+        rows = [Store._row(row) for row in conn.execute('SELECT * FROM jobs ORDER BY created_at,id')]
+        events = [dict(row) for row in conn.execute(
+            "SELECT kind,job_id,created_at,data FROM events WHERE kind IN ('claimed','finished') ORDER BY id")]
+    for event in events:
+        try:
+            event['data'] = json.loads(event['data'])
+        except (TypeError, ValueError):
+            event['data'] = None
+    return Snapshot(rows, events)
 
 
 def current_rows(store,plan):
@@ -115,6 +134,9 @@ def execute(plan,state):
 
 
 def measure(store,plan):
+    if isinstance(store, Store):
+        with store._connection() as conn:
+            store = _read_snapshot(conn)
     invalid=audit_cached(store,plan)
     rows=[{**r,'state':'blocked','reason':invalid[r['id']]} if r['id'] in invalid
           and r['state'] not in {'running','uncertain'} else r for r in current_rows(store,plan)]
@@ -124,7 +146,10 @@ def measure(store,plan):
             reason=r.get('reason',''); group='resources' if reason.startswith('resource:') else 'evidence' if reason.startswith('evidence:') else 'other'
             blocked[group].append({'id':r['id'],'reason':reason})
     from .latency import samples, summarize
-    handoffs=samples(rows,plan['capacities'],plan['max_parallel'])
+    handoffs = samples(rows, plan['capacities'], plan['max_parallel'],
+                       attempt_events=store.attempt_events, reservation_rows=store.jobs())
+    available = [x['capacity_available_to_start_s'] for x in handoffs
+                 if x['capacity_available_to_start_s'] is not None]
     statuses=module_status(view,plan)
     _,mapping=compile_plan(plan)
     for status in statuses:
@@ -133,7 +158,8 @@ def measure(store,plan):
                         and row['spec']['kind']=='batch'
                         and mapping[status['module']]['review'] in row['spec']['deps'])
         if failures: status.update(state='evidence_invalid',reason=failures[0])
-    return {'evidence_audit':{'invalid':[{'id':job,'reason':reason} for job,reason in invalid.items()],'scope':'current plan only; superseded history retained but not reused'},'capacity_available_handoff_s':summarize([x['capacity_available_to_start_s'] for x in handoffs]),'handoff_samples':handoffs,'schema':1,'mode':'test_only','modules':statuses,'metrics':metrics(view),
+    return {'evidence_audit':{'invalid':[{'id':job,'reason':reason} for job,reason in invalid.items()],'scope':'current plan only; superseded history retained but not reused'},'capacity_available_handoff_s':summarize(available),'handoff_samples':handoffs,'schema':1,'mode':'test_only','modules':statuses,'metrics':metrics(view),
+            'handoff_capacity_scope':'Relay reservations only. Host availability and dispatch delay are unverified. Null samples indicate incomplete attempt history.',
             'attempts':sum(r['attempt'] for r in rows),'failed_attempts':sum(r['attempt'] for r in rows if r['state']=='failed'),
             'ai_calls':sum((((r.get('result') or {}).get('receipt') or {}).get('data') or {}).get('ai_calls',0) for r in rows),
             'ai_implementation_review_seconds':None,'repeated_model_reviews':0,
@@ -149,9 +175,8 @@ def read_report(state):
     state=owned(state); plan=json.loads((state/'plan.json').read_text())
     uri='file:'+quote(str(state/'queue.sqlite3'),safe='/')+'?mode=ro'
     with sqlite3.connect(uri,uri=True) as conn:
-        conn.row_factory=sqlite3.Row
-        rows=[Store._row(row) for row in conn.execute('SELECT * FROM jobs ORDER BY created_at,id')]
-    return measure(Snapshot(rows),plan)
+        snapshot = _read_snapshot(conn)
+    return measure(snapshot,plan)
 
 
 def prepare(root):
