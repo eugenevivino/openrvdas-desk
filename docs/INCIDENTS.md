@@ -46,3 +46,15 @@ The baseline entrypoint ignored the test harness's proposed scratch path. One te
 Cause: installed `ds-codex` dry-run lines 183-187 could remove an ambiguous foreign lock.
 Fix: lead cancelled only owned v6 prelaunch waits; no native build started; immutable runtime/evidence retained.
 Guard: nonmutating admission, per-job identity/invalidation and retry/recovery fixes are underway and require qualification before resumption; ambiguous claims remain reserved.
+
+## 2026-11-20 Relay pilot Linux fixture and evidence measurement
+
+Console candidate5b892601: Linux run44708749952 passed pilot/hardening, frontend
+failed one Self-test handshake assertion. The fixture observed Disconnected before
+its current socket existed. Retained raw failure at relay-20261120/evidence/
+linux-console-136194786053-failed.log; correction waits for a new socket identity
+and preserves every operator-warning assertion. Qualification remains pending.
+Stream candidate75a71c1: Linux run44709129369 PASS; independent cloud review
+task_e_6b000f9fd45c832fa1e37fecce36b4e7 HOLD on lost expired-report display.
+No HOLD was converted to PASS. Durable retry-event intervals now correct latency
+accounting; raw waits remain and host availability is not inferred.

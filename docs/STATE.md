@@ -2,34 +2,28 @@
 
 Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
-## Supervised pilot console (2026-11-20)
+## Relay pilots (2026-11-20)
 
-- Eugene approved product hardening 8f0794e and policy d06ad2d. Fork integration is bff54ec and desk policy 460914c is installed. The installed gate returned GREEN with all 188 raw findings matched to the approved sites. [Owner decision](https://github.com/eugenevivino/openrvdas-desk/issues/2#issuecomment-7032462805).
-- Fork [pilot PR #3](https://github.com/eugenevivino/openrvdas/pull/3) is in draft at da4aa5e, based on integration bff54ec. The approved round corrected the shorter-backfill and zero-history cases. All five added regressions failed on b19dde0 and passed on da4aa5e.
-- All nine design commands and the installed scanner gate passed. Mac passed 197 frontend tests, 206 Python tests and 84 additional cases. Ubuntu passed 197 frontend, 207 console/replay, 204 installer/security and two real nginx cases. All ten Chromium modules passed on each platform. [Hosted results](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44695593537)
-- Cloud logic and UI both passed. Astra Ultra held the merge for three source-traced operator display cases. These involve an unseen reading while away, a late reading splitting a quality interval, and quick page return. The authorized round is complete. See the [evidence and proposed next brief](../research/2026-11-20-pilot-page-return.md). The 24-hour soak remains held.
-
-## Throughput and Stream Health (2026-11-19)
-
-- Hosted verification candidate `95e9edf` passed six desk checks. A real Mac fixture held its slot from 11:22:42 to 11:23:42 a.m. Eastern. Hosted tests started at 11:23:18 on console `fc31b54` and passed. Owner review precedes installation. [Desk PR](https://github.com/eugenevivino/openrvdas-desk/pull/4) and [Linux run](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44565419757).
-- Stream Health fork [PR #2](https://github.com/eugenevivino/openrvdas/pull/2), `9f156fa`, passed 186 frontend tests and a two-stream Chromium test on both macOS and Ubuntu. All design and P1 checklist items passed. The previous Bandit hold was resolved on integration bff54ec after this test. A re-cut and fresh checks are pending. T-CON-12 records a stock CDS startup delivery gap. Vessel producer integration is pending. [Linux receipt](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44571508115).
+- Console candidate5b892601: full Mac self-check GREEN, 205 frontend tests. Linux44708749952 pilot and hardening PASS; frontend204 PASS/1FAIL (Self-test socket readiness fixture). Correction in progress, no gate weakened.
+- Independent Console cloud review task_e_6b000f5c4134832fbe92c376a32815ec PASS at5b892601; final Astra Ultra approval remains.
+- Stream candidate75a71c1: full Mac self-check and Linux44709129369 PASS; fresh independent review task_e_6b000f9fd45c832fa1e37fecce36b4e7 HOLD (expired observation hidden). Repair in progress.
+- Relay v7 terminal:6 stages PASS,2 review gates BLOCKED; active unit claims retained by this Relay chat. Newly qualified0, integrated0. See CODEX-HANDOVER.md for exact source and evidence.
+- Relay source/tests synced on desk deepsignal/relay-pilot-20261120; fork candidates on deepsignal/relay-console-20261120 and deepsignal/relay-stream-health-20261120. Default-branch push rejected; use separate branch.
+- Mini1GiB common policy pinned; no DeepSignal Mini job or live shared-allocator activation. Await owner verified policy/leases and local admission.
+- Codex last observed7% remaining; preserve1% reserve. Successor provider optional, handoff ready; Claude auth not a dependency of current work.
+- Kalon playback and existing supervisors untouched. The 24-hour soak remains held.
 
 ## Handoff (2026-11-19 03:42Z)
 - Eugene drives new work from the Codex GUI using docs/CODEX-HANDOVER.md; Codex takes unclaimed units.
 - Security redesign MERGED into deepsignal/integration 1dc7a5e (Eugene approved 03:49Z), tag deepsignal/pilot-candidate-2;
   claim released. Nothing is claimed by the MacBook Claude session now.
-- Everything else is unclaimed (units.json claimed_by), including the 24 h soak and the console follow-ups.
+- Current claims supersede this historical handoff; inspect units.json and active claim directories.
 - Counts: see `python3 tools/finish-line.py` (LANDED 2 after the security merge).
 
 ## Landed (fork eugenevivino/openrvdas, branch deepsignal/integration, base contrib master 3b4b76e)
 - Console UI pilot candidate: integration 7c60dbf, tag deepsignal/pilot-candidate (D-PILOT1). From
   console-mvp 0fd4dee without the installer. tsc clean, vitest 178, pytest 35, flake8 clean.
   Open UI items: docs/TICKETS.md (T-CON-1 to T-CON-10).
-
-## Running
-- Security unit deepsignal/sec-cds-joint (CRITICAL, push-only, Eugene approves the merge): rebuild per
-  research/2026-11-19-cds-gate-redesign.md, Sol high on the Mac, nginx probe on the Linux runner
-  (desk branch ci/sec-joint-nginx), Astra ultra review, at most 2 rounds.
 
 ## Finished, not landed (all unmerged; MORNING lines on desk)
 - #78 ship-coupling 4882b47 (HOLD after 3 rounds), fault-bench 58e66c8 (HOLD after 3 rounds),
