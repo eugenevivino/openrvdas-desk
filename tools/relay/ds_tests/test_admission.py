@@ -9,6 +9,8 @@ from unittest.mock import patch
 
 from dsrelay import adapter
 
+DEFAULT_SWAP_CACHE = adapter.SWAP_CACHE
+
 
 class AdmissionTests(unittest.TestCase):
     def setUp(self):
@@ -20,6 +22,7 @@ class AdmissionTests(unittest.TestCase):
         self.lock=self.root/'lock'; self.now=1000
         self.values={'hw.pagesize':'4096','hw.memsize':str(16*1024**3),
                      'kern.boottime':'{ sec = 1, usec = 0 }',
+                     'kern.bootsessionuuid':'D6FC90F1-1B64-4C6B-9171-17B954F21A71',
                      'vm.swapusage':'total = 8192.00M  used = 1024.00M  free = 7168.00M',
                      'kern.memorystatus_vm_pressure_level':'1',
                      'vm_stat':'Pages free: 1048576.\nPages speculative: 0.\nPages purgeable: 0.\nFile-backed pages: 0.\nPages wired down: 262144.\nPages occupied by compressor: 0.',
@@ -105,6 +108,39 @@ class AdmissionTests(unittest.TestCase):
         self.assertTrue(sample['project_cache_baseline_available'])
         self.assertEqual(sample['swap_growth_5min_mib'],0)
         self.assertEqual(self.history.read_bytes(),before)
+
+    def test_uuid_cache_is_separate_from_active_legacy_cache(self):
+        self.assertEqual(DEFAULT_SWAP_CACHE,Path('/private/tmp/deepsignal/relay-measurements/swap-v2.sqlite3'))
+
+    def test_boottime_microsecond_adjustment_preserves_session_baseline(self):
+        self.history.unlink()
+        self.values['kern.boottime']='{ sec = 1, usec = 479910 }'
+        with self.assertRaises(adapter.Blocked): adapter.admission_once(self.attempt)
+        previous=json.loads((self.attempt/'swap-history.json').read_text())['boot_id']
+        self.values['kern.boottime']='{ sec = 1, usec = 573727 }'
+        self.now+=300
+        adapter.admission_once(self.attempt)
+        self.assertEqual(json.loads((self.attempt/'swap-history.json').read_text())['boot_id'],previous)
+        self.assertTrue(json.loads((self.attempt/'admission.log').read_text())['project_cache_baseline_available'])
+
+    def test_new_boot_session_cannot_reuse_previous_session_baseline(self):
+        self.history.unlink()
+        with self.assertRaises(adapter.Blocked): adapter.admission_once(self.attempt)
+        self.values['kern.bootsessionuuid']='A22E9141-C1D6-4B75-9B06-67890F123456'
+        self.now+=300
+        with self.assertRaises(adapter.Blocked): adapter.admission_once(self.attempt)
+        self.assertFalse(json.loads((self.attempt/'admission.log').read_text())['project_cache_baseline_available'])
+        self.assertEqual(json.loads((self.attempt/'swap-history.json').read_text())['boot_id'],
+                         self.values['kern.bootsessionuuid'].lower())
+
+    def test_missing_or_malformed_boot_uuid_refuses_without_recording_sample(self):
+        for value in ('', 'unknown', 'D6FC90F1-1B64-4C6B-9171-17B954F21A7G',
+                      '00000000-0000-0000-0000-000000000000',
+                      subprocess.CalledProcessError(1,['sysctl'])):
+            with self.subTest(value=value):
+                self.values['kern.bootsessionuuid']=value
+                with self.assertRaises(adapter.Blocked): adapter.admission_once(self.attempt)
+                self.assertFalse((self.root/'cache'/'swap.sqlite3').exists())
 
     def test_held_claim_wait_uses_one_bounded_window_and_preserves_owner(self):
         self.lock.mkdir(); (self.lock/'owner').write_text('foreign')

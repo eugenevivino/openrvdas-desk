@@ -21,7 +21,8 @@ ADMISSION_WAIT_S = 360
 ADMISSION_POLL_S = 5
 SWAP_HISTORY = Path('/private/tmp/deepsignal/.swap-history')
 HEAVY_PATTERNS = Path('/private/tmp/deepsignal/heavy-patterns.txt')
-SWAP_CACHE = Path('/private/tmp/deepsignal/relay-measurements/swap.sqlite3')
+# Separate identity formats so older active runtimes cannot prune UUID samples.
+SWAP_CACHE = Path('/private/tmp/deepsignal/relay-measurements/swap-v2.sqlite3')
 
 class Blocked(Exception): pass
 
@@ -87,7 +88,11 @@ def admission_once(attempt):
         boot=read(['/usr/sbin/sysctl','-n','kern.boottime'])
         match=re.search(r'\bsec\s*=\s*(\d+)\s*,\s*usec\s*=\s*(\d+)\b',boot)
         if not match or int(match[1])>now or int(match[2])>=1000000: raise ValueError('invalid boot identity')
-        boot_id=match[1]+':'+match[2]
+        # kern.boottime can adjust during one running boot; retain its floor only.
+        boot_id=read(['/usr/sbin/sysctl','-n','kern.bootsessionuuid']).lower()
+        if (not re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}',boot_id)
+                or boot_id=='00000000-0000-0000-0000-000000000000'):
+            raise ValueError('invalid boot session UUID')
         baseline=record_swap(SWAP_CACHE,boot_id=boot_id,wall_s=now,monotonic_s=monotonic,used_mib=used)
         shared=[]; shared_valid=True
         try:
