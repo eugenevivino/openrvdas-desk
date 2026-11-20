@@ -323,3 +323,16 @@ class Client:
 
     def status(self, host=None):
         return redacted(self.transport.call('status', {} if host is None else {'host': host}))
+
+    def check_project_resources(self, job, **observation):
+        """Stage the common memory policy for this immutable job's declared peak.
+
+        Observation must come from the verified authority/host reporter. This
+        advisory check neither authenticates that reporter nor grants execution;
+        normal transport mutations and unqualified process reporters stay closed.
+        """
+        from .resource_policy import evaluate_admission
+        request = self._read(job)['request']
+        return evaluate_admission(host=request['host'],
+                                  job_peak_bytes=request['limits']['ram_mib'] * (1 << 20),
+                                  **observation)

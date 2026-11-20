@@ -63,7 +63,8 @@ class ProjectTests(unittest.TestCase):
   self.assertTrue(self.checks(self.candidate())['checks']['passed'])
  def test_foreign_slot_preserved(self):
   d=self.candidate(); lock=self.root/'lock'; lock.mkdir(); (lock/'owner').write_text('foreign')
-  with self.assertRaises(adapter.Blocked): self.checks(d)
+  with patch.object(adapter,'ADMISSION_WAIT_S',0):
+   with self.assertRaises(adapter.Blocked): self.checks(d)
   self.assertEqual((lock/'owner').read_text(),'foreign')
  def test_output_cap(self):
   log=self.root/'output'

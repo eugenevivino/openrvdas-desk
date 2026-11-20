@@ -1,10 +1,14 @@
 """Compile DeepSignal contracts into Relay's existing job graph."""
 import json
 import platform
+import sqlite3
+import subprocess
+import time
 from pathlib import Path
 import sys
+from urllib.parse import quote
 from .common import owned, sha, digest, git, file_record, verify_files, tree_manifest, verify_tree, load_contract, code_version
-from relay.plan import validate, compile_plan, module_status, submit_plan, batch_callback
+from relay.plan import validate, compile_plan, module_status, submit_plan, batch_callback, _batch_matches_plan
 from relay.cli import install_plan, plan_lock, metrics
 from relay.engine import run
 from relay.store import Store
@@ -37,13 +41,56 @@ def build_plan(contracts):
     validate(plan); return plan
 
 
-def audit_cached(store):
-    for row in store.jobs():
-        if row['state']!='passed': continue
-        data=row['result']['receipt']['data']; verify_files(data['artifacts'])
-        if 'source_manifest' in data:
-            from .adapter import verify_candidate
-            verify_candidate(data)
+class Snapshot:
+    def __init__(self, rows): self.rows=rows
+    def jobs(self): return self.rows
+
+
+def current_rows(store,plan):
+    specs,_=compile_plan(plan); ids={s['id'] for s in specs}
+    return [r for r in store.jobs() if r['id'] in ids or
+            (r['spec']['kind']=='batch' and set(r['spec']['deps'])<=ids
+             and _batch_matches_plan(plan,r))]
+
+
+def _retain_invalidations(store,invalid):
+    """Retain receipts; never reclaim an active or uncertain worker."""
+    if not invalid: return
+    with store._transaction() as conn:
+        for job,reason in invalid.items():
+            row=conn.execute('SELECT state,reason FROM jobs WHERE id=?',(job,)).fetchone()
+            if row is None or row['state'] not in {'queued','approval','passed'}: continue
+            conn.execute("UPDATE jobs SET state='blocked',reason=?,blocked_from=NULL,ready_at=NULL,finished_at=COALESCE(finished_at,?) WHERE id=?",
+                         (reason,time.time(),job))
+            store._event(conn,'evidence_invalidated',job,{'previous_state':row['state'],'previous_reason':row['reason'],'reason':reason})
+
+
+def audit_cached(store,plan,mutate=False):
+    """Audit only the current graph, preserving scoped evidence holds."""
+    rows=current_rows(store,plan); invalid={}
+    for row in rows:
+        if row['state']=='blocked' and row.get('reason','').startswith('evidence: invalid'):
+            invalid[row['id']]=row['reason']
+        try:
+            if row['spec']['kind']=='piece': load_contract(row['spec']['inputs'])
+            if row['state']=='passed':
+                data=row['result']['receipt']['data']; verify_files(data['artifacts'])
+                if 'source_manifest' in data:
+                    from .adapter import verify_candidate
+                    verify_candidate(data)
+        except (OSError,ValueError,KeyError,TypeError,subprocess.SubprocessError) as exc:
+            invalid[row['id']]='evidence: invalid '+str(exc)
+    changed=True
+    while changed:
+        changed=False
+        for row in rows:
+            if row['id'] in invalid: continue
+            bad=[dep for dep in row['spec']['deps'] if dep in invalid]
+            if bad:
+                invalid[row['id']]='evidence: invalid prerequisite '+bad[0]
+                changed=True
+    if mutate: _retain_invalidations(store,invalid)
+    return invalid
 
 
 def execute(plan,state):
@@ -53,32 +100,58 @@ def execute(plan,state):
         live=json.loads((state/'plan.json').read_text())
         if digest(live)!=digest(plan): raise ValueError('plan changed before dispatch')
         submit_plan(store,live)
-        for p in live['pieces']: load_contract(p['inputs'])
-        audit_cached(store)
-        result=run(store,state,live['capacities'],max_parallel=live['max_parallel'],poll_s=0.05,batch_callback=batch_callback(live))
-        audit_cached(store)
+        invalid=audit_cached(store,live,mutate=True)
+        materialize=batch_callback(live)
+        def guarded_batch(queue):
+            # Finish supervising already-running work, then invalidate any
+            # affected recovered result before it can admit new dependents.
+            _retain_invalidations(queue,invalid)
+            return materialize(queue)
+        result=run(store,state,live['capacities'],max_parallel=live['max_parallel'],poll_s=0.05,batch_callback=guarded_batch)
+        audit_cached(store,live,mutate=True)
         report=measure(store,live)
         atomic_json(state/'report.json',report)
         return report
 
 
 def measure(store,plan):
-    rows=store.jobs(); blocked={'resources':[],'evidence':[],'other':[]}
+    invalid=audit_cached(store,plan)
+    rows=[{**r,'state':'blocked','reason':invalid[r['id']]} if r['id'] in invalid
+          and r['state'] not in {'running','uncertain'} else r for r in current_rows(store,plan)]
+    view=Snapshot(rows); blocked={'resources':[],'evidence':[],'other':[]}
     for r in rows:
         if r['state']=='blocked':
             reason=r.get('reason',''); group='resources' if reason.startswith('resource:') else 'evidence' if reason.startswith('evidence:') else 'other'
             blocked[group].append({'id':r['id'],'reason':reason})
     from .latency import samples, summarize
     handoffs=samples(rows,plan['capacities'],plan['max_parallel'])
-    return {'capacity_available_handoff_s':summarize([x['capacity_available_to_start_s'] for x in handoffs]),'handoff_samples':handoffs,'schema':1,'mode':'test_only','modules':module_status(store,plan),'metrics':metrics(store),
+    statuses=module_status(view,plan)
+    _,mapping=compile_plan(plan)
+    for status in statuses:
+        failures=[invalid[job] for job in mapping[status['module']].values() if job in invalid]
+        failures.extend(invalid[row['id']] for row in rows if row['id'] in invalid
+                        and row['spec']['kind']=='batch'
+                        and mapping[status['module']]['review'] in row['spec']['deps'])
+        if failures: status.update(state='evidence_invalid',reason=failures[0])
+    return {'evidence_audit':{'invalid':[{'id':job,'reason':reason} for job,reason in invalid.items()],'scope':'current plan only; superseded history retained but not reused'},'capacity_available_handoff_s':summarize([x['capacity_available_to_start_s'] for x in handoffs]),'handoff_samples':handoffs,'schema':1,'mode':'test_only','modules':statuses,'metrics':metrics(view),
             'attempts':sum(r['attempt'] for r in rows),'failed_attempts':sum(r['attempt'] for r in rows if r['state']=='failed'),
-            'ai_calls':sum((r.get('result') or {}).get('receipt',{}).get('data',{}).get('ai_calls',0) for r in rows),
+            'ai_calls':sum((((r.get('result') or {}).get('receipt') or {}).get('data') or {}).get('ai_calls',0) for r in rows),
             'ai_implementation_review_seconds':None,'repeated_model_reviews':0,
             'integrated_modules':0,'integrated_modules_per_day':0,
             'blocked':blocked,'ready_undispatched':[r['id'] for r in rows if r['state']=='queued' and r.get('ready_at') is not None],
             'ownership':'existing dispatcher retained; no transfer or publication',
             'release_requirements_remaining':'product gates in contracts, independent controller review, Linux qualification, complete pilot and verified transfer',
             'note':'AI authoring time is not measured by the queue. Zero integration is observed for this pilot, not a throughput projection.'}
+
+
+def read_report(state):
+    """Read existing state without Store initialization, transitions or launch."""
+    state=owned(state); plan=json.loads((state/'plan.json').read_text())
+    uri='file:'+quote(str(state/'queue.sqlite3'),safe='/')+'?mode=ro'
+    with sqlite3.connect(uri,uri=True) as conn:
+        conn.row_factory=sqlite3.Row
+        rows=[Store._row(row) for row in conn.execute('SELECT * FROM jobs ORDER BY created_at,id')]
+    return measure(Snapshot(rows),plan)
 
 
 def prepare(root):

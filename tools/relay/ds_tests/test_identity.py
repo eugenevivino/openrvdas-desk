@@ -57,6 +57,14 @@ class IdentityTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             common.verify_tree(deps, manifest, links=True)
 
+    def test_file_mode_changes_invalidate_source(self):
+        source = self.candidate / 'module.py'
+        source.chmod(0o644)
+        manifest = common.tree_manifest(self.candidate)
+        source.chmod(0o755)
+        with self.assertRaises(ValueError):
+            common.verify_tree(self.candidate, manifest)
+
     def test_internal_file_and_directory_links_are_recorded(self):
         directory = self.candidate / 'package'
         directory.mkdir()

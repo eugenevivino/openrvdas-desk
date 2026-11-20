@@ -28,8 +28,12 @@ only generated distribution changes may enter its derived commit. Subsequent tes
 and reviews bind to that derived commit, not merely its source parent.
 
 Relay handles readiness, allocations within its budget, fenced execution, completion,
-retry and immediate compatible batching. Local tests additionally use the installed
-DeepSignal RAM/heavy-job guards and execution lock. Transient prelaunch resource
+retry and immediate compatible batching. Local tests preserve the installed
+DeepSignal RAM/heavy-job thresholds with a nonmutating sampler and compatible
+execution claim. The launcher's destructive dry-run is never called. A complete
+claim is published atomically without replacing a competing claim. Project-owned
+SQLite observations reuse only fresh, same-boot swap measurements; they contain
+no allocation or job state. Transient prelaunch resource
 refusals wait for at most six minutes per attempt and use bounded exit-75 retries.
 Engineering HOLDs never retry as infrastructure failures. Each worker and each test
 log has an 8 MiB cap. Ambiguous worker liveness retains its reservation.
@@ -57,12 +61,21 @@ Core regression command: `python3.12 -m unittest discover -s tests -v`.
 Project regression command: `python3.12 -m unittest discover -s ds_tests -v`.
 Tests cover bounded output, source/evidence mutation, held reviews, compatible
 batch checks, atomic activation, detached-worker recovery and duplicate prevention.
+Current evidence audits include Git identity, file modes and the copied dependency
+tree. Invalid evidence blocks its affected graph while independent work proceeds;
+read-only reports revalidate evidence. Completion and automatic retry are one
+transaction, so a controller restart cannot strand an eligible retry.
 
 The Kalon lead owns the only shared resource allocator. `dsrelay/capacity.py` is a
 shadow client of its shared API, not another scheduler. Normal transport permits
 read-only status only. Production mutations remain disabled until both project
 hooks, trusted host reporters, fencing and cleanup evidence are independently
 qualified. No authority production state, service or network listener is installed.
+The Mini lightweight policy is a pinned call into the Kalon owner's common memory
+implementation, with a 1 GiB floor and retained job-peak, pressure, swap, freshness
+and reservation requirements. MacBook admission remains at 3 GiB. A staged client
+policy result cannot grant execution. The owner must publish verified live policy
+and compatible resources before the first Mini job runs.
 
 Before production transfer: finish exact-candidate product checks and independent
 reviews; qualify native gate import/dispatch; prove the real combined batch and

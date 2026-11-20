@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import re
+import stat
 import subprocess
 
 ROOT = Path('/private/tmp/deepsignal')
@@ -103,7 +104,7 @@ def tree_manifest(root, paths=None, links=False, exclude=()):
         if not p.resolve(strict=True).is_relative_to(root): raise ValueError('source escapes candidate')
         if not p.is_file():
             raise ValueError('manifest entry is not a regular file: ' + name)
-        result[name] = sha(p)
+        result[name] = f'file:{stat.S_IMODE(p.stat().st_mode):o}:{sha(p)}'
     return result
 
 

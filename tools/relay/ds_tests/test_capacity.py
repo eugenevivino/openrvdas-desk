@@ -81,6 +81,23 @@ class CapacityTests(unittest.TestCase):
         self.assertNotIn('private-test-capability', json.dumps(started))
         self.assertFalse(started['production_spawn_permitted'])
 
+    def test_staged_mini_policy_uses_job_peak_without_granting_launch(self):
+        normal = Client(self.root / 'mini-shadow', Transport([sys.executable, str(self.script)]))
+        self.assertEqual(normal.request('mini-test', 'mini', 'portable', self.limits)['status'], 'STAGED')
+        peak = self.limits['ram_mib'] * (1 << 20)
+        available = (1 << 30) + peak
+        observation = dict(lightweight=True, policy_verified=True, policy_fresh=True,
+            measurement_verified=True, measurement_fresh=True, pressure='normal',
+            swap_used_bytes=0, swap_growth_5m_bytes=0,
+            available_headroom_bytes=available, remaining_job_budget_bytes=peak,
+            reservation_compatible=True, physical_bytes=8 << 30, reserved_bytes=0,
+            vm_stat=f'Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free: {available // 16384}.\nPages inactive: 0.\nPages speculative: 0.\n')
+        self.assertTrue(normal.check_project_resources('mini-test', **observation).allowed)
+        observation.update(reserved_bytes=1, available_headroom_bytes=available-1)
+        self.assertFalse(normal.check_project_resources('mini-test', **observation).allowed)
+        self.assertEqual(normal.claim('mini-test')['status'], 'STAGED')
+        self.assertEqual(self.calls(), [])
+
     def test_immutable_request_and_duplicate_claim_are_refused(self):
         self.claim()
         with self.assertRaises(CapacityError):
