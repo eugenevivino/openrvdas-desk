@@ -1,3 +1,4 @@
 date	brief	tool	model	effort	wall_s	tok_in	tok_out	tok_cached	note
 2026-11-18	django-test-basic-diagnosis	codex	gpt-6-astra	low	50	41000			bare codex exec, violated codex-run rule (INCIDENTS)
 2026-11-18	deepsignal-vector-wind	claude-code-cloud	claude-opus	default	1200				tokens not readable from inside the cloud session; wall time approximate
+2026-11-20	combined-pilot-final-integration-review	codex-native-relay	gpt-6.2-astra	ultra	276.109				Terminal HOLD; CLI reports total69910 tokens without input/output/cache split; session01a1f85f-ade6-7941-be5a-bbad3b48e162

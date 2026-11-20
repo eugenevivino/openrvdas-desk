@@ -4,71 +4,84 @@ Self-contained. Read this first, then `docs/STATE.md`, `docs/DECISIONS.md` and `
 
 ## Relay checkpoint (2026-11-20; inspect live state before continuing)
 
-Provider continuation: the lead verified Codex at 7% remaining, a dated observation.
-Apply the 1% reserve and unknown-quota refusal in [BUILDERS.md](BUILDERS.md#provider-succession-eugene-2026-11-20).
-Continue DeepSignal product work; preserve the source, runtime and evidence pointers
-below for an authorized successor after token exhaustion. Claude is optional.
-Its CLI authentication returned false even outside the sandbox; that option is
-STAGED/authentication-blocked, with no actual Claude job or takeover completed.
-This does not block current product work or require an authentication project.
-Existing workers keep ownership until terminal; a successor verifies readiness and
-current claims before resuming under the same deterministic controller.
+Continue DeepSignal product work. Provider succession is only a contingency after
+Codex exhaustion; Claude is optional. Codex was verified at 5% remaining during
+this checkpoint; retain the 1% reserve and recheck before any new model job.
+No successor takeover or Claude engineering job is claimed.
 
-Read [OPERATING-SYSTEM.md, Deterministic orchestration](OPERATING-SYSTEM.md#deterministic-orchestration-2026-11-20-standing-directive)
-for the standing architecture and boundaries. Authoritative desk:
-`/private/tmp/deepsignal/desk-main`. Staged Relay source:
-`/private/tmp/deepsignal/relay-20261120/repo`, commit
-`ad5ddcff92953f5472d43fdeca3388f0235852bd`. Preserved earlier runtime/state evidence is at
-`/private/tmp/deepsignal/relay-20261120/runtime-v6` and `release-state-v6` beside it.
-The lead cancelled only its own v6 prelaunch waits: installed `ds-codex` dry-run
-lines 183-187 could remove an ambiguous foreign lock. No native build started.
-Keep that runtime/evidence immutable. Nonmutating admission, atomic complete claims,
-scoped identity/invalidation and transactional retry repairs passed their tests.
-The lead resumed `runtime-v7` / `release-state-v7` with the same full pilot checks.
-Both exact-head self-check jobs passed; all v7 workers are terminal. The two
-review gates remain blocked pending verified new evidence. Inspect current state.
-Existing supervisors retain ownership; no production transfer is approved.
+Authoritative desk: `/private/tmp/deepsignal/desk-main`. Relay source:
+`/private/tmp/deepsignal/relay-20261120/repo` at `38baeff`. Immutable runtime-v8
+continues owning its existing pilot jobs; do not edit live runtimes or clear
+uncertain claims. Kalon owns the shared allocator. Existing supervisors remain
+in charge; Relay is PILOT/STAGED, not production.
 
-Evidence under `/private/tmp/deepsignal/relay-20261120/`: core 74 PASS in
-`evidence/core-final-repair-tests.log`; adapter 105 PASS in
-`evidence/adapter-final-repair-tests.log`.
-Console source `da7384617f05100458c267f9253c0d2f7518bc25` passed 205 frontend tests
-plus type/lint. Its generated bundle candidate `5b892601f7c6f224c279714ae8edbf0e619c740b`
-passed the full existing Mac self-check, including served-browser acceptance.
-Linux run `44708749952` passed pilot and hardening jobs, but frontend had one
-Self-test fixture startup race (204 PASS, 1 FAIL). The fixture correction is pending
-qualification. Fresh independent cloud review `task_e_6b000f5c4134832fbe92c376a32815ec`
-returned PASS at `5b892601`; this is not the required Astra Ultra approval. Stream `61ba756717bde7c7680ca1aef78fa2ec5be87541` passed full Mac checks
-and Linux run `44702474629`, but an advisory source audit found stale FAIL display:
-`evidence/stream-independent-review.md`. Regression `887a63c` recorded two RED tests;
-fix `15bcafb` passed Linux run `44703725093`, workflow `4081d99`, verified through
-GitHub's run API. Generated bundle `75a71c1f3c610119ee63c34280431fd7c15823ae` passed its full Mac
-self-check. Exact-bundle Linux workflow `c190dcd`, run `44709129369`, passed. Fresh independent
-review `task_e_6b000f9fd45c832fa1e37fecce36b4e7` returned HOLD: expired observations
-become indistinguishable from never-reported fields. Targeted regression/repair
-is in progress; preserve that HOLD until a fresh qualified review clears it.
-Old green receipts cannot approve changed source. The cancelled v6 waits confer
-no native acceptance.
-The sub-agent audits are diagnostic evidence, not D-SUB1 independent-review credit;
-formal fresh-session reviews remain required (`evidence/review-provenance.json`).
-Mini lightweight work awaits admitted locking/smoke receipts and a compatible
-reservation despite the authorized 1 GiB floor. Its thin client binds common
-commit `a54ebb87`, blob `3a2ae7c1`, SHA-256 `c9547b03...f1b064`, extracted from
-the owner's immutable Git object. `mini-job/manifest.json` prepares 19 Store/retry
-fixtures at `b843ac9`, 128 MiB peak budget, one CPU, 60 s, zero native slots.
-Local preflight passed; no DeepSignal Mini execution is claimed.
+Product evidence (all paths below relative to `/private/tmp/deepsignal/relay-20261120`):
 
-Next: reconcile those existing attempts, repair actionable failures, collect missing
-native/Linux evidence and required reviews, then assemble compatible qualified
-candidates under existing ownership. Continue independent authorized backlog work;
-`evidence/backlog-inventory-74.json` is an inventory, not qualification or a launch
-approval. Relay remains PILOT/STAGED, not PRODUCTION. Newly qualified 0, integrated
-0 at this checkpoint. Product work continues independently of this docs edit. Code and docs are synced
-on desk `deepsignal/relay-pilot-20261120`; fork candidate branches are
-`deepsignal/relay-console-20261120` and `deepsignal/relay-stream-health-20261120`.
-A direct desk-main push was rejected by automatic approval review; separate
-branches preserve the work without changing the default branch. Do not retry
-the rejected main push or use another supervisor to bypass that rejection.
+- Console `57182e5eb5c7a76fdecd918d7b6de259762084fd`: full Mac self-check GREEN,
+  Linux run44710257259 all three jobs PASS, 205 frontend tests. Fresh source and
+  exact identity reviews PASS. The earlier branch-alias HOLD is preserved with
+  its explicit independent clarification.
+- Stream view `a3532f38c78305aa3a07d6f8be5d3c76ed6ae6c0`: full Mac self-check GREEN,
+  Linux run44712385947 PASS (192 frontend tests plus Chromium). Source and final
+  artifact reviews PASS. Stale and expired reports retain producer history and
+  QC; the original75a71c1 HOLD and red regression evidence remain preserved.
+- Combined `2ea3e609cef657398681adc5a0b2c866d0132a69`, tree
+  `4e54acc5973211aa4073430f65e1f21001712c95`, base `bff54ec722bd8bf2c0ee949c91528642e0140e26`:
+  both unchanged design self-checks PASS. Immutable check-0.log and check-1.log
+  are in `combined-release-state/attempts/00ee6aff831b379be1e5/000001-000001/`.
+  Linux44714303424 attempt1 failed only checkout before tests; source publication
+  was corrected using a named, fetched remote without bypassing the hook.
+  Attempt2 all3 jobs PASS, verified through the GitHub jobs API; snapshot is
+  `research/2026-11-20-relay-pilots/combined-linux-jobs.json`.
+- Fresh standalone Astra Ultra review at the combined SHA returned **HOLD**, not
+  approval. Three P1 cases: navigating during an outage hides known failure
+  history; the first delayed report after a completed page switch overwrites
+  learned cadence; `_QC_` inside a valid stream name suppresses QC subscription.
+  Formal answer is copied to `research/2026-11-20-relay-pilots/combined-astra-hold.md`.
+  Prior individual PASS reviews do not clear these combined findings.
+- Review job `deepsignal.final-integration-review.d76d141032fe171690a0c079`
+  is terminal BLOCKED in `native-review/state`; session
+  `01a1f85f-ade6-7941-be5a-bbad3b48e162` explicitly reports gpt-6.2-astra,
+  ultra, read-only. Installed ds-codex was not changed: a hashed private copy
+  retained its safety checks and delegated claim ownership to Relay. Provenance
+  and bounded logs are in `native-review/`. No review subagent credit was used.
+- Current repair source starts at `47b9295d874b90affae0d61589ddd014ea00f412`
+  in `modules/combined-pilot`: two producer-name regression variations only.
+  `integration-qc-red-plan.json` / `integration-qc-red-state` run them through
+  Relay with normal admission; inspect the actual terminal result before repair.
+
+No new module is integrated or qualified by this checkpoint. Current P1 findings
+block both pilot release stamps; preserve the registry's older historical stamps.
+The held 24-hour soak, installer approval, security ownership and ship activation
+are unchanged. Exact tests/review must cover the repaired combined candidate.
+
+Relay tests: 74 core and105 adapter checks passed in
+`evidence/core-final-repair-tests.log` and `evidence/adapter-final-repair-tests.log`;
+later focused provider, latency and boot-identity regressions are separate receipts,
+not a claimed fresh full-suite run. The latency correction includes all attempts,
+including admission retries. Six v9 handoffs measured median0.043623s and max0.058267s
+excluding recorded Relay reservation waits. Host admission is a separate guard;
+there is no measured utilization or completed-module throughput improvement yet.
+`38baeff` uses validated kern.bootsessionuuid and a versioned local swap-observation
+cache so wall-clock adjustment cannot repeatedly invalidate same-boot evidence.
+It preserves the five-minute rolling check; existing runtimes remain immutable.
+
+Mini: approved common1GiB lightweight policy pinned at owner commit a54ebb87,
+blob3a2ae7c1, SHA-256 c9547b03...f1b064. `mini-job/manifest.json` prepares19 bounded
+Store/retry fixtures (128MiB peak, one CPU,60s, zero native slots); local preflight
+passed. No DeepSignal Mini job or authoritative shared lease was launched.
+Live owner policy, reservations and local guards must all admit it first.
+
+Next: finish the focused red/green repairs, retain every original failure and HOLD,
+run affected checks then exact bundle/native/Linux qualification and fresh bounded
+Astra review. Only a new PASS can authorize fork integration under D-REVIEW1.
+Review import, host retirement/restart safety and owner transfer still need their
+own qualification before unattended Relay production. Continue independent eligible
+work subject to current claims, pauses, scientific evidence and resource budgets.
+The74-unit backlog inventory is evidence inventory, not launch or review approval.
+
+Sync only the authorized topic branches. Desk main push was rejected by automatic
+approval review; do not retry it or route around that refusal through a supervisor.
 
 ## 1. Goal
 

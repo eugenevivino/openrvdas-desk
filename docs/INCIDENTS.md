@@ -58,3 +58,22 @@ Stream candidate75a71c1: Linux run44709129369 PASS; independent cloud review
 task_e_6b000f9fd45c832fa1e37fecce36b4e7 HOLD on lost expired-report display.
 No HOLD was converted to PASS. Durable retry-event intervals now correct latency
 accounting; raw waits remain and host availability is not inferred.
+
+
+### 2026-11-20: combined pilot review and publication baseline
+
+Independent native Astra Ultra review2ea3e609 HOLD found outage-navigation history
+loss, delayed-report cadence distortion and QC-name misclassification. Preserve
+its original answer in research/2026-11-20-relay-pilots/combined-astra-hold.md;
+targeted production-route regressions are active. Individual source reviews and
+green tests cannot clear these findings. Combined Linux44714303424 attempt1 ran
+no tests: checkout could not find the not-yet-published candidate. The source hook
+correctly refused a push lacking a named remote baseline. Added named publish
+remote, fetched verified integrationbff54ec, then published the same candidate with
+the hook intact; only failed jobs were retried. Source identity was unchanged.
+
+Relay38baeff replaces mutable kern.boottime microseconds with validated stable
+boot-session UUID for the local swap-observation cache. Versioned cache starts
+with an ordinary five-minute warmup; pressure, swap, job and ownership guards
+remain. Focused19 admission/measurement checks passed; live performance benefit
+is not yet measured.
