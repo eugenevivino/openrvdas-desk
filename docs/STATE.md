@@ -54,4 +54,4 @@ Updated 2026-11-19 02:05Z by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 - #121 and #139 downloads; venv-sci install (sonar estimators); nginx not installed on the Mac (by decision).
 
 ## Sync (D-SYNC1)
-- Last sync 2026-11-19T16:47:10Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
+- Last sync 2026-11-20T06:22:43Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
