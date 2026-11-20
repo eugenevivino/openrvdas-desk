@@ -16,3 +16,4 @@
 - Nov 25 console pilot, security and installer owner handoff: the same 190 Bandit findings appear at integration 1dc7a5e and console 8652862. Five are in the two security files. Proposed changes and owner acceptance checks are in research/2026-11-19-pilot-bandit-owner-proposal.md. The four redesign tickets retain their original scope.
 
 - Nov 20: Both security-owner releases landed. The installed gate is GREEN on integration bff54ec. Pilot PR #3 at b19dde0 passed its Mac and Linux machine gates. The second Astra Ultra review held the merge for T-CON-14 on page return. The two-round cap applies; a single focused corrective round was requested from Eugene.
+  The independent cloud logic part passed. The UI part held for the related zero-history case. If continuing, address both behaviors in one bounded round and retain a real-path regression and variation for each.
