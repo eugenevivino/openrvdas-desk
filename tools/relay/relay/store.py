@@ -205,7 +205,8 @@ class Store:
                 self._event(conn, "runtime_attached", job_id, {"pid": pid, "attempt_dir": attempt_dir, "token": token})
             return changed == 1
 
-    def finish(self, job_id, token, owner, state, result, reason=""):
+    def finish(self, job_id, token, owner, state, result, reason="", *, retry_on_exit=False):
+        """Atomically record a fenced completion and any configured worker exit retry."""
         if state not in {"passed", "failed", "blocked", "cancelled"}:
             raise ValueError("finish requires a terminal state")
         if result is not None and not isinstance(result, dict):
@@ -220,6 +221,13 @@ class Store:
             now = time.time()
             conn.execute("UPDATE jobs SET state=?,result=?,reason=?,finished_at=?,lease_until=NULL,blocked_from=NULL WHERE id=?", (state, encoded, reason, now, job_id))
             self._event(conn, "finished", job_id, {"state": state, "token": token, "reason": reason}, now)
+            if retry_on_exit and state == "failed" and not row["cancel_requested"] and result is not None:
+                spec = json.loads(row["spec"])
+                returncode = result.get("returncode")
+                if (result.get("timed_out") is False and result.get("cancelled") is False
+                        and type(returncode) is int and returncode in spec.get("retry_exit_codes", [])
+                        and row["attempt"] < spec.get("max_attempts", 1)):
+                    self._queue_retry(conn, row, "automatic retry for explicitly configured exit code", now)
             self._refresh_ready(conn, now)
             return True
 
@@ -254,8 +262,14 @@ class Store:
                 conn.execute("UPDATE jobs SET cancel_requested=1 WHERE id=?", (job_id,))
             self._event(conn, "cancel_requested", job_id, {"previous_state": row["state"]}, now)
 
+    def _queue_retry(self, conn, row, note, now):
+        conn.execute("""UPDATE jobs SET state='queued',owner=NULL,lease_until=NULL,pid=NULL,attempt_dir=NULL,
+            ready_at=NULL,started_at=NULL,finished_at=NULL,cancel_requested=0,result=NULL,reason='',blocked_from=NULL WHERE id=?""",
+                     (row["id"],))
+        self._event(conn, "retry_requested", row["id"], {"note": note, "completed_attempts": row["attempt"]}, now)
+
     def retry(self, job_id, note):
-        """Explicit retry. The caller must enforce any automatic retry policy."""
+        """Record an explicit retry of a terminal failed job."""
         with self._transaction() as conn:
             row = self._required(conn, job_id)
             if row["state"] != "failed":
@@ -263,10 +277,8 @@ class Store:
             if row["attempt"] >= json.loads(row["spec"])["max_attempts"]:
                 raise ValueError(f"max_attempts exhausted for {job_id}")
             now = time.time()
-            conn.execute("""UPDATE jobs SET state='queued',owner=NULL,lease_until=NULL,pid=NULL,attempt_dir=NULL,
-                ready_at=NULL,started_at=NULL,finished_at=NULL,cancel_requested=0,result=NULL,reason='',blocked_from=NULL WHERE id=?""", (job_id,))
+            self._queue_retry(conn, row, note, now)
             self._refresh_ready(conn, now)
-            self._event(conn, "retry_requested", job_id, {"note": note, "completed_attempts": row["attempt"]}, now)
 
     def propagate_blocked(self):
         """Derive dependency blockage; recover it after explicit upstream retry.

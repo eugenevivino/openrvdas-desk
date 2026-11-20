@@ -147,13 +147,7 @@ def _observe(store: Any, row: dict, local_workers: dict, cancelled_tokens: set) 
         except (OSError, ValueError, TypeError, KeyError) as exc:
             _uncertain(store, row, f"cannot verify terminal result: {exc}")
             return False
-        if store.finish(row["id"], row["token"], row["owner"], state, result, reason):
-            if (state == "failed" and not result["timed_out"] and not result["cancelled"]
-                    and not row.get("cancel_requested")
-                    and store.get(row["id"])["state"] == "failed"
-                    and result.get("returncode") in row["spec"].get("retry_exit_codes", [])
-                    and row["attempt"] < row["spec"].get("max_attempts", 1)):
-                store.retry(row["id"], "automatic retry for explicitly configured exit code")
+        store.finish(row["id"], row["token"], row["owner"], state, result, reason, retry_on_exit=True)
         return False
 
     key = (row["id"], row["token"])
