@@ -1,5 +1,12 @@
 # Using Codex on this desk
 
+Current startup: read [AGENTS.md](../AGENTS.md), the dated Relay checkpoint in
+[CODEX-HANDOVER.md](CODEX-HANDOVER.md), and the deterministic orchestration section
+of [OPERATING-SYSTEM.md](OPERATING-SYSTEM.md#deterministic-orchestration-2026-11-20-standing-directive).
+D-SEP1 below supersedes historical `codex-run` examples: use `~/bin/ds-codex` and
+`~/.codex-deepsignal`. Current installed admission guards and D-PIPE1/2 supersede
+older fixed resource examples. Preserve active ownership and exact-source evidence.
+
 Ported from Kalon's Codex rules (`l2audio`, read 2026-11-18, read-only). Where
 the Kalon rule is about Swift, audio, or its pipeline, it is translated, not
 copied. Kalon's model names and tiers are theirs; confirm each one exists on

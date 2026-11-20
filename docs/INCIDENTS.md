@@ -41,3 +41,8 @@ The joint #197 work was built in a clone whose local branch was still named `dee
 ## 2026-11-19: first scanner-policy test wrote a desk receipt
 
 The baseline entrypoint ignored the test harness's proposed scratch path. One test wrote a RED pre-review receipt for 8f0794e in the live receipt directory and attempted the unrelated pip-audit lookup. The original output is preserved under pilot-bandit-policy/initial-harness-red.txt. The corrected harness relocates the entire desk in its fixture and runs the real Bandit there. Only the subsequently admitted, installed self-check is evidence for the hardening commit. The live gate code was unchanged.
+
+## 2026-11-20 Relay v6 admission dry-run could mutate a foreign lock
+Cause: installed `ds-codex` dry-run lines 183-187 could remove an ambiguous foreign lock.
+Fix: lead cancelled only owned v6 prelaunch waits; no native build started; immutable runtime/evidence retained.
+Guard: nonmutating admission, per-job identity/invalidation and retry/recovery fixes are underway and require qualification before resumption; ambiguous claims remain reserved.

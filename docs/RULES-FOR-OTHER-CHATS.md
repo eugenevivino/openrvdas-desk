@@ -2,6 +2,12 @@
 
 Copy-paste block for another chat. These rules govern every DeepSignal build.
 
+For pipeline continuation, first read the 2026-11-20 deterministic orchestration
+section in [OPERATING-SYSTEM.md](OPERATING-SYSTEM.md#deterministic-orchestration-2026-11-20-standing-directive)
+and the current [CODEX-HANDOVER.md](CODEX-HANDOVER.md) checkpoint. They assign routine
+coordination to approved software and record PILOT/STAGED limits; the acceptance,
+resource and ownership constraints below remain in force under newest-wins rules.
+
 1. **D-UNITS1, whole units.** Each module ships as one unit on its own branch: one build job of at most three slices, one review pass of at most two rounds on the whole diff, one approval mark, one gate, one merge. No new small-piece branches or tasks; pieces already in flight finish as they are and are folded into their unit.
 
 2. **D-PIPE1, nine pipeline rules (adopted from Kalon's pipeline).** (1) Whole units only. (2) A finish line of five stamps per unit, each proven at the unit's current head: moved (on the integration branch), tested (unit and acceptance tests green), fixed (review passed with no open P1), in the app (served by the console or installed in the test fixture), tested in the app (a browser or black-box test passes against it). (3) Old small branches never block a unit; they are listed as superseded and retired after the unit lands. (4) Check a unit's prerequisites on the integration branch before starting it. (5) Launches never depend on a live chat session: one detached launcher runs approved jobs and takes a claim per job so two loops never launch the same job. (6) The gate of record is the unit's Linux CI job; local scripts are pre-checks. (7) Brief done-lines must work on macOS. (8) Shared machine: the heavy-job cap counts every project's jobs, and we never touch another project's jobs or folders. (9) Every snag gets a permanent guard and an incident line. **D-PIPE1a:** the cap is two heavy jobs machine-wide, and Kalon's running jobs count toward it; they are read from the process list only, never signalled or touched. Kalon still yields first, so DeepSignal only waits more.

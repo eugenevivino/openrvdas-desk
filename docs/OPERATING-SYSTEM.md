@@ -9,6 +9,94 @@ business, licensing, and audio content.
 This file records how things are meant to work. It is not proof that a machine,
 job, or branch is live now. Verify live state before acting.
 
+## Deterministic orchestration (2026-11-20 standing directive)
+
+Routine handoffs through interactive AI sessions incurred avoidable dispatch waits
+and repeated queue-reading calls. Relay, or the existing approved deterministic
+controller until transfer, owns scheduling, dependency checks, worker allocation,
+receipt collection and authorized transitions. AI owns implementation, debugging,
+architecture, scientific analysis and required independent reviews. This directive
+changes routine coordination, not acceptance criteria or approval boundaries.
+
+The lifecycle is **pieces → assembled modules → tests → required reviews →
+qualification → integration**. Advance an eligible step automatically within the
+existing authorization. On failure, preserve evidence and the exact blocker while
+independent eligible work continues. Existing pauses and ownership still apply;
+standing authorization need not be requested again. The controller persists work
+continuity; chat memory is neither the queue nor evidence of a live worker.
+
+The implementation is `tools/relay/` in the isolated desk checkout identified in
+[CODEX-HANDOVER.md](CODEX-HANDOVER.md). Its `DEEPSIGNAL.md` documents the executable
+interface. Read the existing state report before resuming its immutable plan;
+preserve active workers and reconcile claims instead of starting another pilot.
+
+- Pin Git source and integration base, dependencies, policy, controller/adapter
+  code and evidence identity. Seal the candidate after any distribution build;
+  bind acceptance and review to that exact derived commit. Source additions,
+  dependency changes and changed governing inputs invalidate affected reuse.
+- Durable state, atomic controller/plan locks, fenced attempts and owner claims
+  prevent duplicate dispatch. Restart reconciles existing attempts and receipts.
+  Ambiguous liveness retains its reservation; time alone cannot clear a claim.
+  Forced-termination recovery of the local directory/PID guard remains unqualified.
+- Admit parallel jobs only on eligible MacBook, Mini or authorized cloud capacity,
+  with measured RAM/disk/pressure and existing aggregate heavy-job guards. Resource
+  waits and bounded infrastructure retries are separate from engineering HOLDs.
+  Resource refusal does not authorize bypassing a guard or stopping foreign work.
+  Eugene authorized a Mini-only lightweight admission floor of 1 GiB
+  (1,073,741,824 bytes). Each job still needs its measured peak plus safe headroom,
+  acceptable pressure/swap growth, an available budget and valid reservations.
+  The Kalon lead remains sole allocator owner; actual Mini dispatch waits for its
+  verified common policy. This floor is authorized, not deployed by DeepSignal.
+- Batch reviewed modules only at the same exact candidate and run their union of
+  checks. Different candidates require explicit current-base assembly and combined
+  qualification. Re-cut unit changes onto current integration; never merge trunk
+  into a unit. Relay currently implements no product merge or release action.
+- Keep Kalon and DeepSignal queues, state databases, locks, evidence and project
+  ownership separate. The Kalon lead, chat `01a1f223-16f2-73a0-a292-a688aab4af8f`,
+  owns the sole shared MacBook/Mini capacity authority. DeepSignal's capacity
+  adapter is a status-only shadow client; mutation remains disabled. No shared
+  authority production service/state/listener has been installed by this pilot.
+
+Existing design acceptance, self-check, security, Linux gate, independent review,
+scientific/reference and release requirements remain mandatory. Reference records
+must be readable and hashed as well as scientifically judged. Gate import fails
+closed: no production PASS parser is qualified. A review-request outbox is not a
+completed or dispatched review; labels and handwritten PASS cannot qualify work.
+Preserve fixture isolation, private test HOME/TMPDIR and protected player/ship
+boundaries. Critical merges, installs, upstream contact and deployment retain their
+existing explicit approvals. Documentation adds no acceptance gate.
+
+Status vocabulary applies to each capability, never to the whole system by proxy:
+
+| Status | Evidence and current limit |
+|---|---|
+| IMPLEMENTED | Code exists; Relay scheduling, receipts, identity and recovery paths are present. |
+| TESTED | Named checks passed for named source; core 71 and adapter 52 test receipts are recorded in the handover. This does not qualify product modules. |
+| PILOT | Isolated Console and Stream workflows have exercised the controller; v6 prelaunch was cancelled before native execution. Existing supervisor ownership remains. |
+| STAGED | Committed implementation and capacity client await qualification and deliberate owner transfer; production authority is absent. |
+| PRODUCTION | Requires verified transfer and operational qualification. Relay has not reached this status. |
+
+Before transfer, finish exact-candidate product gates/reviews, native gate import
+and dispatch qualification, a real compatible integration batch, adapter restart
+and reuse, Linux coverage, host cleanup and shared-lease/fencing evidence. Existing
+supervisors retain authority until the owners deliberately transfer it.
+
+Measure newly qualified and integrated modules, plus resource wait separately from
+avoidable scheduling delay. The initial test-only pilot measured six handoffs with
+internal capacity available: median 0.0504 s, maximum 0.1000 s. Raw maximum 12.93 s
+included reservation wait. This proves neither whole-host utilization nor product
+throughput gains; newly qualified 0, integrated 0 in that observation. Evidence:
+`/private/tmp/deepsignal/relay-20261120/evidence/measured-latency.json`.
+
+Historical reconciliation: `RULES.md` says newest wins. This directive assigns
+routine coordination to software while keeping AI engineering/review duties. Older
+machine/role tables below and Codex launcher examples are historical where D-SEP1,
+D-PIPE1/2 and the current handover supersede them: use DeepSignal's separate launcher
+and installed admission guards; the required unit Linux gate remains authoritative.
+Protected RULES, DECISIONS, design notes and manifest are unchanged by this update.
+An unresolved protected-policy conflict remains a blocker for its affected action;
+it never authorizes silently weakening a gate or taking over a supervisor.
+
 ## 1. Machines
 
 | Machine | Role | Limits |

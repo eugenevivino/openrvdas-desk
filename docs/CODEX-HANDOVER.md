@@ -2,6 +2,41 @@
 
 Self-contained. Read this first, then `docs/STATE.md`, `docs/DECISIONS.md` and `MORNING.md`. Plain words; no secrets here.
 
+## Relay checkpoint (2026-11-20; inspect live state before continuing)
+
+Read [OPERATING-SYSTEM.md, Deterministic orchestration](OPERATING-SYSTEM.md#deterministic-orchestration-2026-11-20-standing-directive)
+for the standing architecture and boundaries. Authoritative desk:
+`/private/tmp/deepsignal/desk-main`. Staged Relay source:
+`/private/tmp/deepsignal/relay-20261120/repo`, commit
+`c5e45ffcd7404a30528cbea48f9417732c15f0c0`. Preserved runtime/state evidence is at
+`/private/tmp/deepsignal/relay-20261120/runtime-v6` and `release-state-v6` beside it.
+The lead cancelled only its own v6 prelaunch waits: installed `ds-codex` dry-run
+lines 183-187 could remove an ambiguous foreign lock. No native build started.
+Keep that runtime/evidence immutable. Nonmutating admission, per-job identity and
+invalidation, and retry/recovery fixes are underway; reconcile claims and qualify
+those fixes before resumption. Existing supervisors retain ownership.
+
+Evidence under `/private/tmp/deepsignal/relay-20261120/`: core 71 PASS in
+`core-tests-python312.log`; adapter 52 PASS in `adapter-hardening-tests.log`.
+Console `da7384617f05100458c267f9253c0d2f7518bc25` has 205 frontend tests plus type/lint
+PASS; its full native acceptance and exact-candidate required reviews remain to be
+reconciled. Stream `61ba756717bde7c7680ca1aef78fa2ec5be87541` passed full Mac checks
+and Linux run `44702474629`, but independent review held stale FAIL display:
+`evidence/stream-independent-review.md`. Regression `887a63c` recorded two RED tests;
+fix `15bcafb` passed Linux run `44703725093`, workflow `4081d99`, verified through
+GitHub's run API. Its full native acceptance and independent re-review remain.
+Old green receipts cannot approve changed source. The cancelled v6 waits confer
+no native acceptance.
+Mini lightweight work awaits Kalon's verified common policy despite the authorized
+1 GiB floor; see OPERATING-SYSTEM for per-job headroom and reservation requirements.
+
+Next: reconcile those existing attempts, repair actionable failures, collect missing
+native/Linux evidence and required reviews, then assemble compatible qualified
+candidates under existing ownership. Continue independent authorized backlog work;
+`evidence/backlog-inventory-74.json` is an inventory, not qualification or a launch
+approval. Relay remains PILOT/STAGED, not PRODUCTION. Newly qualified 0, integrated
+0 at this checkpoint. Product work continues independently of this docs edit.
+
 ## 1. Goal
 
 DeepSignal is an overlay on OpenRVDAS (ship data acquisition): a console, data-quality modules and setup tools,
