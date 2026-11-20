@@ -23,3 +23,5 @@ One line per finished item: `YYYY-MM-DD | what | branch or PR | PASS, FAIL, or P
 2026-11-20 | Authorized T-CON-14 round. Five added regressions failed on the prior head and passed on da4aa5e. All nine design commands, ten browser modules on Mac and Ubuntu, and both cloud reviews passed. Astra Ultra held the merge for three source-traced display cases. | fork PR #3 da4aa5e, desk Actions 44695593537 | PARKED after the authorized round
 
 - 2026-11-20: Console57182e5 and Streama3532f3 exact Mac/Linux checks PASS; combined2ea3e609 both design checks and Linux44714303424 attempt2 PASS. Fresh standalone Astra Ultra HOLD identifies3 operator-display cases; targeted repairs active, no integration or qualification claimed. Original failures and reviews preserved in research/2026-11-20-relay-pilots/.
+
+2026-11-20 Console UI and Stream Health view finished as fixture pilots and integrated on fork at b67f3072daee63d0d307a16bc1d34e24b3c75002; 272 frontend, both full native gates, Linux 44732250214 all 3 PASS; fresh Astra Ultra R9 PASS. Five exact-head stamps recorded, claims released; no live deployment/Relay production activation.

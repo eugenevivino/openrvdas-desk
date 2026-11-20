@@ -5,7 +5,7 @@ Self-contained. Read this first, then `docs/STATE.md`, `docs/DECISIONS.md` and `
 ## Relay checkpoint (2026-11-20; inspect live state before continuing)
 
 Continue DeepSignal product work. Provider succession is only a contingency after
-Codex exhaustion; Claude is optional. Codex was verified at 3% remaining during
+Codex exhaustion; Claude is optional. Codex was verified at 2% remaining during
 this checkpoint; retain the 1% reserve and recheck before any new model job.
 No successor takeover or Claude engineering job is claimed.
 
@@ -15,28 +15,36 @@ owns the current guarded validation; do not edit live runtimes or clear
 uncertain claims. Kalon owns the shared allocator. Existing supervisors remain
 in charge; Relay is PILOT/STAGED, not production.
 
-Latest candidate: `b67f3072daee63d0d307a16bc1d34e24b3c75002` (source73d97e74),
-published on `eugenevivino/openrvdas:deepsignal/relay-combined-pilot-20261120`.
-Source272frontend tests, lint and types PASS. `combined-r9-release-state` owns both
-unchanged full native gates; exact Linux workflow07f277e is dispatched. R9 review
-is PREPARED ONLY in `native-review-r9`; launch with fresh quota after both full
-native checks PASS. No integration. Fork target last verifiedbff54ec.
+Completed fixture pilots: Console and Stream Health view at
+`b67f3072daee63d0d307a16bc1d34e24b3c75002`, tree 4b19186fca8315d2fdab1de5b90fe17797dbcd72.
+Normal fast-forward to fork `eugenevivino/openrvdas:deepsignal/integration` was
+pushed and verified from prior bff54ec. The pilot topic points to the same commit.
+Both unit claims are released; docs/units.json preserves older stamps in history
+and records all five exact-head stamps. Run tools/finish-line.py for counts.
 
-R8 at9e416feb is terminal HOLD1: a corrected rejecting QC flag acquired a new
-subscription epoch and was incorrectly skipped across a navigation gap. Two
-production regressions atab1d6560 reproduced Last usable:OK instead ofOFF.
-Source73d97e74 preserves the original observation epoch for corrections at a
-known QC timestamp. Values and timestamps are untouched. All R1-R8 HOLDs and
-original failures/fixture corrections are preserved in research/2026-11-20-relay-pilots
-and immutable Relay state directories; checkpoint-history-through-r7.md retains
-older detailed notes. Earlier candidate gates are historical, not current approval.
+Source: 272 frontend tests, lint/types, both unchanged full native design checks in
+`combined-r9-release-state`, and Linux 44732250214 (workflow 07f277e, all 3 jobs) PASS.
+Fresh standalone Astra Ultra session 01a1f8d7-55fd-7622-b89f-7de9ad0cd9fd returned
+PASS, CRITICAL:no, no blocking P1, and recommended integration after exact Linux.
+Evidence: research/2026-11-20-relay-pilots/{combined-astra-r9-pass.md,r9-native-checks.json,r9-linux-jobs.json}.
+D-REVIEW1 approval is logged. This append changes no acceptance rule; exact prior
+governing DECISIONS bytes are frozen as governing-decisions-before-pilot-integration.md
+(SHA256 56435a6f0fe32e5a827c58de32db2806d7330f1f89f245335fad6a52615cdf2e).
+Historical Relay receipts/contracts remain unchanged; do not rewrite old HOLDs as PASS.
 
-Inspect attempt receipts before action. Do not duplicate workers, clear uncertain
-claims, weaken gates or turn a HOLD into PASS. Codex last verified3%, reserve1%.
-A successor is optional after exhaustion; product engineering continues.
-Next: exact native/Linux qualification, fresh independent explicit verdict,
-then authorized noncritical integration only if the exact candidate is cleared.
-All older observations below are historical evidence.
+No native/model pilot worker remains active after these terminal checks/review.
+Check actual processes/claims before new work. Codex last verified 2%, reserve 1%.
+A successor is optional after exhaustion, not a separate provider-setup project.
+Next product work: verify eligible backlog prerequisites/design/acceptance before
+claiming a new whole unit; existing scientific and critical holds remain.
+Relay production remains held pending typed verified gate import/policy version
+handling, forced-termination retirement, authoritative shared lease/fencing and
+safe owner transfer. Kalon owns shared allocator; DeepSignal Mini client is staged,
+no Mini job admitted. No supervisor/service replacement, ship deployment, installer
+activation, Stream Health engine qualification or 24-hour soak is claimed.
+## Historical checkpoints (superseded by the completion above)
+
+All observations below are retained historical evidence, not current status.
 
 Product evidence (all paths below relative to `/private/tmp/deepsignal/relay-20261120`):
 
@@ -84,12 +92,12 @@ Product evidence (all paths below relative to `/private/tmp/deepsignal/relay-202
   fixture mistakes and the full-suite regression are retained, never relabeled.
   The repaired frontend suite passed223 tests; unsupported role-option type error
   was removed at23abbd04, then final full gates reran on the generated bundle.
-- Runtime-v11 pins required Python3.12 and stable boot UUID. Earlier plans built
+- Runtime-v11 pins required Python 3.12 and stable boot UUID. Earlier plans built
   with Xcode Python3.9 used process-relative clock samples and repeatedly warmed
   up. Sole owned prelaunch supervisor22797 was cancelled before any native test,
   its child22798 was verified retired, and the original terminal receipt retained.
   No foreign claim or protected worker was touched. Relay247f58f refuses plan
-  generation belowPython3.12; regression was RED then2focused tests PASS.
+  generation belowPython 3.12; regression was RED then2focused tests PASS.
 - Measured worker handoff: failed cadence regression to next independent frontend
   worker0.061654s. Source is two worker-result.json timestamps, preserved in
   `research/2026-11-20-relay-pilots/independent-job-handoff.json`. This measures

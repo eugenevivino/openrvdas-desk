@@ -536,3 +536,23 @@ Eugene identified himself as the final reviewer and approved landing product har
 ### November 20: One focused pilot round
 
 Eugene authorized one focused correction and re-review of the page-return last-good defect on b19dde0. Keep the pilot unmerged until the review passes. The existing T-CON-1 target and D-FIX1 apply.
+
+### D-REVIEW1 pilot approval: Console and Stream Health view (2026-11-20)
+Fresh standalone gpt-6.2-astra, ultra, read-only session
+01a1f8d7-55fd-7622-b89f-7de9ad0cd9fd returned explicit PASS, CRITICAL:no, no
+blocking P1, and recommended noncritical fork integration after exact Linux PASS.
+Approved topic: eugenevivino/openrvdas:deepsignal/relay-combined-pilot-20261120.
+Exact head b67f3072daee63d0d307a16bc1d34e24b3c75002; tree
+4b19186fca8315d2fdab1de5b90fe17797dbcd72; target deepsignal/integration, last
+verified base bff54ec722bd8bf2c0ee949c91528642e0140e26. Both full native design
+checks PASS. Linux44732250214, workflow07f277efaf6ce84b152368fc4832d1ff6d8777ef,
+all3jobs PASS on that exact source, including272frontend tests and browser pilot.
+Evidence: research/2026-11-20-relay-pilots/{combined-astra-r9-pass.md,r9-native-checks.json,r9-linux-jobs.json}.
+This entry records approval under the existing rule; it changes no acceptance,
+scientific or security requirement. The exact governing DECISIONS bytes used by
+tests/review (SHA25656435a6f0fe32e5a827c58de32db2806d7330f1f89f245335fad6a52615cdf2e)
+are preserved as governing-decisions-before-pilot-integration.md in that directory.
+Historical receipts are unchanged. Older HOLDs remain preserved and are superseded
+only for this exact candidate by the fresh PASS. Installer/live deployment, the
+24-hour soak, Stream Health engine, shared scheduling activation and supervisor
+replacement are outside this approval.
