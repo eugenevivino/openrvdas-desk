@@ -6,6 +6,9 @@ of [OPERATING-SYSTEM.md](OPERATING-SYSTEM.md#deterministic-orchestration-2026-11
 D-SEP1 below supersedes historical `codex-run` examples: use `~/bin/ds-codex` and
 `~/.codex-deepsignal`. Current installed admission guards and D-PIPE1/2 supersede
 older fixed resource examples. Preserve active ownership and exact-source evidence.
+For quota exhaustion, follow [BUILDERS.md, Provider succession](BUILDERS.md#provider-succession-eugene-2026-11-20).
+Keep the 1% reserve and a provider-neutral handoff; optional Claude setup must not
+delay current DeepSignal engineering.
 
 Ported from Kalon's Codex rules (`l2audio`, read 2026-11-18, read-only). Where
 the Kalon rule is about Swift, audio, or its pipeline, it is translated, not

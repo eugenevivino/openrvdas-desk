@@ -46,9 +46,11 @@ Python 3.11 or newer; the team standard is Homebrew Python 3.12.
 
 ## Who builds
 
-Claude manages (briefs, plans, routing, desk docs). Codex does all hands-on work,
-local or cloud, right-sized model, Astra approved for hard work. A Claude session
-writes no production code, tests or gate code. Read `docs/BUILDERS.md`.
+Continue authorized DeepSignal product work. For provider limits or session
+succession, read `docs/BUILDERS.md` and the dated handover. Eugene authorizes a
+provider-neutral engineering successor, including Claude, after Codex reaches its
+reserve. Within this scope that supersedes the older Claude-only-manager rule;
+review independence, existing ownership and monetary limits remain unchanged.
 
 ## Codex
 

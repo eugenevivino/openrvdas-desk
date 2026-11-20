@@ -1,4 +1,22 @@
-# Who does what: Claude manages, Codex builds
+# Builders and continuation
+
+## Provider succession (Eugene, 2026-11-20)
+
+Product delivery continues now. Codex may work down to a 1% reserve; launch no new
+Codex job at <=1% or with unknown/stale quota. Preserve a provider-neutral handoff
+so an available authorized provider can resume when tokens run out. Claude is an
+option, not a requirement; its authentication is not a dependency of current work.
+This authorization permits successor hands-on engineering, including Claude, and
+supersedes the historical Claude-only-manager restriction within this scope.
+
+Keep the same deterministic controller, source/evidence identity and acceptance
+gates. Existing workers retain ownership until verified terminal state; reconcile
+ambiguous claims before replacement and never duplicate live work. A successor
+must have verified authentication/readiness and known quota/budget before its own
+launch. Keep independent reviews and monetary limits; no new spending or overage
+is authorized. The handover records readiness, not a completed provider takeover.
+
+## Historical role split (scoped successor exception above)
 
 Standing rule from Eugene, 2026-11-18 (rule 23, D-TEAM5): Claude does
 management. Codex does all hands-on work: code, tests, fixes, scripts, mechanical
@@ -14,10 +32,10 @@ needs is approved for hard work.
 | Writes desk docs and drafts upstream text for Eugene to send | Gate script changes, Mini scripts, anything that is code |
 | Talks to Eugene, asks the few blocking questions | Retriever jobs (rule 19): long reads, logs, TSVs |
 
-A Claude session may edit desk Markdown. It may not write production code,
-tests, or gate code. If it catches itself doing so, stop and write a brief.
+Outside the successor scope above, the historical rule limits Claude to desk
+Markdown and management; production code, tests or gate changes need a builder brief.
 Already done before this rule: the Django fix (ad10eb1) was written by Claude
-and independently reviewed; it is the last exception.
+and independently reviewed; the successor directive above is a newer exception.
 
 ## Models (Eugene, 2026-11-18)
 

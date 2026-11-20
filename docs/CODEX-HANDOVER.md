@@ -4,6 +4,16 @@ Self-contained. Read this first, then `docs/STATE.md`, `docs/DECISIONS.md` and `
 
 ## Relay checkpoint (2026-11-20; inspect live state before continuing)
 
+Provider continuation: the lead verified Codex at 7% remaining, a dated observation.
+Apply the 1% reserve and unknown-quota refusal in [BUILDERS.md](BUILDERS.md#provider-succession-eugene-2026-11-20).
+Continue DeepSignal product work; preserve the source, runtime and evidence pointers
+below for an authorized successor after token exhaustion. Claude is optional.
+Its CLI authentication returned false even outside the sandbox; that option is
+STAGED/authentication-blocked, with no actual Claude job or takeover completed.
+This does not block current product work or require an authentication project.
+Existing workers keep ownership until terminal; a successor verifies readiness and
+current claims before resuming under the same deterministic controller.
+
 Read [OPERATING-SYSTEM.md, Deterministic orchestration](OPERATING-SYSTEM.md#deterministic-orchestration-2026-11-20-standing-directive)
 for the standing architecture and boundaries. Authoritative desk:
 `/private/tmp/deepsignal/desk-main`. Staged Relay source:
@@ -15,19 +25,24 @@ lines 183-187 could remove an ambiguous foreign lock. No native build started.
 Keep that runtime/evidence immutable. Nonmutating admission, atomic complete claims,
 scoped identity/invalidation and transactional retry repairs passed their tests.
 The lead resumed `runtime-v7` / `release-state-v7` with the same full pilot checks.
-Its worker was observed waiting for a fresh swap baseline; inspect current state.
+Both exact-head self-check jobs passed; all v7 workers are terminal. The two
+review gates remain blocked pending verified new evidence. Inspect current state.
 Existing supervisors retain ownership; no production transfer is approved.
 
 Evidence under `/private/tmp/deepsignal/relay-20261120/`: core 74 PASS in
 `evidence/core-final-repair-tests.log`; adapter 105 PASS in
 `evidence/adapter-final-repair-tests.log`.
-Console `da7384617f05100458c267f9253c0d2f7518bc25` has 205 frontend tests plus type/lint
-PASS; its full native acceptance and exact-candidate required reviews remain to be
-reconciled. Stream `61ba756717bde7c7680ca1aef78fa2ec5be87541` passed full Mac checks
+Console source `da7384617f05100458c267f9253c0d2f7518bc25` passed 205 frontend tests
+plus type/lint. Its generated bundle candidate `5b892601f7c6f224c279714ae8edbf0e619c740b`
+passed the full existing Mac self-check, including served-browser acceptance.
+Linux run `44708749952` and fresh cloud review
+`task_e_6b000f5c4134832fbe92c376a32815ec` are in progress; do not infer PASS. Stream `61ba756717bde7c7680ca1aef78fa2ec5be87541` passed full Mac checks
 and Linux run `44702474629`, but an advisory source audit found stale FAIL display:
 `evidence/stream-independent-review.md`. Regression `887a63c` recorded two RED tests;
 fix `15bcafb` passed Linux run `44703725093`, workflow `4081d99`, verified through
-GitHub's run API. Its full native acceptance and independent re-review remain.
+GitHub's run API. Generated bundle `75a71c1f3c610119ee63c34280431fd7c15823ae` passed its full Mac
+self-check. Exact-bundle Linux workflow `c190dcd` and fresh cloud review
+`task_e_6b000f9fd45c832fa1e37fecce36b4e7` are in progress.
 Old green receipts cannot approve changed source. The cancelled v6 waits confer
 no native acceptance.
 The sub-agent audits are diagnostic evidence, not D-SUB1 independent-review credit;
@@ -44,7 +59,12 @@ native/Linux evidence and required reviews, then assemble compatible qualified
 candidates under existing ownership. Continue independent authorized backlog work;
 `evidence/backlog-inventory-74.json` is an inventory, not qualification or a launch
 approval. Relay remains PILOT/STAGED, not PRODUCTION. Newly qualified 0, integrated
-0 at this checkpoint. Product work continues independently of this docs edit.
+0 at this checkpoint. Product work continues independently of this docs edit. Code and docs are synced
+on desk `deepsignal/relay-pilot-20261120`; fork candidate branches are
+`deepsignal/relay-console-20261120` and `deepsignal/relay-stream-health-20261120`.
+A direct desk-main push was rejected by automatic approval review; separate
+branches preserve the work without changing the default branch. Do not retry
+the rejected main push or use another supervisor to bypass that rejection.
 
 ## 1. Goal
 

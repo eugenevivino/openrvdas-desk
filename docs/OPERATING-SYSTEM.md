@@ -18,6 +18,12 @@ receipt collection and authorized transitions. AI owns implementation, debugging
 architecture, scientific analysis and required independent reviews. This directive
 changes routine coordination, not acceptance criteria or approval boundaries.
 
+[Provider succession](BUILDERS.md#provider-succession-eugene-2026-11-20) preserves
+this controller and active ownership when model quota runs out. The successor can
+be any authorized ready provider, including Claude; hands-on engineering is allowed
+in this scope despite the historical role table. Preparing that handoff does not
+pause product delivery or require Claude authentication now.
+
 The lifecycle is **pieces → assembled modules → tests → required reviews →
 qualification → integration**. Advance an eligible step automatically within the
 existing authorization. On failure, preserve evidence and the exact blocker while
