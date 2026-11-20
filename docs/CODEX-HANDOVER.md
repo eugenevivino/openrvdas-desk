@@ -35,14 +35,18 @@ Evidence under `/private/tmp/deepsignal/relay-20261120/`: core 74 PASS in
 Console source `da7384617f05100458c267f9253c0d2f7518bc25` passed 205 frontend tests
 plus type/lint. Its generated bundle candidate `5b892601f7c6f224c279714ae8edbf0e619c740b`
 passed the full existing Mac self-check, including served-browser acceptance.
-Linux run `44708749952` and fresh cloud review
-`task_e_6b000f5c4134832fbe92c376a32815ec` are in progress; do not infer PASS. Stream `61ba756717bde7c7680ca1aef78fa2ec5be87541` passed full Mac checks
+Linux run `44708749952` passed pilot and hardening jobs, but frontend had one
+Self-test fixture startup race (204 PASS, 1 FAIL). The fixture correction is pending
+qualification. Fresh independent cloud review `task_e_6b000f5c4134832fbe92c376a32815ec`
+returned PASS at `5b892601`; this is not the required Astra Ultra approval. Stream `61ba756717bde7c7680ca1aef78fa2ec5be87541` passed full Mac checks
 and Linux run `44702474629`, but an advisory source audit found stale FAIL display:
 `evidence/stream-independent-review.md`. Regression `887a63c` recorded two RED tests;
 fix `15bcafb` passed Linux run `44703725093`, workflow `4081d99`, verified through
 GitHub's run API. Generated bundle `75a71c1f3c610119ee63c34280431fd7c15823ae` passed its full Mac
-self-check. Exact-bundle Linux workflow `c190dcd` and fresh cloud review
-`task_e_6b000f9fd45c832fa1e37fecce36b4e7` are in progress.
+self-check. Exact-bundle Linux workflow `c190dcd`, run `44709129369`, passed. Fresh independent
+review `task_e_6b000f9fd45c832fa1e37fecce36b4e7` returned HOLD: expired observations
+become indistinguishable from never-reported fields. Targeted regression/repair
+is in progress; preserve that HOLD until a fresh qualified review clears it.
 Old green receipts cannot approve changed source. The cancelled v6 waits confer
 no native acceptance.
 The sub-agent audits are diagnostic evidence, not D-SUB1 independent-review credit;
