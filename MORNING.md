@@ -14,3 +14,5 @@
 - MERGED: CDS gate redesign into deepsignal/integration 1dc7a5e (your approval 03:49Z), tag deepsignal/pilot-candidate-2. Linux nginx runtime probe PASSED at 1dc7a5e (run 44454201287); vitest 178, tsc, build, flake8 clean. Known: a combined pytest run of contrib/deepsignal/test fails 12 tests from test isolation (ticket T-CON-11); each suite passes alone.
 
 - Nov 25 console pilot, security and installer owner handoff: the same 190 Bandit findings appear at integration 1dc7a5e and console 8652862. Five are in the two security files. Proposed changes and owner acceptance checks are in research/2026-11-19-pilot-bandit-owner-proposal.md. The four redesign tickets retain their original scope.
+
+- Nov 20: Both security-owner releases landed. The installed gate is GREEN on integration bff54ec. Pilot PR #3 at b19dde0 passed its Mac and Linux machine gates. The second Astra Ultra review held the merge for T-CON-14 on page return. The two-round cap applies; a single focused corrective round was requested from Eugene.

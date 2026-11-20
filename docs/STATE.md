@@ -1,21 +1,18 @@
 # State (rewritten each session, 60 lines max)
 
-Updated 2026-11-19 02:05Z by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
+Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
-## Supervised pilot console (2026-11-19)
+## Supervised pilot console (2026-11-20)
 
-- Fork topic `deepsignal/console-supervised-pilot` is at `fc31b54`, based on integration `1dc7a5e`. It contains T-CON-11 (`7b5f98e`) and the three operator-data fixes.
-- Mac passed all nine design commands. The updated suite covers 190 frontend tests and 158 Python tests, including ten shipped modules in Chromium. The compiled assets preserve the missing-value and degree symbols, the replay reader can cancel a pending read, and the workstation demo uses the same-origin read-only gateway.
-- The installer quick-start links to the maintained guide. The HTTP and HTTPS examples passed the packaged site renderer. Linux passed 158 with zero skips, two fresh recovery repeats, and live Weather through nginx over HTTP and HTTPS. [Exact commit run](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44470682027).
-- Bandit is the sole red machine check. Integration and candidate have the same 188 low and two medium findings. All five affected files are identical. The self-check passes all individual console checklist items. Exact receipts are `receipts/pre-review-fc31b54.txt` and `receipts/self-check-fc31b54.txt` under the job root.
-- The [hardening draft](https://github.com/eugenevivino/openrvdas/pull/1) at `8f0794e` passed 204 tests on macOS and all 206 on Ubuntu. Linux verified the live Supervisor PID lookup and both real nginx site configurations. The scan fell to 188 findings (175 test assertions, 12 subprocess diagnostics, one fixture bind). The installed gate remains red. [Linux receipt](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44550649352).
-- The [separate gate proposal](https://github.com/eugenevivino/openrvdas-desk/pull/3) at `d06ad2d` passed 43 Mac tests. Ubuntu accepted the exact 188 sites and a benign change, and rejected both a dirty checkout and finding 189. The live pre-review on `8f0794e` still fails Bandit. [Policy CI](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44555642874).
-- The [owner proposal](../research/2026-11-19-pilot-bandit-owner-proposal.md) is on desk main. Once an owner-approved resolution lands, re-cut the tested console changes on the new integration tip, rerun the full installed gate, then request independent P1 review. The 24-hour soak remains on hold.
+- Eugene approved product hardening 8f0794e and policy d06ad2d. Fork integration is bff54ec and desk policy 460914c is installed. The installed gate returned GREEN with all 188 raw findings matched to the approved sites. [Owner decision](https://github.com/eugenevivino/openrvdas-desk/issues/2#issuecomment-7032462805).
+- Fork [pilot PR #3](https://github.com/eugenevivino/openrvdas/pull/3) was re-cut from bff54ec. Commit 50f3d46 resolved the conflicting README assertions. Commit b19dde0 kept the last good reading visible through multiple delayed revocations under continuous subscription. T-CON-11 and the three original pilot corrections are included.
+- On b19dde0, the installed self-check and all nine design commands passed. The Mac passed 192 frontend tests plus 84 additional installer and server tests outside the design suite. Ubuntu passed 192 frontend tests, 207 console cases, 204 installer/security cases, and two real nginx cases. All ten modules passed in Chromium. [Three-job Linux run](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44692067756).
+- Astra Ultra held the second round at b19dde0. On page return the browser can retain an older usable depth sample that the shorter server backfill omits. If two later samples are revoked, the Number tile can omit that last good reading. See T-CON-14. The candidate remains a draft. The soak remains held.
 
 ## Throughput and Stream Health (2026-11-19)
 
 - Hosted verification candidate `95e9edf` passed six desk checks. A real Mac fixture held its slot from 11:22:42 to 11:23:42 a.m. Eastern. Hosted tests started at 11:23:18 on console `fc31b54` and passed. Owner review precedes installation. [Desk PR](https://github.com/eugenevivino/openrvdas-desk/pull/4) and [Linux run](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44565419757).
-- Stream Health fork [PR #2](https://github.com/eugenevivino/openrvdas/pull/2), `9f156fa`, passed 186 frontend tests and a two-stream Chromium test on both macOS and Ubuntu. All design and P1 checklist items passed. Bandit alone holds the formal review. T-CON-12 records a stock CDS startup delivery gap. Vessel producer integration is pending. [Linux receipt](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44571508115).
+- Stream Health fork [PR #2](https://github.com/eugenevivino/openrvdas/pull/2), `9f156fa`, passed 186 frontend tests and a two-stream Chromium test on both macOS and Ubuntu. All design and P1 checklist items passed. The previous Bandit hold was resolved on integration bff54ec after this test. A re-cut and fresh checks are pending. T-CON-12 records a stock CDS startup delivery gap. Vessel producer integration is pending. [Linux receipt](https://github.com/eugenevivino/openrvdas-desk/actions/runs/44571508115).
 
 ## Handoff (2026-11-19 03:42Z)
 - Eugene drives new work from the Codex GUI using docs/CODEX-HANDOVER.md; Codex takes unclaimed units.
