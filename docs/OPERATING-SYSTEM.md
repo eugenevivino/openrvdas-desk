@@ -46,7 +46,11 @@ preserve active workers and reconcile claims instead of starting another pilot.
   (1,073,741,824 bytes). Each job still needs its measured peak plus safe headroom,
   acceptable pressure/swap growth, an available budget and valid reservations.
   The Kalon lead remains sole allocator owner; actual Mini dispatch waits for its
-  verified common policy. This floor is authorized, not deployed by DeepSignal.
+  verified common policy. The staged DeepSignal client calls the owner's pinned
+  `mini_light_admission.py` (`a2b0c482...ba9f9`) directly: page size multiplied by
+  free + inactive + speculative pages, checked against physical memory. It adds
+  neither file-backed nor purgeable pages. Policy/client boundary tests pass;
+  live verification and compatible reservations remain required before Mini work.
 - Batch reviewed modules only at the same exact candidate and run their union of
   checks. Different candidates require explicit current-base assembly and combined
   qualification. Re-cut unit changes onto current integration; never merge trunk

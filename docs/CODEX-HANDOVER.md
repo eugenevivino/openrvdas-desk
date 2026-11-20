@@ -21,12 +21,14 @@ Evidence under `/private/tmp/deepsignal/relay-20261120/`: core 71 PASS in
 Console `da7384617f05100458c267f9253c0d2f7518bc25` has 205 frontend tests plus type/lint
 PASS; its full native acceptance and exact-candidate required reviews remain to be
 reconciled. Stream `61ba756717bde7c7680ca1aef78fa2ec5be87541` passed full Mac checks
-and Linux run `44702474629`, but independent review held stale FAIL display:
+and Linux run `44702474629`, but an advisory source audit found stale FAIL display:
 `evidence/stream-independent-review.md`. Regression `887a63c` recorded two RED tests;
 fix `15bcafb` passed Linux run `44703725093`, workflow `4081d99`, verified through
 GitHub's run API. Its full native acceptance and independent re-review remain.
 Old green receipts cannot approve changed source. The cancelled v6 waits confer
 no native acceptance.
+The sub-agent audits are diagnostic evidence, not D-SUB1 independent-review credit;
+formal fresh-session reviews remain required (`evidence/review-provenance.json`).
 Mini lightweight work awaits Kalon's verified common policy despite the authorized
 1 GiB floor; see OPERATING-SYSTEM for per-job headroom and reservation requirements.
 
