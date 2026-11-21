@@ -1,5 +1,13 @@
 # Builders and continuation
 
+## Current allowance override (Eugene, 2026-11-21)
+
+For the current allowance window Eugene explicitly said to use the remaining
+allowance, even fully, before the expected refresh in about 12 hours. This
+supersedes the earlier 1% reserve for this window only. Continue useful authorized
+engineering; no reset purchase, overage or change to monetary limits. Provider
+succession remains optional, and Relay remains the execution path.
+
 ## Provider succession (Eugene, 2026-11-20)
 
 Product delivery continues now. Codex may work down to a 1% reserve; launch no new

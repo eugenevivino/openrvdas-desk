@@ -2,6 +2,13 @@
 
 Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
+## Active master-directive work (2026-11-21)
+
+- M1 fixture workspace active in /private/tmp/deepsignal/product-m1-20261121, branch deepsignal/workspace-m1; unit-workspace-m1 claimed by this lead.
+- 22 local deliverable tickets cover M0–M5 and mandatory Grafana G1–G6; see MASTER-PRODUCT-TICKETS.md.
+- Existing Relay R3: clean evidence audit; service/HTTP and real Chromium workflow PASS at 1eb13ac2. Reused R2 277 frontend, MCP/CLI/build/lint evidence. Review/reference/Linux and remaining M1 scope HOLD.
+- User authorizes useful work through remaining allowance for this window, superseding the earlier 1% reserve. Full M1, Grafana and production remain unqualified.
+
 ## Relay pilots (2026-11-20)
 
 - Console and Stream Health view FINISHED as fixture pilots at b67f3072 on fork deepsignal/integration. Normal fast-forward verified remotely; no upstream/default-branch change.
@@ -11,7 +18,7 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 - Relay source 247f58f requires Python 3.12/stable boot UUID. Queued independent worker handoff measured 0.061654 s. Two pilots newly finished; no machine-utilization percentage claimed.
 - Relay remains PILOT/STAGED: typed gate import/policy version handling, forced-termination retirement and authoritative shared leases/ownership transfer still need qualification before production dispatch.
 - Mini 1 GiB policy pinned; Kalon owns allocator. No admitted DeepSignal Mini job or shared scheduling activation. Protected playback and existing supervisors untouched.
-- Codex last verified 2%; preserve 1%. Successor provider optional after exhaustion; no takeover or Claude setup underway.
+- Previous allowance policy is superseded for the current window above; successor remains optional.
 - Live deployment/installer activation, Stream Health engine and 24-hour soak are not included. Existing scientific/security/approval holds remain.
 - Current receipts and next actions: CODEX-HANDOVER.md. Desk topic sync only; direct desk-main push was rejected.
 

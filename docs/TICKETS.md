@@ -55,3 +55,8 @@ The Mac passed all nine commands in `docs/designs/console.md`. Release blockers 
 
   The authorized follow-up da4aa5e reproduced and corrected both round-two holds. Five new regressions failed on b19dde0 and passed on da4aa5e. Both cloud reviewers passed. Astra Ultra recorded three remaining P1 scenarios from source inspection. The missing interval can revoke a known good reading, a backfilled reading can restore an explicitly failed value, and a quick page return can temporarily hide a live value. The draft remains held pending a new scope decision. [Cases and receipts](../research/2026-11-20-pilot-page-return.md)
 - Replay fixture portability. The fixture uses POSIX file locks. Mac and Ubuntu fixture runs passed. Windows fixture support is unverified and outside the supervised pilot.
+
+
+## Master product and mandatory Grafana implementation (2026-11-21)
+
+The [master product work register](MASTER-PRODUCT-TICKETS.md) contains **22 deliverable tickets**: T-PROD-00 through T-PROD-15 for M0–M5 and deferred research, plus T-GRAF-01 through T-GRAF-06 for mandatory Grafana G1–G6. It maps every major directive section to dependencies, ownership, acceptance criteria and evidence still required. M1 is in progress, not done. Existing T-CON/T-SEC findings and IDEAS #20/#64/#65/#134 remain the original records; the register links them rather than duplicating their work. These are local implementation tickets, not published GitHub issues.
