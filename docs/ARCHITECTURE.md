@@ -80,6 +80,23 @@ historical proposed technologies are not silently promoted to implemented contro
 
 ## Evidence, approvals and safe execution
 
+Instrument communication is a first-class pathway, not only logger configuration.
+[Ship systems section15](SHIP-SYSTEMS.md#15-ai-assisted-instrument-access-and-capability-use)
+defines strict read-only observation, permitted device inspection, active diagnostics
+and independently approved science-instrument configuration. Reuse OpenRVDAS
+serial/COM and network transports plus the existing #130/#65 profile/approval work;
+qualify instrument/firmware semantics and acquisition ownership before direct access.
+The AI can analyze, inspect permitted capabilities and propose improvements. The
+trusted executor performs approved writes; the AI never gains an unrestricted port
+or terminal. Existing protected ship-system exclusions remain in force.
+
+Credentials use the existing #192 secret-service contract and protected adapters;
+configs contain references, never credential values. See
+[credential requirements](SECURITY-ARCHITECTURE.md#176-secret-lifecycle-for-instruments-and-ai-providers).
+Encrypted storage, protected runtime use and transport guarantees are distinct;
+unsupported plaintext credential protocols are refused by default. Compliance
+requires a named deployment profile and verified evidence, not this document alone.
+
 Results carry versioned contracts, explicit deployment and artifact identities,
 source/interval/method provenance, coverage, limits and honest result states.
 Artifact IDs locate evidence; they do not grant permission. Recheck authorization
@@ -117,7 +134,7 @@ The loopback HTTP demo is not production authentication. Full program security,
 real manager/archive integration and Grafana are not qualified.
 
 [Master tickets](MASTER-PRODUCT-TICKETS.md) cover M0-M5 and G1-G6. Product
-`contrib/deepsignal/workspace/DEMO-STORIES.md` defines ten fake-cruise user stories:
+`contrib/deepsignal/workspace/DEMO-STORIES.md` defines fourteen fake-cruise user stories:
 current fixture, then real pinned OpenRVDAS acquisition with simulated sensors and
 a real archive, then separately qualified Grafana and approved lab operations.
 Each story needs exact input/reference evidence, ordinary-interface and MCP

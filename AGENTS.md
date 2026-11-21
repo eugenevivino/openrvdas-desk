@@ -19,6 +19,9 @@ private memory. `CLAUDE.md` imports this file and adds nothing.
    identity, data access/export, remote clients, AI providers or operational
    execution, read `docs/SECURITY-ARCHITECTURE.md` section17 and preserve its
    implementation-versus-qualification distinction.
+   Instrument communication/configuration also reads `docs/SHIP-SYSTEMS.md`
+   section15: reuse transports/profile owners, preserve read-only mode and
+   acquisition ownership, and resolve credentials only through the protected service.
 
 ## The two repos
 

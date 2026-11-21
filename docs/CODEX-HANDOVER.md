@@ -19,27 +19,37 @@ new directives. Full M1 and Grafana remain incomplete.
 
 Build/test uses existing runtime-v11 Relay plans under
 `/private/tmp/deepsignal/product-m1-evidence/`; inspect their actual receipts.
-Tested candidate `58fbde8cb9cbab0b4a77ee25042fd9a9169d4615` includes the
-Relay-built Console bundle. Current source `1d601f39aad9cc07e84c076e243f33502f3f34e3`
-adds documentation only: ten DEMO-STORIES.md user stories, MCP integration scope
-and current evidence. No new exact-head gate credit is assigned to that doc commit.
-Relay R5: nine service/HTTP tests, actual 13-tool SDK workflow, model-free CLI,
-281 frontend tests, build/types/lint and actual Chromium journey PASS; audit clean.
-Report: /private/tmp/deepsignal/product-m1-evidence/m1-r5-state/report.json.
-Maximum queued handoff 0.0931s, not full engineering throughput. Workers terminal.
-Linux44879804326 workspace PASS; existing-security-policy FAIL under unchanged
-policy at desk460914c. Raw221 findings include33 new workspace findings:30 smoke
-assertions, subprocess import/call, URL-open. No suppression/policy change or
-independent security approval. Artifacts: product-m1-evidence/linux-44879804326/;
-summary: research/2026-11-21-workspace-m1/. Original failures/HOLDs preserved.
-Full M1 scope, independent scientific reference/security/usability review and
-real OpenRVDAS demo remain incomplete. Current fixture is not a real manager or
-archive integration. Next: review exact scanner findings, continue eligible M1
-stories, then pinned real-upstream fake-cruise conformance. Ten stories are linked
-to existing tickets, not a new scheduler. General replay/jobs/deep links and
-no-change operator outcomes remain pending. Compatibility manifest status strings
-still need reconciliation with this evidence in a validated source increment.
-No service installation, live activation, Grafana connection or production claim.
+Latest verified implementation candidate:6cba5716fbf1e9fd4422214dffa3995d272483c4.
+Relay m1-readiness-green passed ten service/HTTP/MCP tests, actual SDK, optimized-
+Python regression and real Chromium. Linux44881969262 affected-harness-checks PASS;
+exact unchanged frontend/source reuse checked against58fbde8c (281 frontend tests
+and full Linux44879804326 workspace PASS). Security policy remains FAIL, unchanged:
+190 total findings,2 new workspace subprocess findings, down from221/33 after
+mandatory smoke checks and fixed-loopback readiness. No policy suppression.
+Original RED and SDK exception-wrapper test error are retained. Maximum latest
+queued handoff0.0491s; this is not full engineering throughput. Reports/artifacts
+under product-m1-evidence/{m1-readiness-green-state,linux-44881969262}; source triage
+and Linux job snapshots under research/2026-11-21-workspace-m1/.
+
+Architecture now specifies selected/configurable access, instrument observation/
+inspection/diagnostics/approved configuration and protected secrets. Read
+ARCHITECTURE.md, SECURITY-ARCHITECTURE.md section17 and SHIP-SYSTEMS.md section15.
+Reuse existing transports/#130/#65/#192; no arbitrary command tool or new machine
+scheduler. #130 remains a paused/unqualified reuse candidate. Protected ship-system
+exclusions, independent approval and no-cleartext credential requirements remain.
+Fourteen demo stories are in product DEMO-STORIES.md, mapped to existing tickets.
+
+Current sourcef9f89e35 adds a test-first default-read-only MCP regression. Root-owned
+Relay run m1-access-red-state may be active: verify its actual terminal report and
+process before continuing; never duplicate or clear an uncertain claim. Next:
+implement read-only default versus explicit fixture-editor mode in mcp_server,
+server-owned Principal and permission-filtered capabilities; full SDK smoke must
+explicitly opt into fixture editing. Test through actual SDK, then affected Relay/
+Linux checks. This does not implement production identity, selected data policy,
+instrument access or vault protection. Full M1, independent reference/science/
+security/usability review, real OpenRVDAS demo and Grafana remain incomplete.
+Compatibility manifest status strings still need a validated source update.
+No service installation, live activation or production claim. Preserve all HOLDs.
 The user explicitly superseded the 1% reserve for this allowance window and
 asked for useful engineering through exhaustion. No reset/overage purchase.
 

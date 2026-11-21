@@ -480,3 +480,113 @@ come in as templates saved from a known-good file, not guessed.
 sources, weights them by quality and age, names the odd one out, and records which sources it used. Heading
 (#145, gyro, GNSS, ADCP), depth (#141, multibeam, single-beam, ADCP bottom track, grid), position (#142,
 sonar, nav, lever arms), shot position (#158), and sound speed here.
+
+## 15. AI-assisted instrument access and capability use
+
+Eugene's 2026-11-21 requirement makes instrument-aware analysis, inspection,
+troubleshooting and permitted configuration a first-class capability. The value
+is helping scientists use supported instrument features effectively, not merely
+sending commands. This is required design scope; no new hardware access or live
+write is enabled. D-SHIP1 protected-system exclusions and critical review remain.
+
+### 15.1 Reuse the actual OpenRVDAS pathway
+
+Verified in the current product tree, unchanged from base b67f3072:
+
+- `logger/readers/serial_reader.py`: SerialReader uses pyserial and configured
+  port/framing/timeouts. Opening it configures a device; do not assume constructor
+  execution is a harmless discovery step.
+- `logger/writers/serial_writer.py`: SerialWriter opens its own serial connection
+  and writes encoded records. It is a transport primitive, not permission checking
+  or exclusive coordination with an active reader.
+- `logger/readers/polled_serial_reader.py`: PolledSerialReader can transmit on
+  construction, before reads and on destruction. Its start/pre-read/stop strings
+  must never become an unrestricted AI command channel or run in strict read-only.
+- Existing network readers/writers can supply compatible transport, after the
+  exact selected protocol, authentication and ownership semantics are verified.
+
+Reuse #130 instrument-init and #65 approvals, extending #152 config reader,
+#153 advisor, #154 apply and #155 scoped remote access where appropriate. The
+#130 branch f5f8c95 has historical component checks but is paused/unqualified;
+its reviewed reconnect/approval constraints must be preserved. Do not copy its
+old permissive bootstrap/reconnect examples into a new production path.
+
+### 15.2 Selectable access modes
+
+All modes intersect the user/client/data-release policy in Security Architecture
+section17. Read permissions apply to every response, including configuration and
+instrument diagnostics. Analysis of already permitted data needs no device session.
+
+| Mode | Permitted behavior | Required boundary |
+|---|---|---|
+| Observe: strict read-only | Existing authorized acquisition/cache/archive/configuration snapshots | No new direct instrument session, command, port reconfiguration, startup/shutdown sequence or data consumption from an active logger |
+| Inspect: permitted read-only device queries | Supported identity, capabilities, status, settings and diagnostic-counter reads | Qualified non-mutating query profile, explicit per-device permission and compatible acquisition ownership; a query may send bytes, but cannot change operational settings |
+| Diagnose: active tests | Reviewed tests that may affect sampling or consume instrument resources | Separate impact classification, maintenance constraints and required independent approval; never disguised as a read |
+| Configure: approved changes | Allowlisted science-sensor settings through the trusted executor | Exact independent approval, bounded operation, verification and approved recovery; no self-approval or raw command tool |
+
+A label such as GET, query or read is not proof of safety. A command that clears
+counters, changes a mode, adjusts a clock, interrupts a measurement or persists a
+setting is classified by its actual device/firmware behavior. Unknown effects
+mean unsupported until qualified. Firmware update, reset, persistent calibration
+and clock changes have distinct high-impact scope; none is silently included.
+
+### 15.3 Instrument profiles, sessions and port ownership
+
+Use a stable asset identity bound to the verified instrument model/serial/firmware,
+configured endpoint and current profile revision. A USB path or COM number alone
+is insufficient after device replacement. Profiles cite the authorized vendor
+reference and define typed command IDs, bounded argument ranges/units, exact
+encoding/framing, response schema, limits, expected side effects and recovery.
+The model selects supported operations; it does not invent syntax or probe devices.
+
+Acquisition retains the existing connection owner. Reuse a proven request/reply
+interface on that owner, or a documented independent management channel. Never
+open a second reader that can steal responses or split a record. If the backend
+cannot safely arbitrate, refuse direct access while acquisition owns the port;
+report the specific requirement for an independently approved maintenance window.
+Do not stop a protected logger, change baud/flow control/DTR/RTS, flush buffers or
+reconnect merely to establish an AI session. Verify transport startup/teardown
+side effects, including hidden start/stop commands.
+
+The same owner serializes acquisition and approved transactions where supported.
+Sessions have bounded duration, commands, bytes and deadlines; stale session and
+policy revisions are rejected. This is device I/O ownership, not another machine
+scheduler. Timeouts/disconnects preserve an unknown outcome when appropriate;
+reconcile before retry and never replay a mutating command automatically on reconnect.
+Cancellation closes only owned resources and does not imply the instrument rolled back.
+
+### 15.4 Make instruments more useful, with evidence
+
+The assistant can explain verified available channels/modes, units, ranges,
+sampling/output settings and health diagnostics; compare actual settings with an
+operator's scientific objective; and identify missing metadata or unsupported
+capabilities. Recommendations state evidence, uncertainty and tradeoffs such as
+bandwidth, latency, storage, power, synchronization and loss of raw resolution.
+
+For a permitted change: inspect and snapshot, propose minimal typed settings,
+show diff/impact, validate against the profile and scientific constraints, obtain
+independent approval, execute through the trusted owner, verify device readback
+and a bounded window of incoming data, then export a reproducible handoff. Preserve
+raw observations and record a configuration epoch for changed units/rates/time
+semantics. A successful command does not prove better measurements or calibration.
+
+Measure objective-specific before/after outcomes: available useful channels,
+valid-record/gap counts, timing quality, diagnostic status and acquisition load.
+Report confounders and limitations. Scientific quality/uncertainty claims require
+independent reference validation. The operator remains able to perform the same
+workflow without an AI model.
+
+### 15.5 Demo, tickets and completion
+
+Extend the fake cruise with an explicitly simulated science instrument behind an
+owned pseudo-terminal or loopback protocol endpoint, then qualify one real supported
+lab device separately with authorization. No real vendor command is invented for
+the simulator. Exercise strict read-only (zero instrument commands), selected
+inspection, unsupported operation refusal, conflicting acquisition ownership,
+partial replies, timeout/reconnect, stale approval and credential redaction.
+
+Show an allowed capability discovery and a proposed improvement, independent
+approval and trusted execution, then readback/data verification. Keep simulator,
+real transport, physical instrument and scientific acceptance evidence distinct.
+MCP transport tests alone cannot qualify device behavior. Track work in
+T-PROD-12a-d, T-PROD-11 and existing #130/#152-155/#157; use the current Relay path.

@@ -124,3 +124,5 @@ clean. Original invalid receipt retained. No guard exclusions were loosened.
 bursts in actual Chromium. Raised bounded static concurrency to32 with a separate
 single application-service slot; R3 real browser journey passed. No shared guard,
 production service or foreign process changed.
+
+2026-11-21 | MCP smoke assertions disappeared under Python -O: two catalog-mismatch regression cases incorrectly succeeded. Mandatory checks now preserve all30 conditions. Initial green test expected an unwrapped error; SDK wraps it in exception groups, so regression now verifies exact leaf failure. Original red/error receipts retained. Relay m1-smoke-checks-green2 and m1-readiness-green plus Linux44881969262 PASS affected checks; full security policy still FAIL.

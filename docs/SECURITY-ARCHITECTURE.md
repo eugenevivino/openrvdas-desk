@@ -490,7 +490,12 @@ spec in `docs/APPROVALS.md` (answers MCP review F1/F2).
 - Readers only. No writer to an instrument path exists unless #130 is enabled per instrument by an
   admin.
 - #130 writes: tech + MFA + on-ship session (not over VPN), dry-run diff shown first, audit record
-  with full command bytes, rate-limited, and a per-instrument allowlist of commands.
+  with a sanitized command receipt, rate-limited, and a per-instrument allowlist of commands.
+  Credentials never enter logs; protected non-secret wire evidence follows section17.6.
+- Read-only and instrument inspection/configuration modes are defined in
+  SHIP-SYSTEMS.md section15. Raw SerialWriter/PolledSerialReader commands are not
+  an AI permission interface. Preserve the existing science-instrument allowlist
+  and protected ship-system exclusions.
 - Host firewall (nftables) template: Z1 interfaces accept only the configured feeds; no
   management services listen there.
 
@@ -866,3 +871,65 @@ stories, not scanning other systems. UI/CLI/SDK/client-interactive demonstration
 remain separate evidence. Passes do not authorize ship deployment, installations,
 network changes or service replacement. Until required gates and deployment approval
 are complete, retain HOLD and advertise the current supported fixture scope only.
+
+### 17.6 Secret lifecycle for instruments and AI providers
+
+Eugene explicitly requires secure credential handling without cleartext credential
+storage or disclosure. Reuse the #192 secret-service contract in section7 and a
+reviewed, supported protector/backend; do not build ad hoc cryptography or a second
+MCP credential store. The historical vault design and CLI examples are requirements,
+not proof that a working qualified vault is installed. Secrets remain unavailable
+until the chosen protection, access and recovery paths are verified.
+
+- Configuration and approved operation plans carry opaque secret references plus
+  intended service/instrument/provider identity. They contain no passwords, private
+  keys or tokens. References do not grant permission and secret names can themselves
+  be sensitive metadata. Separate credentials by service/device and minimum role.
+- Only a protected connector/executor resolves a reference for an authorized,
+  bounded operation. MCP tools, models, browsers and ordinary analysis workers
+  never retrieve credential values. Bind use to the configured verified endpoint;
+  protect against an endpoint/profile change redirecting a privileged credential.
+- Encrypt persistent secret material and backups with approved key separation and
+  access control. A raw wrapping key stored beside ciphertext does not establish
+  stolen-disk protection; qualify protected key storage for the actual deployment.
+  No plaintext fallback, credentials in YAML/git, argv, inherited
+  environment, shell history, debug logs, temporary files, exported transcripts or
+  support bundles. File mode0600 alone is not encryption. Existing #130 examples
+  that resolve secrets from environment need replacement before production use.
+- Credentials may briefly exist in memory of the authorized connector when the
+  protocol requires them. Minimize lifetime and copies, restrict process/debug/core
+  dump access, and document limits; Python cannot promise perfect memory erasure.
+  A compromised privileged host remains a stated risk, not solved by vault encryption.
+- Authenticate remote endpoints and use the qualified encrypted transport. No
+  disabled certificate/host-key checks or silent fallback. A serial link or legacy
+  device accepting only plaintext passwords is not end-to-end encrypted merely
+  because a gateway is protected. Such credential use is refused by default;
+  any separately approved exception needs explicit risk/compensating-control and
+  compliance review. Noncredentialed passive observation can remain available.
+- Rotate/revoke credentials and invalidate affected sessions. Prefer short-lived
+  or delegated credentials when the actual instrument supports them; do not invent
+  support. Recheck authorization immediately before use. Missing/locked vault,
+  expired grant or unreachable credential service refuses the dependent operation
+  without stopping existing acquisition or trying a default password.
+- Provision/unlock/recover through an authorized operator workflow outside chat,
+  never by asking the model to handle a secret. Test offline recovery, interrupted
+  rotation and backup restoration using segregated recovery custody. Keep acquisition
+  operating under its existing approved identity; no automatic service replacement.
+- Audit who used which credential reference/version for what target/operation,
+  with result and policy revision, never the secret. Instrument replies may echo
+  credentials: retain only permitted fields/redacted transcripts. Preserve non-secret
+  wire evidence when allowed, with hashes and provenance; sensitive raw captures
+  need their own encrypted storage/access policy and are never automatically exported.
+
+Required evidence includes synthetic sentinel-credential tests through success,
+failure, retries, exceptions, echoed replies and handoff/export; no secret in model
+context, output, logs, argv/env or saved artifacts. Test cross-device/reference
+refusal, target change, revocation, locked/unavailable store and restart/rotation.
+Use a real approved secret backend in the disposable lab before claiming integration;
+a fake provider can support unit tests but cannot qualify protection or recovery.
+
+Compliance must name the applicable standard/profile and deployment, with reviewed
+crypto modules/configuration, access/audit controls, retention and recovery evidence.
+No generic claim of being compliant, FIPS validated or invulnerable follows from
+choosing encryption. Until the required evidence and independent review exist,
+credentialed production instrument and AI-provider access remain HOLD.

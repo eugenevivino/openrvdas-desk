@@ -2676,7 +2676,7 @@
   {
    "unit": "workspace-m1",
    "branch": "deepsignal/workspace-m1",
-   "head": "1d601f39aad9cc07e84c076e243f33502f3f34e3",
+   "head": "f9f89e353906e29fd804d0fea9de8b028fc71336",
    "critical": true,
    "status": "ACTIVE (master directive fixture workflow; no release qualification)",
    "design_note": "docs/designs/workspace-m1.md",
@@ -2685,27 +2685,27 @@
     "moved": {
      "ok": false,
      "at": "",
-     "evidence": "R5 and Linux workspace checks PASS at58fbde8c; security FAIL, independent review/reference/full scope HOLD. Current head adds docs only; no new qualification."
+     "evidence": "Affected Relay/Linux44881969262 checks PASS at6cba5716 with verified unchanged frontend reuse; security FAIL and independent/full scope HOLD. Current read-only regression pending."
     },
     "tested": {
      "ok": false,
      "at": "",
-     "evidence": "R5 and Linux workspace checks PASS at58fbde8c; security FAIL, independent review/reference/full scope HOLD. Current head adds docs only; no new qualification."
+     "evidence": "Affected Relay/Linux44881969262 checks PASS at6cba5716 with verified unchanged frontend reuse; security FAIL and independent/full scope HOLD. Current read-only regression pending."
     },
     "fixed": {
      "ok": false,
      "at": "",
-     "evidence": "R5 and Linux workspace checks PASS at58fbde8c; security FAIL, independent review/reference/full scope HOLD. Current head adds docs only; no new qualification."
+     "evidence": "Affected Relay/Linux44881969262 checks PASS at6cba5716 with verified unchanged frontend reuse; security FAIL and independent/full scope HOLD. Current read-only regression pending."
     },
     "in_app": {
      "ok": false,
      "at": "",
-     "evidence": "R5 and Linux workspace checks PASS at58fbde8c; security FAIL, independent review/reference/full scope HOLD. Current head adds docs only; no new qualification."
+     "evidence": "Affected Relay/Linux44881969262 checks PASS at6cba5716 with verified unchanged frontend reuse; security FAIL and independent/full scope HOLD. Current read-only regression pending."
     },
     "tested_in_app": {
      "ok": false,
      "at": "",
-     "evidence": "R5 and Linux workspace checks PASS at58fbde8c; security FAIL, independent review/reference/full scope HOLD. Current head adds docs only; no new qualification."
+     "evidence": "Affected Relay/Linux44881969262 checks PASS at6cba5716 with verified unchanged frontend reuse; security FAIL and independent/full scope HOLD. Current read-only regression pending."
     }
    }
   }
