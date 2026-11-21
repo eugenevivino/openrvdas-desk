@@ -19,17 +19,30 @@ new directives. Full M1 and Grafana remain incomplete.
 
 Build/test uses existing runtime-v11 Relay plans under
 `/private/tmp/deepsignal/product-m1-evidence/`; inspect their actual receipts.
-Latest verified implementation candidate:6cba5716fbf1e9fd4422214dffa3995d272483c4.
-Relay m1-readiness-green passed ten service/HTTP/MCP tests, actual SDK, optimized-
-Python regression and real Chromium. Linux44881969262 affected-harness-checks PASS;
-exact unchanged frontend/source reuse checked against58fbde8c (281 frontend tests
-and full Linux44879804326 workspace PASS). Security policy remains FAIL, unchanged:
-190 total findings,2 new workspace subprocess findings, down from221/33 after
-mandatory smoke checks and fixed-loopback readiness. No policy suppression.
-Original RED and SDK exception-wrapper test error are retained. Maximum latest
-queued handoff0.0491s; this is not full engineering throughput. Reports/artifacts
-under product-m1-evidence/{m1-readiness-green-state,linux-44881969262}; source triage
-and Linux job snapshots under research/2026-11-21-workspace-m1/.
+Current source:6dec349867ab5c3bb6033824481c0da290409a0e, synced to the authorized
+fork topic. Behavior candidate ce22f377 passed Relay m1-access-analysis-green
+(all five declared stages, eleven service/HTTP/MCP tests, SDK editor and default
+read-only analysis, optimized-Python regression, actual Chromium) and Linux
+44883447788 affected-harness-checks. Frontend tree equality against58fbde8c
+permits reuse of281 frontend tests and its full workspace Linux evidence.
+Unchanged security policy remains FAIL:190 total findings,2 workspace subprocess
+findings (B404/B603). Raw envelope SHA256
+09152353b6b9f1e852883f45569d3a0841494c05b517f715217aaddf50af7dd6.
+No suppression or independent security approval. All original failures retained.
+
+Formatting candidate219a6c80 passed Relay m1-style-fixed, flake8 7.5.0 under
+unchanged repository rules; all10 workspace Python ASTs equal ce22f377.
+Certificate: product-m1-evidence/style-ast-equivalence-final.json. Final source
+6dec3498 adds usage/checkpoint docs only. Exact-head Linux44884254104 affected-harness-checks PASS, including style, all
+service/HTTP/SDK tests, CLI, optimized checks and actual Chromium. Workflow44461db
+on ci/workspace-harness-20261121 retained the unchanged security policy: FAIL,
+190 total/2 workspace findings (B404 at browser_smoke.py:10, B603 at:28). Raw
+envelope SHA25637b78f044e469271ac86b6657800b0acc924ee10c9ac513fdd7202b94df33daf.
+Both jobs are terminal; artifacts are preserved under linux-44884254104.
+Maximum completion-to-worker-start was0.08093214s in the five-stage analysis run,
+0.09148288s in the style run. These are bounded Relay handoffs, not host-wide
+utilization or whole-module throughput. Reports/artifacts under
+product-m1-evidence/{m1-access-analysis-green-state,m1-style-fixed-state,linux-44883447788}.
 
 Architecture now specifies selected/configurable access, instrument observation/
 inspection/diagnostics/approved configuration and protected secrets. Read
@@ -39,15 +52,17 @@ scheduler. #130 remains a paused/unqualified reuse candidate. Protected ship-sys
 exclusions, independent approval and no-cleartext credential requirements remain.
 Fourteen demo stories are in product DEMO-STORIES.md, mapped to existing tickets.
 
-Current sourcef9f89e35 adds a test-first default-read-only MCP regression. Root-owned
-Relay run m1-access-red-state may be active: verify its actual terminal report and
-process before continuing; never duplicate or clear an uncertain claim. Next:
-implement read-only default versus explicit fixture-editor mode in mcp_server,
-server-owned Principal and permission-filtered capabilities; full SDK smoke must
-explicitly opt into fixture editing. Test through actual SDK, then affected Relay/
-Linux checks. This does not implement production identity, selected data policy,
-instrument access or vault protection. Full M1, independent reference/science/
-security/usability review, real OpenRVDAS demo and Grafana remain incomplete.
+The MCP defaults to seven read/derive tools, including query, analysis and
+configuration inspection; explicit fixture-editor startup exposes thirteen.
+Actual SDK tests verify no editing authority or argument-based elevation, strict
+argument schemas and useful read-only analysis. Read-only allows bounded immutable
+evidence/audit writes; it does not imply an unwritable filesystem. Relay test runs
+above are terminal, review HOLD. The unit owner claim remains held for continuation;
+inspect actual workers/claims before any new dispatch. Next: obtain independent security disposition and complete outstanding M1
+requirements; final Linux receipts are preserved.
+This does not implement production identity, selected data policy, instrument
+access or protected vault backend. Full M1, independent reference/science/security/
+usability review, real OpenRVDAS demo and Grafana remain incomplete.
 Compatibility manifest status strings still need a validated source update.
 No service installation, live activation or production claim. Preserve all HOLDs.
 The user explicitly superseded the 1% reserve for this allowance window and

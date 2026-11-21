@@ -576,6 +576,19 @@ Report confounders and limitations. Scientific quality/uncertainty claims requir
 independent reference validation. The operator remains able to perform the same
 workflow without an AI model.
 
+Examples are capability-dependent, not promises about every instrument: reveal
+an available diagnostic channel; explain a supported output format; compare an
+approved sample interval with acquisition bandwidth and the scientific objective;
+or find a documented status query that narrows a fault. Every suggestion cites
+the approved model/firmware profile and observed state. Unsupported functions stay
+explicitly unavailable. The assistant must not infer that a device implements a
+command from a similar model or present a settings change as calibration.
+
+The product success criterion is more useful, traceable observations and faster
+operator diagnosis, measured in the demo stories. Count successful supported tasks,
+time to a justified diagnosis and verified data continuity after approved changes.
+More commands issued or more settings changed are not success metrics.
+
 ### 15.5 Demo, tickets and completion
 
 Extend the fake cruise with an explicitly simulated science instrument behind an
@@ -590,3 +603,24 @@ approval and trusted execution, then readback/data verification. Keep simulator,
 real transport, physical instrument and scientific acceptance evidence distinct.
 MCP transport tests alone cannot qualify device behavior. Track work in
 T-PROD-12a-d, T-PROD-11 and existing #130/#152-155/#157; use the current Relay path.
+
+### 15.6 Existing instrument-init reuse check (2026-11-21)
+
+Verified remote head: f5f8c9589f52855b1baa5dee295684ed3fa6a95e on
+`eugenevivino/openrvdas:deepsignal/p2-instrument-init`. Read-only source/document
+inspection, not a runtime or whole-module review. The package has serial and
+TCP transport wrappers and profile runner/plan commands, so it is a useful reuse
+candidate rather than grounds for another independent command engine.
+
+Current documentation uses environment-based secret substitution and reconnect/
+silence reinitialization. The CLI's manual confirmation is not a bound independent
+approval service, and its transport constructor opens the selected connection.
+Those behaviors do not satisfy the new protected-secret, strict read-only,
+acquisition-ownership or exact approval requirements by themselves. Keep this
+module held until its existing review addendum and new acceptance tests qualify
+an adapted implementation. No logger was stopped and no device was opened here.
+
+Inspected file blob identities: docs/instrument_init.md b9c030ce31a062c473de80d593b01c5154b599f3;
+instrument_init/__main__.py 1b84e27ef0422dcf2ac0ad5cd7eb3121cbbbbf3f,
+both under contrib/deepsignal/. The fixed head above, not these notes alone,
+anchors any future source review.

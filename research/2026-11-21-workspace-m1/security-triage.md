@@ -42,3 +42,9 @@ proxy/redirect handling. No nosec, excluded path, policy or severity change.
 Raw envelope SHA256265e6385d67bd58da8f3e7d67c24204a14e6c6a08bb7ebc6dfdb158de8f50348.
 Full independent security disposition remains pending; fewer findings is not
 production security qualification. New read-only mode is a separate source change.
+
+## Read-only analysis follow-up
+
+Linux44883447788 atce22f377: affected harness PASS; unchanged policy FAIL. Raw scan190 total,2 workspace findings B404/browser_smoke.py:9 and B603/browser_smoke.py:27, both LOW. Raw envelope SHA25609152353b6b9f1e852883f45569d3a0841494c05b517f715217aaddf50af7dd6. No suppression, policy change or independent disposition. Original raw artifacts retained under product-m1-evidence/linux-44883447788.
+
+Final candidate6dec349867ab5c3bb6033824481c0da290409a0e Linux44884254104: affected checks including repository style PASS. Unchanged security policy FAIL;190 findings total,2 workspace B404 atbrowser_smoke.py:10 and B603 at:28, both LOW. Raw envelope SHA25637b78f044e469271ac86b6657800b0acc924ee10c9ac513fdd7202b94df33daf. Findings remain unresolved; see adjacent scan summary and job snapshot.

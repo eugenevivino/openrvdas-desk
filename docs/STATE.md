@@ -6,7 +6,7 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
 - M1 fixture workspace active in /private/tmp/deepsignal/product-m1-20261121, branch deepsignal/workspace-m1; unit-workspace-m1 claimed by this lead.
 - 22 local deliverable tickets cover M0–M5 and mandatory Grafana G1–G6; see MASTER-PRODUCT-TICKETS.md.
-- Relay at6cba5716 and Linux44881969262 affected checks PASS, unchanged frontend reused; security FAIL remains with2 workspace findings. Architecture covers configurable access/instruments/secrets;14 demo stories. Default-read-only MCP regression in m1-access-red-state, inspect actual liveness.
+- MCP read-only analysis implemented; Relay and Linux44883447788 affected checks PASS atce22f377. Style219a6c80 PASS with exact AST equivalence; final6dec3498 synced and exact Linux44884254104 affected checks PASS. Security FAIL and full M1 HOLD remain. Instrument/secret architecture and14 stories recorded.
 - User authorizes useful work through remaining allowance for this window, superseding the earlier 1% reserve. Full M1, Grafana and production remain unqualified.
 
 ## Relay pilots (2026-11-20)
@@ -54,4 +54,4 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 - #121 and #139 downloads; venv-sci install (sonar estimators); nginx not installed on the Mac (by decision).
 
 ## Sync (D-SYNC1)
-- Last sync 2026-11-21T07:08:02Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
+- Last sync 2026-11-21T08:08:08Z: fork branches pushed ok; upstream fetched ok (core dev b61ebd6e, contrib master 3b4b76e6); desk main pushed after this line.
