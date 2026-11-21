@@ -779,6 +779,34 @@ to create a local artifact must not widen access to its inputs or recipients.
 
 ### 17.3 Reading is disclosure; control the recipient before returning data
 
+**Configurable selected access (Eugene, 2026-11-21):** policy is operator-managed
+and versioned, with a default-deny matrix of user/service and approved client,
+deployment/cruise, selected sensor/stream/field, data class and operation. Configure
+live/history windows, raw versus derived/aggregate results, metadata/location
+visibility, export permission, permitted disclosure context, and request/aggregate
+resource limits independently where the backend supports them. An example profile
+may allow temperature summaries while denying raw positions, exports and config
+changes. Backend inability to enforce a selection must produce refusal, not a wider
+grant. Unknown/new streams do not inherit permission from name similarity.
+
+Use the existing identity/policy service and an ordinary authorized operator UI
+or configuration workflow; avoid a parallel MCP-specific account store. Validated
+policy changes have a reviewable diff, revision, effective time, author and audit
+receipt. Evaluate the intersection of user, client, deployment, data-release and
+operation grants; no one permissive setting overrides another restriction.
+Clients can discover their permitted capabilities without learning denied catalog
+entries. Tool arguments can narrow selection, never widen the configured maximum.
+Only an independently authorized policy administrator changes grants; model text,
+ordinary draft permission and the client itself cannot elevate access.
+
+Apply revocation/tightening to subsequent requests, cached artifacts, queued jobs
+and active subscriptions within the qualified policy bound. Long operations recheck
+before releasing results or mutating a backend. Test policy reload/restart, invalid
+configuration, grant expansion/contraction and intersecting identities; invalid or
+unavailable policy fails closed for affected new access. Record the effective
+policy revision with the decision. This configurability is required scope, not
+implemented multiuser policy in the current fixture.
+
 Read-only access can disclose raw observations, positions, cruise plans, metadata
 and confidential derived results. All responses, including small repeated queries,
 need release-policy checks and cumulative byte/rate/concurrency budgets. Minimize

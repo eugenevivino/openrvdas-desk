@@ -64,7 +64,11 @@ remote connection, AI provider, approval or operational executor.
 
 Full integration never grants unrestricted access. Authentication, scoped data
 authorization and approved disclosure apply to reads as well as writes. An
-approved cloud AI may receive data returned by its client; stdio and read-only
+operator configures selected access by identity/client, deployment, stream/field,
+data class, interval and operation; the server enforces the intersection of grants.
+Policies are versioned, auditable and revocable; clients can narrow but not widen
+their allowed scope. This production policy configuration is still required work.
+An approved cloud AI may receive data returned by its client; stdio and read-only
 access alone do not contain it. Production must enforce the data-release decision
 before returning results. An unmanaged client cannot be trusted to enforce a
 server-side provider restriction after it already has the data.
