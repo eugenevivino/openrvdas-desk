@@ -169,9 +169,15 @@ an **MCP** server for AI clients. Same engine, same validation, same diff, which
 
 ## 7. AI and MCP
 
+November 21 master directive: the six-workspace product and mandatory Grafana/InfluxDB
+visualization service are tracked in [22 implementation tickets](MASTER-PRODUCT-TICKETS.md).
+M1 fixture services, four Console routes and actual official-SDK MCP are in progress
+on `deepsignal/workspace-m1`; the full platform and Grafana are not complete.
+
+
 | Feature | What it does | Status | Target | Link |
 |---|---|---|---|---|
-| MCP analytical gateway (#20, #64) | Typed domain tools (query, summarize, metadata, validate, plot); read-only plus proposal-only v1 | DESIGNED | after v2 | D-MCP1, `research/2026-11-18-mcp-reference-architecture.md` |
+| MCP analytical gateway (#20, #64) | Shared UI/CLI/MCP evidence, analysis, drafts and investigations; controls separately authorized | M1 IMPLEMENTATION/TESTING; full scope T-PROD-10 | after v2 | D-MCP1, `research/2026-11-18-mcp-reference-architecture.md` |
 | Approval and apply service (#65) | Validator, diff, policy, human approval record, separate apply identity | PROPOSED | after v2 | `docs/IDEAS.md` |
 | Provenance on every answer (#66) and query budgets (#67) | Each result carries source ids, bounds, counts, units, flags, computation; capped per call | PROPOSED | after v2 | `docs/IDEAS.md` |
 | AI audit trail (#62) | Every AI question, tool call and answer logged with the data it read | PROPOSED | after v2 | `docs/IDEAS.md` |
@@ -199,7 +205,7 @@ How DeepSignal plugs into the rest of the OceanDataTools stack. Detail: `docs/EC
 | #131 OpenVDM bridge | Quality day files plus a Data Dashboard plugin with pass, warning and fail tests | BRIEFED | v2 | `docs/ECOSYSTEM.md` |
 | #132 Cruise context | Cruise id, dates and ports pulled from OpenVDM or Sealog | BRIEFED | v2 | `docs/ECOSYSTEM.md` |
 | #133 Sealog bridge | Quality events, plus the quality state attached to every Sealog event | BRIEFED | v2 | `docs/ECOSYSTEM.md` |
-| #134 Grafana quality pack | Flag colors, freshness and alerts, generated from the cruise definition | BRIEFED | v2 | `docs/ECOSYSTEM.md` |
+| #134 Grafana quality pack | Mandatory shared visualization service, verified source mappings, drafts and independently approved publication | REQUIRED/OPEN T-GRAF-01–06 | G1–G6 | `docs/ECOSYSTEM.md` |
 | #135 Archive and compression | Lossless zstd or xz with a verified manifest, plus prioritized shore bundles for OpenVDM ship-to-shore | BRIEFED | v2 | `docs/ECOSYSTEM.md` |
 | #136 QA tool adapters | Adapters for external QA tools | PROPOSED (backlog) | later | `docs/ECOSYSTEM.md` |
 

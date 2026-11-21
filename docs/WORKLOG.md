@@ -25,3 +25,5 @@ One line per finished item: `YYYY-MM-DD | what | branch or PR | PASS, FAIL, or P
 - 2026-11-20: Console57182e5 and Streama3532f3 exact Mac/Linux checks PASS; combined2ea3e609 both design checks and Linux44714303424 attempt2 PASS. Fresh standalone Astra Ultra HOLD identifies3 operator-display cases; targeted repairs active, no integration or qualification claimed. Original failures and reviews preserved in research/2026-11-20-relay-pilots/.
 
 2026-11-20 Console UI and Stream Health view finished as fixture pilots and integrated on fork at b67f3072daee63d0d307a16bc1d34e24b3c75002; 272 frontend, both full native gates, Linux 44732250214 all 3 PASS; fresh Astra Ultra R9 PASS. Five exact-head stamps recorded, claims released; no live deployment/Relay production activation.
+
+2026-11-21 | Added 22 master/Grafana deliverable tickets; M1 fixture service/UI/MCP workflow implemented locally at 1eb13ac2, Relay R3 checks PASS and release gates HOLD | deepsignal/workspace-m1 | IN PROGRESS, no module finish credit

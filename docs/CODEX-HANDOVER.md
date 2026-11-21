@@ -2,6 +2,36 @@
 
 Self-contained. Read this first, then `docs/STATE.md`, `docs/DECISIONS.md` and `MORNING.md`. Plain words; no secrets here.
 
+## Master directive continuation (2026-11-21; current)
+
+Current worktree `/private/tmp/deepsignal/product-m1-20261121`, branch
+`deepsignal/workspace-m1`, based on integrated pilot b67f3072. Lead owns
+`claims/unit-workspace-m1`; helpers have finished their disjoint UI/MCP work.
+Read the worktree's `contrib/deepsignal/workspace/PROGRESS.md`, DESIGN.md and
+compatibility.json. All work is fixture-only, with no live executor or Grafana
+connection. The 22 deliverable tickets in MASTER-PRODUCT-TICKETS.md cover both
+new directives. Full M1 and Grafana remain incomplete.
+
+Build/test uses existing runtime-v11 Relay plans under
+`/private/tmp/deepsignal/product-m1-evidence/`; inspect their actual receipts.
+Source HEAD `1eb13ac2e46fd04f29828911fc21845677c9e6e4` includes Relay-built
+Console distribution. R1 passed checks but audit rejected MCP child cache files;
+retained as invalid. R2 audit is clean: six service/HTTP tests, actual 13-tool SDK
+journey, CLI, 277 frontend tests, lint/build passed; browser found asset concurrency
+refusals. R3 fixes the HTTP asset burst while serializing service calls; six tests
+and actual Chromium full draft/replay/export journey PASS, audit clean. Unchanged
+R2 frontend/MCP/CLI evidence is retained, not rerun. R3 report is at
+`/private/tmp/deepsignal/product-m1-evidence/m1-r3-state/report.json`; all workers
+terminal. Handoff max 0.064s, not an end-to-end engineering latency measurement.
+Required gates remain HOLD: whole-module scientific/security/usability independent
+review, independent reference evidence, exact-candidate Linux, remaining M1 scope.
+Source-only independent findings were regression-tested and repaired; that is not
+formal release approval. Next: finish bounded service/HTTP failure-case tests,
+then current-head review/Linux; continue mandatory Grafana discovery/draft scope.
+Do not call M1 complete or activate services/production. Preserve old receipts.
+The user explicitly superseded the 1% reserve for this allowance window and
+asked for useful engineering through exhaustion. No reset/overage purchase.
+
 ## Relay checkpoint (2026-11-20; inspect live state before continuing)
 
 Continue DeepSignal product work. Provider succession is only a contingency after

@@ -2672,6 +2672,42 @@
     }
    },
    "claimed_by": "unclaimed"
+  },
+  {
+   "unit": "workspace-m1",
+   "branch": "deepsignal/workspace-m1",
+   "head": "1eb13ac2e46fd04f29828911fc21845677c9e6e4",
+   "critical": true,
+   "status": "ACTIVE (master directive fixture workflow; no release qualification)",
+   "design_note": "docs/designs/workspace-m1.md",
+   "claimed_by": "Relay master-directive lead 01a1f7ec",
+   "stamps": {
+    "moved": {
+     "ok": false,
+     "at": "",
+     "evidence": "Remaining scope and independent/Linux qualification required; local Relay R3 workflow checks PASS only."
+    },
+    "tested": {
+     "ok": false,
+     "at": "",
+     "evidence": "Remaining scope and independent/Linux qualification required; local Relay R3 workflow checks PASS only."
+    },
+    "fixed": {
+     "ok": false,
+     "at": "",
+     "evidence": "Remaining scope and independent/Linux qualification required; local Relay R3 workflow checks PASS only."
+    },
+    "in_app": {
+     "ok": false,
+     "at": "",
+     "evidence": "Remaining scope and independent/Linux qualification required; local Relay R3 workflow checks PASS only."
+    },
+    "tested_in_app": {
+     "ok": false,
+     "at": "",
+     "evidence": "Remaining scope and independent/Linux qualification required; local Relay R3 workflow checks PASS only."
+    }
+   }
   }
  ],
  "superseded": [
