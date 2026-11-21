@@ -36,3 +36,5 @@ One line per finished item: `YYYY-MM-DD | what | branch or PR | PASS, FAIL, or P
 
 2026-11-21 | Expanded instrument-aware AI architecture: OpenRVDAS transport reuse, four access modes, port ownership, typed science-sensor operations and protected credentials; fourteen demo stories. No hardware/live access or compliance claim.
 2026-11-21 | Repaired optimized-Python acceptance checks (RED then PASS) and direct-loopback readiness. Relay and Linux44881969262 affected checks PASS at6cba5716; unchanged security policy FAIL remains with2 workspace findings, no suppression.
+
+2026-11-21 | Useful seven-tool read-only MCP analysis and explicit editor validated through actual SDK, Relay and Linux44883447788 atce22f377. Formatting-only219a6c80 AST-equivalent and style PASS; final6dec3498 Linux44884254104 affected checks PASS; unchanged security policy FAIL. Instrument value criteria documented, no new module finish credit.

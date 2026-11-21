@@ -736,8 +736,10 @@ the distinction between local fixture trust and future real-data production use.
 ### 17.1 Current boundary and trust assumptions
 
 The current MCP server uses local stdio with no network listener. It serves a
-single synthetic deployment. Its principal is selected by the process owner and
-allows local fixture read/write/export; tool arguments cannot supply an identity.
+single synthetic deployment. Its principal is selected by the process owner:
+default MCP permits reads and bounded derived evidence; explicit fixture-editor
+mode adds local draft/note writes and exports. Tool arguments cannot supply an
+identity or promote this mode; capabilities reflect the current permissions.
 The adjacent UI binds loopback with host/origin/token checks. Neither mechanism
 is qualified multiuser authentication or isolation from the same OS account.
 No live acquisition executor is registered. Linux security review is still held.

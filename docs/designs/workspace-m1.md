@@ -10,7 +10,10 @@ existing Relay dispatcher, and Kalon allocation. No new orchestrator.
 Candidate58fbde8c has Relay R5 and Linux44879804326 workspace PASS: nine service/
 HTTP tests, SDK/CLI,281 frontend,build/lint and actual Chromium. Linux security
 policy FAIL is preserved; independent science/security/usability and full scope
-remain HOLD. Source1d601f39 adds documentation only. DEMO-STORIES.md defines ten
+remain HOLD. The evolving worktree now includes default read-only MCP analysis and explicit
+fixture-editor mode; server permissions and strict declared-argument schemas are
+tested through actual SDK requests. Current exact evidence is in CODEX-HANDOVER.md.
+DEMO-STORIES.md defines fourteen
 fake-cruise user stories and distinguishes current fixture from pending real
 OpenRVDAS acquisition/archive/manager and extended Grafana/approved-operation labs.
 No live deployment or real manager/Grafana qualification is claimed.

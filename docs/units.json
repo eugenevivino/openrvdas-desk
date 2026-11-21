@@ -2676,7 +2676,7 @@
   {
    "unit": "workspace-m1",
    "branch": "deepsignal/workspace-m1",
-   "head": "f9f89e353906e29fd804d0fea9de8b028fc71336",
+   "head": "6dec349867ab5c3bb6033824481c0da290409a0e",
    "critical": true,
    "status": "ACTIVE (master directive fixture workflow; no release qualification)",
    "design_note": "docs/designs/workspace-m1.md",
@@ -2685,27 +2685,27 @@
     "moved": {
      "ok": false,
      "at": "",
-     "evidence": "Affected Relay/Linux44881969262 checks PASS at6cba5716 with verified unchanged frontend reuse; security FAIL and independent/full scope HOLD. Current read-only regression pending."
+     "evidence": "Final6dec3498 Linux44884254104 affected checks PASS including style/SDK/browser; frontend tree verified and reused. Relay behaviorce22f377 PASS, style219a6c80 AST-equivalent PASS. Unchanged security FAIL, full scope and independent review HOLD."
     },
     "tested": {
      "ok": false,
      "at": "",
-     "evidence": "Affected Relay/Linux44881969262 checks PASS at6cba5716 with verified unchanged frontend reuse; security FAIL and independent/full scope HOLD. Current read-only regression pending."
+     "evidence": "Final6dec3498 Linux44884254104 affected checks PASS including style/SDK/browser; frontend tree verified and reused. Relay behaviorce22f377 PASS, style219a6c80 AST-equivalent PASS. Unchanged security FAIL, full scope and independent review HOLD."
     },
     "fixed": {
      "ok": false,
      "at": "",
-     "evidence": "Affected Relay/Linux44881969262 checks PASS at6cba5716 with verified unchanged frontend reuse; security FAIL and independent/full scope HOLD. Current read-only regression pending."
+     "evidence": "Final6dec3498 Linux44884254104 affected checks PASS including style/SDK/browser; frontend tree verified and reused. Relay behaviorce22f377 PASS, style219a6c80 AST-equivalent PASS. Unchanged security FAIL, full scope and independent review HOLD."
     },
     "in_app": {
      "ok": false,
      "at": "",
-     "evidence": "Affected Relay/Linux44881969262 checks PASS at6cba5716 with verified unchanged frontend reuse; security FAIL and independent/full scope HOLD. Current read-only regression pending."
+     "evidence": "Final6dec3498 Linux44884254104 affected checks PASS including style/SDK/browser; frontend tree verified and reused. Relay behaviorce22f377 PASS, style219a6c80 AST-equivalent PASS. Unchanged security FAIL, full scope and independent review HOLD."
     },
     "tested_in_app": {
      "ok": false,
      "at": "",
-     "evidence": "Affected Relay/Linux44881969262 checks PASS at6cba5716 with verified unchanged frontend reuse; security FAIL and independent/full scope HOLD. Current read-only regression pending."
+     "evidence": "Final6dec3498 Linux44884254104 affected checks PASS including style/SDK/browser; frontend tree verified and reused. Relay behaviorce22f377 PASS, style219a6c80 AST-equivalent PASS. Unchanged security FAIL, full scope and independent review HOLD."
     }
    }
   }

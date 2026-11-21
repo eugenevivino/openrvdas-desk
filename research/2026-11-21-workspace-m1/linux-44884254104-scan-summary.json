@@ -1,0 +1,19 @@
+{
+  "candidate": "6dec349867ab5c3bb6033824481c0da290409a0e",
+  "findings": 190,
+  "workspace": [
+    {
+      "test": "B404",
+      "file": "contrib/deepsignal/workspace/browser_smoke.py",
+      "line": 10,
+      "severity": "LOW"
+    },
+    {
+      "test": "B603",
+      "file": "contrib/deepsignal/workspace/browser_smoke.py",
+      "line": 28,
+      "severity": "LOW"
+    }
+  ],
+  "raw_sha256": "37b78f044e469271ac86b6657800b0acc924ee10c9ac513fdd7202b94df33daf"
+}

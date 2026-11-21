@@ -130,7 +130,10 @@ Console and Stream Health view fixture pilots qualified at b67f3072. Workspace
 candidate58fbde8c passed Relay R5 and Linux workspace tests, including actual SDK
 MCP, CLI and Chromium. Its unchanged Linux security policy failed. Current MCP
 is a local stdio fixture with synthetic data, OS-account trust and no live executor.
-The loopback HTTP demo is not production authentication. Full program security,
+The MCP now has a server-selected read-only default with bounded query/analysis
+and configuration inspection; explicit fixture-editor mode enables local editing.
+Neither mode connects to instruments. The loopback HTTP demo is not production
+authentication. Full program security,
 real manager/archive integration and Grafana are not qualified.
 
 [Master tickets](MASTER-PRODUCT-TICKETS.md) cover M0-M5 and G1-G6. Product
