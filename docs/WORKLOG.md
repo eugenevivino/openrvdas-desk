@@ -31,3 +31,5 @@ One line per finished item: `YYYY-MM-DD | what | branch or PR | PASS, FAIL, or P
 2026-11-21 | Relay R5 fixture checks and exact58fbde8c Linux workspace PASS; unchanged Linux security policy FAIL preserved. Added ten fake-cruise MCP/UI stories in product docs1d601f39 and linked existing tickets. Source runtime unchanged; no new module qualification.
 
 2026-11-21 | Established docs/ARCHITECTURE.md and required MCP identity/read/disclosure boundary in Security Architecture section17; linked AGENTS startup, handover, reference and tickets. Explicit fixture/production separation; no deployment approval or security PASS.
+
+2026-11-21 | Eugene requires selected/configurable MCP access. Added versioned operator-managed grants, intersection of user/client/data policies, reload/revocation and scope tests to architecture and T-PROD-11; implementation remains unqualified.

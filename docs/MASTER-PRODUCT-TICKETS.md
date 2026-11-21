@@ -303,6 +303,11 @@ IDEAS #65 approval service. Do not weaken existing gateway or scanner gates.
 Required boundary and acceptance evidence: [Security Architecture section17](SECURITY-ARCHITECTURE.md#17-mcp-access-and-ai-disclosure-required-production-boundary).
 Read-only access is data disclosure; managed-provider egress and external-client
 trust require separate enforcement and evidence. Current fixture is not qualified.
+Eugene requires configurable selected MCP access: operator-managed versioned grants
+by identity/client, deployment, sensor/stream/field, data class, time range and
+operation. Test intersection, default denial of new fields, policy reload/revocation,
+cached/queued/streaming access and prevention of client self-escalation. Provide an
+ordinary authorized configuration interface and visible effective capabilities.
 
 Use trusted transport/OS identity and distinct read/export/notes/draft/acknowledge/
 propose/approve/execute/admin permissions. Enforce scoped handles and source roots,
