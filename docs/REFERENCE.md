@@ -8,6 +8,11 @@ Other desk files go deeper: `docs/IDEAS.md` (every idea, one row each), `docs/RO
 dates), `docs/TARGET-PARITY.md` (scorecard), `docs/DECISIONS.md` (why). This file is the index of what
 DeepSignal does, and where each piece stands.
 
+[Program architecture](ARCHITECTURE.md) is the canonical structure and boundary
+reference. [Security architecture section17](SECURITY-ARCHITECTURE.md#17-mcp-access-and-ai-disclosure-required-production-boundary)
+defines MCP identity, scoped reads and AI disclosure requirements. These are
+required controls with explicit qualification gates, not current production claims.
+
 ## Status key
 
 | Status | Meaning |

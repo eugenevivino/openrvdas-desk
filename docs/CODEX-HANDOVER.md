@@ -4,6 +4,11 @@ Self-contained. Read this first, then `docs/STATE.md`, `docs/DECISIONS.md` and `
 
 ## Master directive continuation (2026-11-21; current)
 
+Read docs/ARCHITECTURE.md for the program reference, and SECURITY-ARCHITECTURE.md
+section17 before MCP/data/security work. Eugene requires unauthorized access and
+AI disclosure prevention; local fixture/OS trust is not a production boundary.
+CLAUDE.md imports AGENTS.md, which carries the shared startup pointer.
+
 Current worktree `/private/tmp/deepsignal/product-m1-20261121`, branch
 `deepsignal/workspace-m1`, based on integrated pilot b67f3072. Lead owns
 `claims/unit-workspace-m1`; helpers have finished their disjoint UI/MCP work.
