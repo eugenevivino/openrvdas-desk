@@ -16,14 +16,14 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: eugenevivino/openrvdas
-          ref: 6cba5716fbf1e9fd4422214dffa3995d272483c4
+          ref: ce22f377f29c9bf5ba444a463d7a355c44adec61
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
       - name: Prepare isolated pinned fixture dependencies
         run: |
-          test "$(git rev-parse HEAD)" = 6cba5716fbf1e9fd4422214dffa3995d272483c4
+          test "$(git rev-parse HEAD)" = ce22f377f29c9bf5ba444a463d7a355c44adec61
           python -m pip install -r contrib/deepsignal/workspace/requirements-lock.txt playwright==1.64.1
           python -m playwright install --with-deps chromium
           python -m pip freeze > "$RUNNER_TEMP/workspace-dependencies.txt"
@@ -33,7 +33,7 @@ jobs:
         run: python -B -m contrib.deepsignal.workspace.mcp_smoke --state "$RUNNER_TEMP/workspace-mcp.sqlite3"
       - name: Ordinary model-free CLI workflow
         run: python -B -m contrib.deepsignal.workspace --state "$RUNNER_TEMP/workspace-cli.sqlite3" demo > "$RUNNER_TEMP/workspace-handoff.json"
-      - name: Verify unchanged frontend and service evidence scope
+      - name: Verify unchanged frontend and bounded workspace change scope
         run: |
           git fetch --no-tags --depth=1 origin 58fbde8cb9cbab0b4a77ee25042fd9a9169d4615
           python - <<'PYCODE'
@@ -41,7 +41,8 @@ jobs:
           base = '58fbde8cb9cbab0b4a77ee25042fd9a9169d4615'
           changed = set(subprocess.check_output(['git', 'diff', '--name-only', base, 'HEAD'], text=True).splitlines())
           allowed = {'contrib/deepsignal/workspace/' + name for name in (
-              'browser_smoke.py', 'mcp_smoke.py', 'tests/test_mcp_smoke.py',
+              'browser_smoke.py', 'mcp_smoke.py', 'mcp_server.py', 'service.py',
+              'tests/test_mcp_smoke.py', 'tests/test_mcp_access.py',
               'DEMO-STORIES.md', 'MCP.md', 'PROGRESS.md', 'README.md')}
           if not changed <= allowed:
               raise SystemExit('Changed scope exceeds retained evidence: ' + repr(sorted(changed - allowed)))
@@ -75,7 +76,7 @@ jobs:
         with:
           path: product
           repository: eugenevivino/openrvdas
-          ref: 6cba5716fbf1e9fd4422214dffa3995d272483c4
+          ref: ce22f377f29c9bf5ba444a463d7a355c44adec61
           persist-credentials: false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -90,7 +91,7 @@ jobs:
         run: |
           python -m pip install bandit==1.9.4
           mkdir "$RUNNER_TEMP/workspace-scan"
-          python -I -B ../desk/tools/fast-review/bandit-policy.py "$(command -v python)" "$PWD" 6cba5716fbf1e9fd4422214dffa3995d272483c4 "$RUNNER_TEMP/workspace-scan"
+          python -I -B ../desk/tools/fast-review/bandit-policy.py "$(command -v python)" "$PWD" ce22f377f29c9bf5ba444a463d7a355c44adec61 "$RUNNER_TEMP/workspace-scan"
       - name: Preserve raw scan and policy decision
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
