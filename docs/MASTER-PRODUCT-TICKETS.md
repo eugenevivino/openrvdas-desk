@@ -117,7 +117,7 @@ the same services and snapshots; independent literal values/units/timestamps/cou
 verify the corrected parser; include an evidence-insufficient or expected-inactivity
 **no-change** outcome. Original raw input remains immutable. No mock-only control,
 empty tools or screens count as implementation. **Evidence:** active workspace;
-new acceptance receipts, independent review and exact-head Linux qualification pending.
+R5 and exact58fbde8c Linux workspace checks passed; Linux security policy failed. Full scenario and independent review remain pending.
 
 ### T-PROD-02 — Qualify one real OpenRVDAS lab adapter
 
@@ -291,7 +291,7 @@ protocol-only. Accurate annotations do not substitute for authorization. Supply 
 Codex registration instructions, tested prompt sequences and client compatibility;
 label interactive verification pending if unrun. Execution tool appears only for a
 qualified authorized principal/environment; never self-approval or arbitrary tools.
-**Evidence:** new SDK/CLI work in progress; complete catalog and protocol receipts pending.
+**Evidence:** actual13-tool SDK and CLI parity passed in Relay R5 and Linux44879804326 at58fbde8c. Complete catalog, interactive client and real backend conformance remain pending.
 
 ### T-PROD-11 — Enforce identity, data exposure and trusted boundaries
 
@@ -528,3 +528,18 @@ Grafana >=10.3.3; its compose defaults to10.3.3. Those are historical source
 metadata, not a tested target version or permission to launch that compose.
 No compass panel was found at the inspected local path. Discover actual target
 capabilities before claiming plugin support. G1 remains OPEN, real lab pending.
+
+## Fake-cruise acceptance stories (Eugene, 2026-11-21)
+
+Ten concrete stories are recorded in product
+`contrib/deepsignal/workspace/DEMO-STORIES.md` at documentation commit1d601f39:
+watch-start discovery, expected inactivity/staleness, parser investigation,
+draft/validate/replay, justified no-change, second-person handoff, outage recovery,
+Grafana draft, permission refusal and independently approved lab operation.
+Each has a prompt, expected evidence/outcome, current status and existing ticket
+mapping. T-PROD-01 owns fixture delivery, T-PROD-02 real pinned OpenRVDAS with fake
+cruise/sensors and real archive, T-PROD-10 actual SDK plus interactive MCP stories,
+and T-PROD-14 whole-demo operator acceptance. G1-G6 and M4 retain their own gates.
+Current fixture is not a running upstream installation; no new ticket or PASS is
+invented merely for writing stories. Test through Relay with preserved raw truth,
+UI/CLI parity, safe acquisition independence and no live-vessel activation.

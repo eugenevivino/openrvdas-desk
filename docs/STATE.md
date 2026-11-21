@@ -6,7 +6,7 @@ Updated 2026-11-20 by the build lead (MacBook lane, D-NIGHT1, D-UNITS1).
 
 - M1 fixture workspace active in /private/tmp/deepsignal/product-m1-20261121, branch deepsignal/workspace-m1; unit-workspace-m1 claimed by this lead.
 - 22 local deliverable tickets cover M0–M5 and mandatory Grafana G1–G6; see MASTER-PRODUCT-TICKETS.md.
-- Existing Relay R3: clean evidence audit; service/HTTP and real Chromium workflow PASS at 1eb13ac2. Reused R2 277 frontend, MCP/CLI/build/lint evidence. Review/reference/Linux and remaining M1 scope HOLD.
+- Relay R5 at58fbde8c: nine service/HTTP, SDK/CLI,281 frontend,build/lint/browser PASS, audit clean. Linux44879804326 workspace PASS/security FAIL; independent review/reference/full M1 HOLD. Docs-only successor1d601f39 adds ten fake-cruise stories.
 - User authorizes useful work through remaining allowance for this window, superseding the earlier 1% reserve. Full M1, Grafana and production remain unqualified.
 
 ## Relay pilots (2026-11-20)
