@@ -29,3 +29,5 @@ One line per finished item: `YYYY-MM-DD | what | branch or PR | PASS, FAIL, or P
 2026-11-21 | Added 22 master/Grafana deliverable tickets; M1 fixture service/UI/MCP workflow implemented locally at 1eb13ac2, Relay R3 checks PASS and release gates HOLD | deepsignal/workspace-m1 | IN PROGRESS, no module finish credit
 
 2026-11-21 | Relay R5 fixture checks and exact58fbde8c Linux workspace PASS; unchanged Linux security policy FAIL preserved. Added ten fake-cruise MCP/UI stories in product docs1d601f39 and linked existing tickets. Source runtime unchanged; no new module qualification.
+
+2026-11-21 | Established docs/ARCHITECTURE.md and required MCP identity/read/disclosure boundary in Security Architecture section17; linked AGENTS startup, handover, reference and tickets. Explicit fixture/production separation; no deployment approval or security PASS.

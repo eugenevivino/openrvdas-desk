@@ -300,6 +300,10 @@ M0–M5. **Owner:** security maintainer plus independent reviewer, to be assigne
 **Depends on:** T-PROD-00. **Reuse:** existing security unit and T-SEC-1–6;
 IDEAS #65 approval service. Do not weaken existing gateway or scanner gates.
 
+Required boundary and acceptance evidence: [Security Architecture section17](SECURITY-ARCHITECTURE.md#17-mcp-access-and-ai-disclosure-required-production-boundary).
+Read-only access is data disclosure; managed-provider egress and external-client
+trust require separate enforcement and evidence. Current fixture is not qualified.
+
 Use trusted transport/OS identity and distinct read/export/notes/draft/acknowledge/
 propose/approve/execute/admin permissions. Enforce scoped handles and source roots,
 resolved symlinks, configured endpoints, parsing/decompression/record/byte limits,

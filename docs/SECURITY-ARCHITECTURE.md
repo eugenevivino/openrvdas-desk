@@ -1,5 +1,13 @@
 # DeepSignal Security Architecture
 
+**Current interpretation (2026-11-21):** This document is a design and acceptance
+reference, not proof of deployed security. Eugene explicitly requires prevention
+of unauthorized MCP access and AI data disclosure. The current fixture is local
+stdio with synthetic data and OS-account trust; production authentication and
+data-release enforcement remain unqualified. Section17 defines the required
+boundary and its release evidence. Historical DRAFT v2 choices below retain their
+approval status; this addition does not approve services, network changes or deployment.
+
 - Status: DRAFT v2, 2026-11-18. Astra `ultra` review (desk `research/2026-11-18-security-architecture-review.md`,
   eb61677, verdict SHIP WITH CHANGES) folded in. Changes from v1 are listed in section 16.
 - Owner: security architecture thread. Decision: D-SEC1 (proposed, section 14).
@@ -13,14 +21,15 @@
 
 ## 0. The one-paragraph version
 
-DeepSignal is secure by architecture, not by bolt-on: one front door (nginx with TLS) in front of
+The proposed production design uses one front door (nginx with TLS) in front of
 every web, API, websocket and MCP surface; one identity store (Django accounts, already in
 OpenRVDAS) with MFA required for any role that can change anything; one role ladder (viewer,
 science, tech, admin) enforced in code by the #115 engine; read-only by default toward instruments
 and toward shore; every security event and every change written to a hash-chained, signed audit
 log; every config deploy signed and replayable; every secret in one encrypted vault; every crypto
-call through the platform OpenSSL so a FIPS-mode host makes the whole stack FIPS-mode. All of it
-works with zero shore connectivity. Nov 25 is a supervised display pilot unless the four release
+call through the approved platform crypto path; a host setting alone does not
+qualify the whole application for FIPS. These targets require implementation and
+verification, including operation with zero shore connectivity. Nov 25 is a supervised display pilot unless the four release
 checks in section 12 pass. Effectiveness rule: security may block a person from changing
 things, but it must never stop data acquisition or blank the bridge display.
 
@@ -515,6 +524,9 @@ spec in `docs/APPROVALS.md` (answers MCP review F1/F2).
 ### 9.3 MCP inbound path (Z4)
 
 Adopts `mcp-design.md` and tightens it:
+- This section describes a proposed remote production profile. The current
+  synthetic fixture uses stdio without a network listener; it is not that profile.
+  Section17 governs identity, client trust and read/disclosure authorization.
 - Streamable HTTP only on a named VPN/LAN interface, refused on a public address, behind the same
   nginx TLS and token check.
 - Remote is read-only by default. A remote `propose` lands in the proposal store; applying it
@@ -526,6 +538,10 @@ Adopts `mcp-design.md` and tightens it:
 - Satellite-friendly: small responses, server-side aggregation, per-token byte budgets.
 
 ### 9.4 Outbound AI API (Z2 to provider)
+
+These proxy requirements apply to DeepSignal-managed outbound requests. They
+cannot govern an external MCP host after data has been returned to it. Section17
+requires disclosure authorization before returning data to that client.
 
 - Off by default; works with no key (#188 rule).
 - Egress only through a local proxy that allows exactly the configured provider host, TLS verified
@@ -702,3 +718,123 @@ review; Linux gate in desk CI; merge only after Eugene's approval in MORNING.md.
 - Compliance table rewritten as a crosswalk with release and evidence columns; E27, E26/IMO split;
   03.05.12 for tokens; 03.03.03 added.
 - Nov 25 is Wednesday and is a supervised pilot unless four release checks pass (D-SEC6).
+
+## 17. MCP access and AI disclosure: required production boundary
+
+Eugene's 2026-11-21 requirement: comprehensive OpenRVDAS integration must not let
+an unapproved person or AI client connect and retrieve the installation's data.
+These are mandatory implementation/acceptance requirements, not a certification
+or a claim of invulnerability. Owner: DeepSignal integration lead with independent
+security review. Delivery: T-PROD-10/11/12/14 and T-GRAF-03/04. This section resolves
+the distinction between local fixture trust and future real-data production use.
+
+### 17.1 Current boundary and trust assumptions
+
+The current MCP server uses local stdio with no network listener. It serves a
+single synthetic deployment. Its principal is selected by the process owner and
+allows local fixture read/write/export; tool arguments cannot supply an identity.
+The adjacent UI binds loopback with host/origin/token checks. Neither mechanism
+is qualified multiuser authentication or isolation from the same OS account.
+No live acquisition executor is registered. Linux security review is still held.
+
+A person/process controlling the service account, code, database or machine
+administrator privileges is outside this fixture's protection. Production secret
+storage and approval separation need a verified stronger deployment boundary.
+Private networks, localhost, stdio, tool annotations and a successful login are
+not by themselves authorization for all data. Keep the fixture clearly marked
+SIMULATED and unsuitable for real-data or remote deployment until qualified.
+
+### 17.2 Authenticate and authorize every surface
+
+Production resolves authenticated user/service identity and approved client
+context through a trusted configured boundary. It never accepts role, deployment
+membership, approval or provider trust asserted by a prompt/tool argument.
+Unregistered/unauthenticated clients receive no protected data or useful catalog
+metadata. Remote enablement is explicit and uses the approved transport profile;
+there is no automatic public listener or automatic client enrollment.
+
+Use least-privilege scoped grants, expiration and revocation. Verify identity,
+audience/resource binding and current permissions on each request; enforce the
+same rules on UI, CLI, MCP, WebSocket subscriptions, resource reads and downloads.
+Expired/revoked access blocks new calls and terminates affected subscriptions
+within the qualified revocation bound. Already delivered bytes cannot be recalled.
+Missing/unavailable authorization fails closed for new protected reads or actions.
+Native acquisition continues; any kiosk display uses its own bounded approved grant.
+
+| Operation | Required policy decision |
+|---|---|
+| Discover/catalog/health | Allowed deployment/assets and permitted metadata, including field names and locations |
+| Query/analyze/read artifact | Allowed streams, time ranges, sensitivity and derived information; bounded rows/bytes/cost |
+| Write draft/note/investigation | Scoped workspace mutation, distinct from acquisition/configuration mutation |
+| Export or return evidence to an AI client | Source authorization plus disclosure policy for the recipient/client context |
+| Propose a live change | Narrow proposal permission; no execution authority follows |
+| Approve | Independent authorized human/role, bound to the exact material plan |
+| Execute/publish | Separate executor identity and valid unused approval; allowlisted backend action only |
+
+Artifact handles are not bearer permissions. Reauthorize nested references,
+configuration snapshots, logs, errors, search results and exported manifests too.
+An authorized summary must not reveal a denied stream through its derived values.
+Separate read authorization from the act of storing an analysis result: permission
+to create a local artifact must not widen access to its inputs or recipients.
+
+### 17.3 Reading is disclosure; control the recipient before returning data
+
+Read-only access can disclose raw observations, positions, cruise plans, metadata
+and confidential derived results. All responses, including small repeated queries,
+need release-policy checks and cumulative byte/rate/concurrency budgets. Minimize
+returned fields and intervals. Secrets never enter tool results, prompts or exports;
+redaction supplements scoped authorization rather than substituting for it.
+
+DeepSignal-managed AI requests use a configured approved provider/deployment and
+its verified outbound policy. Provider selection and permitted data classes are
+operator-controlled, not arbitrary endpoints or query parameters chosen by a model.
+Offline operation must remain available without an AI provider or credentials.
+
+For an external MCP client, data returned to it may be forwarded to that client's
+cloud model. Our server-side egress proxy cannot control those later transmissions.
+A client saying it is local-only is not proof. Restrict that client to information
+approved for disclosure to it, or require a separately verified managed-client/
+execution environment before releasing restricted information. Unknown recipient
+trust means deny the restricted read. Record that approved delivery is an exposure
+boundary; revocation does not remove provider-held copies. Provider retention and
+contractual controls require separate verification, not an architectural promise.
+
+### 17.4 Untrusted content, operations and audit
+
+Treat sensor strings, documents, notes and model output as untrusted data. They
+cannot grant permissions, select arbitrary filesystem/network targets or create
+an approval. Use typed domain operations, bounded results and fixed configured
+adapters. Tool hints are descriptive; enforcement belongs in trusted services.
+Live operations require the independent approval and executor boundary in section8.3;
+AI never approves its own proposal. Real data corrections preserve raw observations
+and require separate scientific review/provenance.
+
+Record identity/client, scoped operation, requested/released data classes, artifact
+identities, policy version, decision, timestamps and correlation IDs for allowed
+and denied access. Avoid raw sensitive payloads and credentials in audit logs.
+Audit failure prevents any operation whose policy requires a durable receipt;
+it never stops native acquisition. Protect log access, integrity and retention;
+report the limits against a compromised host without claiming perfect tamper resistance.
+
+### 17.5 Required release evidence
+
+Before real-data remote MCP enablement, produce exact-candidate evidence for:
+
+1. Approved authentication and client enrollment; anonymous/unknown/expired/
+   revoked identities receive no protected data through any exposed interface.
+2. Scoped deployment/stream/interval and derived-artifact decisions, including
+   metadata, nested evidence, exports and concurrent/restarted sessions.
+3. Read/disclosure policy for approved, restricted and unknown client contexts;
+   managed provider restrictions are tested separately from external-client trust.
+4. Bounded calls/subscriptions/aggregate disclosure and graceful backend/policy/
+   audit failure without stopping upstream acquisition or widening permissions.
+5. Independent approval, no self-approval, stale/conflicting/duplicate operation
+   refusal and unknown-outcome recovery against the actual disposable lab backend.
+6. Sanitized allowed/denied audit evidence, secret isolation, dependency/security
+   checks and independent security review of the actual deployment configuration.
+
+Use deterministic conformance tests in our own isolated lab and the fake-cruise
+stories, not scanning other systems. UI/CLI/SDK/client-interactive demonstrations
+remain separate evidence. Passes do not authorize ship deployment, installations,
+network changes or service replacement. Until required gates and deployment approval
+are complete, retain HOLD and advertise the current supported fixture scope only.

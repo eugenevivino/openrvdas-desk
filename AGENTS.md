@@ -15,6 +15,10 @@ private memory. `CLAUDE.md` imports this file and adds nothing.
 2. Inspect the real checkout: branch, head sha, dirty files, remotes. A plan in
    a doc is not evidence of what the code does now.
 3. If you were handed a brief, read it fully and work only inside its scope.
+4. Architecture work reads `docs/ARCHITECTURE.md`. Before changing MCP tools,
+   identity, data access/export, remote clients, AI providers or operational
+   execution, read `docs/SECURITY-ARCHITECTURE.md` section17 and preserve its
+   implementation-versus-qualification distinction.
 
 ## The two repos
 
