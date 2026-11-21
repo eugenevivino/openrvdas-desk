@@ -16,17 +16,19 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: eugenevivino/openrvdas
-          ref: ce22f377f29c9bf5ba444a463d7a355c44adec61
+          ref: 6dec349867ab5c3bb6033824481c0da290409a0e
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
       - name: Prepare isolated pinned fixture dependencies
         run: |
-          test "$(git rev-parse HEAD)" = ce22f377f29c9bf5ba444a463d7a355c44adec61
-          python -m pip install -r contrib/deepsignal/workspace/requirements-lock.txt playwright==1.64.1
+          test "$(git rev-parse HEAD)" = 6dec349867ab5c3bb6033824481c0da290409a0e
+          python -m pip install -r contrib/deepsignal/workspace/requirements-lock.txt playwright==1.64.1 flake8==7.5.0
           python -m playwright install --with-deps chromium
           python -m pip freeze > "$RUNNER_TEMP/workspace-dependencies.txt"
+      - name: Repository Python style
+        run: python -B -m flake8 contrib/deepsignal/workspace
       - name: Shared services and HTTP boundaries
         run: python -B -m unittest discover -s contrib/deepsignal/workspace/tests -v
       - name: Actual official SDK stdio workflow
@@ -43,6 +45,7 @@ jobs:
           allowed = {'contrib/deepsignal/workspace/' + name for name in (
               'browser_smoke.py', 'mcp_smoke.py', 'mcp_server.py', 'service.py',
               'tests/test_mcp_smoke.py', 'tests/test_mcp_access.py',
+              '__main__.py', 'http_server.py', 'tests/test_http.py', 'tests/test_service.py',
               'DEMO-STORIES.md', 'MCP.md', 'PROGRESS.md', 'README.md')}
           if not changed <= allowed:
               raise SystemExit('Changed scope exceeds retained evidence: ' + repr(sorted(changed - allowed)))
@@ -76,7 +79,7 @@ jobs:
         with:
           path: product
           repository: eugenevivino/openrvdas
-          ref: ce22f377f29c9bf5ba444a463d7a355c44adec61
+          ref: 6dec349867ab5c3bb6033824481c0da290409a0e
           persist-credentials: false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -91,7 +94,7 @@ jobs:
         run: |
           python -m pip install bandit==1.9.4
           mkdir "$RUNNER_TEMP/workspace-scan"
-          python -I -B ../desk/tools/fast-review/bandit-policy.py "$(command -v python)" "$PWD" ce22f377f29c9bf5ba444a463d7a355c44adec61 "$RUNNER_TEMP/workspace-scan"
+          python -I -B ../desk/tools/fast-review/bandit-policy.py "$(command -v python)" "$PWD" 6dec349867ab5c3bb6033824481c0da290409a0e "$RUNNER_TEMP/workspace-scan"
       - name: Preserve raw scan and policy decision
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
