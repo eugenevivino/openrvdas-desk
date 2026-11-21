@@ -173,6 +173,9 @@ November 21 master directive: the six-workspace product and mandatory Grafana/In
 visualization service are tracked in [22 implementation tickets](MASTER-PRODUCT-TICKETS.md).
 M1 fixture services, four Console routes and actual official-SDK MCP are in progress
 on `deepsignal/workspace-m1`; the full platform and Grafana are not complete.
+Actual SDK/CLI/browser checks passed at58fbde8c on Mac and Linux; security and
+independent/full-scope gates remain held. Product DEMO-STORIES.md defines ten
+fake-cruise stories for fixture, real OpenRVDAS lab and extended Grafana/control.
 
 
 | Feature | What it does | Status | Target | Link |

@@ -27,3 +27,5 @@ One line per finished item: `YYYY-MM-DD | what | branch or PR | PASS, FAIL, or P
 2026-11-20 Console UI and Stream Health view finished as fixture pilots and integrated on fork at b67f3072daee63d0d307a16bc1d34e24b3c75002; 272 frontend, both full native gates, Linux 44732250214 all 3 PASS; fresh Astra Ultra R9 PASS. Five exact-head stamps recorded, claims released; no live deployment/Relay production activation.
 
 2026-11-21 | Added 22 master/Grafana deliverable tickets; M1 fixture service/UI/MCP workflow implemented locally at 1eb13ac2, Relay R3 checks PASS and release gates HOLD | deepsignal/workspace-m1 | IN PROGRESS, no module finish credit
+
+2026-11-21 | Relay R5 fixture checks and exact58fbde8c Linux workspace PASS; unchanged Linux security policy FAIL preserved. Added ten fake-cruise MCP/UI stories in product docs1d601f39 and linked existing tickets. Source runtime unchanged; no new module qualification.

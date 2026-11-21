@@ -7,8 +7,10 @@ commands: /private/tmp/deepsignal/product-m1-20261121/contrib/deepsignal/workspa
 and README.md. Reuse qualified Console/Stream Health b67f3072, upstream parser,
 existing Relay dispatcher, and Kalon allocation. No new orchestrator.
 
-Source 1eb13ac2 has local fixture workflow evidence, not release approval.
-Guarded Relay R3 service/HTTP and real Chromium journey passed; unchanged R2 SDK
-stdio, CLI, 277 frontend tests, build/lint passed. Full M1 scope, scientific
-reference/review, security/usability review, exact Linux and production gates
-remain open. No user data, live deployment, real manager or Grafana claims.
+Candidate58fbde8c has Relay R5 and Linux44879804326 workspace PASS: nine service/
+HTTP tests, SDK/CLI,281 frontend,build/lint and actual Chromium. Linux security
+policy FAIL is preserved; independent science/security/usability and full scope
+remain HOLD. Source1d601f39 adds documentation only. DEMO-STORIES.md defines ten
+fake-cruise user stories and distinguishes current fixture from pending real
+OpenRVDAS acquisition/archive/manager and extended Grafana/approved-operation labs.
+No live deployment or real manager/Grafana qualification is claimed.

@@ -14,21 +14,27 @@ new directives. Full M1 and Grafana remain incomplete.
 
 Build/test uses existing runtime-v11 Relay plans under
 `/private/tmp/deepsignal/product-m1-evidence/`; inspect their actual receipts.
-Source HEAD `1eb13ac2e46fd04f29828911fc21845677c9e6e4` includes Relay-built
-Console distribution. R1 passed checks but audit rejected MCP child cache files;
-retained as invalid. R2 audit is clean: six service/HTTP tests, actual 13-tool SDK
-journey, CLI, 277 frontend tests, lint/build passed; browser found asset concurrency
-refusals. R3 fixes the HTTP asset burst while serializing service calls; six tests
-and actual Chromium full draft/replay/export journey PASS, audit clean. Unchanged
-R2 frontend/MCP/CLI evidence is retained, not rerun. R3 report is at
-`/private/tmp/deepsignal/product-m1-evidence/m1-r3-state/report.json`; all workers
-terminal. Handoff max 0.064s, not an end-to-end engineering latency measurement.
-Required gates remain HOLD: whole-module scientific/security/usability independent
-review, independent reference evidence, exact-candidate Linux, remaining M1 scope.
-Source-only independent findings were regression-tested and repaired; that is not
-formal release approval. Next: finish bounded service/HTTP failure-case tests,
-then current-head review/Linux; continue mandatory Grafana discovery/draft scope.
-Do not call M1 complete or activate services/production. Preserve old receipts.
+Tested candidate `58fbde8cb9cbab0b4a77ee25042fd9a9169d4615` includes the
+Relay-built Console bundle. Current source `1d601f39aad9cc07e84c076e243f33502f3f34e3`
+adds documentation only: ten DEMO-STORIES.md user stories, MCP integration scope
+and current evidence. No new exact-head gate credit is assigned to that doc commit.
+Relay R5: nine service/HTTP tests, actual 13-tool SDK workflow, model-free CLI,
+281 frontend tests, build/types/lint and actual Chromium journey PASS; audit clean.
+Report: /private/tmp/deepsignal/product-m1-evidence/m1-r5-state/report.json.
+Maximum queued handoff 0.0931s, not full engineering throughput. Workers terminal.
+Linux44879804326 workspace PASS; existing-security-policy FAIL under unchanged
+policy at desk460914c. Raw221 findings include33 new workspace findings:30 smoke
+assertions, subprocess import/call, URL-open. No suppression/policy change or
+independent security approval. Artifacts: product-m1-evidence/linux-44879804326/;
+summary: research/2026-11-21-workspace-m1/. Original failures/HOLDs preserved.
+Full M1 scope, independent scientific reference/security/usability review and
+real OpenRVDAS demo remain incomplete. Current fixture is not a real manager or
+archive integration. Next: review exact scanner findings, continue eligible M1
+stories, then pinned real-upstream fake-cruise conformance. Ten stories are linked
+to existing tickets, not a new scheduler. General replay/jobs/deep links and
+no-change operator outcomes remain pending. Compatibility manifest status strings
+still need reconciliation with this evidence in a validated source increment.
+No service installation, live activation, Grafana connection or production claim.
 The user explicitly superseded the 1% reserve for this allowance window and
 asked for useful engineering through exhaustion. No reset/overage purchase.
 

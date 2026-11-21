@@ -2676,7 +2676,7 @@
   {
    "unit": "workspace-m1",
    "branch": "deepsignal/workspace-m1",
-   "head": "1eb13ac2e46fd04f29828911fc21845677c9e6e4",
+   "head": "1d601f39aad9cc07e84c076e243f33502f3f34e3",
    "critical": true,
    "status": "ACTIVE (master directive fixture workflow; no release qualification)",
    "design_note": "docs/designs/workspace-m1.md",
@@ -2685,27 +2685,27 @@
     "moved": {
      "ok": false,
      "at": "",
-     "evidence": "Remaining scope and independent/Linux qualification required; local Relay R3 workflow checks PASS only."
+     "evidence": "R5 and Linux workspace checks PASS at58fbde8c; security FAIL, independent review/reference/full scope HOLD. Current head adds docs only; no new qualification."
     },
     "tested": {
      "ok": false,
      "at": "",
-     "evidence": "Remaining scope and independent/Linux qualification required; local Relay R3 workflow checks PASS only."
+     "evidence": "R5 and Linux workspace checks PASS at58fbde8c; security FAIL, independent review/reference/full scope HOLD. Current head adds docs only; no new qualification."
     },
     "fixed": {
      "ok": false,
      "at": "",
-     "evidence": "Remaining scope and independent/Linux qualification required; local Relay R3 workflow checks PASS only."
+     "evidence": "R5 and Linux workspace checks PASS at58fbde8c; security FAIL, independent review/reference/full scope HOLD. Current head adds docs only; no new qualification."
     },
     "in_app": {
      "ok": false,
      "at": "",
-     "evidence": "Remaining scope and independent/Linux qualification required; local Relay R3 workflow checks PASS only."
+     "evidence": "R5 and Linux workspace checks PASS at58fbde8c; security FAIL, independent review/reference/full scope HOLD. Current head adds docs only; no new qualification."
     },
     "tested_in_app": {
      "ok": false,
      "at": "",
-     "evidence": "Remaining scope and independent/Linux qualification required; local Relay R3 workflow checks PASS only."
+     "evidence": "R5 and Linux workspace checks PASS at58fbde8c; security FAIL, independent review/reference/full scope HOLD. Current head adds docs only; no new qualification."
     }
    }
   }
