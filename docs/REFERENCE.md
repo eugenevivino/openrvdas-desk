@@ -168,7 +168,7 @@ an **MCP** server for AI clients. Same engine, same validation, same diff, which
 | #128 Forms for all 75 components | Every reader, writer and transform introspected into a JSON Schema form with plain labels | BUILDING | 12-04 | fork:deepsignal/p2-component-catalog, `briefs/p2/128-component-catalog.md` |
 | #126 Cruise config generation | One acquisition file plus #52 history generates the whole cruise definition with modes | BUILDING | 12-04 | fork:deepsignal/p2-config-from-inventory, `briefs/p2/126-config-from-inventory.md` |
 | #127 Config lint | Ship-sense checks beyond schema: shared ports, loggers missing from modes, nothing feeding the cache | BUILDING | 12-04 | fork:deepsignal/p2-config-lint, `briefs/p2/127-config-lint.md` |
-| #130 Instrument init profiles | Per-instrument, reviewed start-up command profiles sent on connect (MetAcq parity) | BRIEFED | 12-04 | `briefs/p2/130-instrument-init.md` |
+| #130 Instrument init profiles | Per-instrument profiles; reuse candidate for permitted instrument access with exact approval/reconnect bindings | HISTORICAL BUILD, UNQUALIFIED | 12-04 | `briefs/p2/130-instrument-init.md` |
 | Setup MCP | About 5 high-level tools; read-only by default; any write needs approval plus a dry-run diff | DESIGNED | after engine | D-MCP1, #64, #65, `research/2026-11-18-mcp-reference-architecture.md` |
 | Wizard pages | Console pages over #114, #125, #126, #128 | PROPOSED (console follow-up) | after MVP | `briefs/p2/INDEX.md` "What is left" |
 
@@ -179,7 +179,7 @@ visualization service are tracked in [22 implementation tickets](MASTER-PRODUCT-
 M1 fixture services, four Console routes and actual official-SDK MCP are in progress
 on `deepsignal/workspace-m1`; the full platform and Grafana are not complete.
 Actual SDK/CLI/browser checks passed at58fbde8c on Mac and Linux; security and
-independent/full-scope gates remain held. Product DEMO-STORIES.md defines ten
+independent/full-scope gates remain held. Product DEMO-STORIES.md defines fourteen
 fake-cruise stories for fixture, real OpenRVDAS lab and extended Grafana/control.
 
 
@@ -258,9 +258,9 @@ only. Full design, ranked table, security and risk tables: `docs/SHIP-SYSTEMS.md
 | #149 NMEA 2000 via read-only gateway | PGN decode | PROPOSED (backlog) | later | same |
 | #150 ECDIS route import | RTZ or RTE/WPL into #108 | PROPOSED | later | same |
 | #151 OT network safety kit | Placement checklist, connection register, receive-only tests, lint rule | PROPOSED | v2 | same |
-| #152 Instrument config reader | Tier R snapshots into #52 history | PROPOSED | later | same |
-| #153 Config advisor | Explainable change proposals, advice only | PROPOSED | later | same |
-| #154 Approved change apply with rollback | Tier A, science sensors only, on the #130 engine and #65 approvals | PROPOSED | later | same |
+| #152 Instrument config reader | Selected read-only device inspection and capability/settings snapshots; SHIP-SYSTEMS section15 | REQUIRED, NOT QUALIFIED | later | same |
+| #153 Config advisor | Instrument-aware advice for scientific objectives with verified capabilities and measured tradeoffs | REQUIRED, NOT QUALIFIED | later | same |
+| #154 Approved change apply with rollback | Tier A, science sensors only, #130/#65; acquisition ownership, readback/data verification | REQUIRED, NOT QUALIFIED | later | same |
 | #155 Scoped SSH access kit | Forced-command keys or short-lived certificates, full logging | PROPOSED | later | same |
 | Sonar, bridge, DP, motion control, engine, winch writes | Never built (D-SHIP1) | BANNED | never | same |
 
@@ -403,7 +403,7 @@ Security-first design for the console, CDS, REST and MCP. Full design: `docs/SEC
 | #189 Auth gateway | nginx TLS plus auth_request, one identity everywhere | DESIGNED | MVP | `docs/SECURITY-ARCHITECTURE.md` |
 | #190 MFA | TOTP for admin (MVP), WebAuthn/FIDO2 later | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
 | #191 Break-glass, kiosk and service identities | Sealed emergency access and non-human identities | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
-| #192 Secrets vault | One AES-256-GCM envelope vault; #188 AI stays off until it lands | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
+| #192 Secrets vault | Protected instrument/provider credential references and resolver; section17.6 lifecycle and leakage gates | REQUIRED DESIGN, UNQUALIFIED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
 | #193 Tamper-evident audit log | Hash-chained JSONL | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
 | #194 Approval service and signed config history | Trusted approvals and receipts (answers MCP review F1/F2) plus content-addressed signed config versions; `docs/APPROVALS.md`; branch `deepsignal/sec-approvals`, Mac Astra high, v2 | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |
 | #195 Crypto profile and FIPS path | One approved-algorithm profile; RHEL 9 reference platform | DESIGNED | see doc | `docs/SECURITY-ARCHITECTURE.md` |

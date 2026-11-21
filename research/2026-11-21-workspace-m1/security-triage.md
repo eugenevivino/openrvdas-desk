@@ -31,3 +31,14 @@ Raw envelope SHA256 c3eda651f14865ac286d2e890defa9dc05e814c3c8a407eddc15b1ed790e
 Policy SHA256 4a83d80929ea3111f6d410b232866769acf55b090d5db26087071a32586833b9.
 The separate workspace job passed. Whole-module science/security/usability review,
 real OpenRVDAS demo and full scope remain incomplete.
+
+## Follow-up at6cba5716, Linux44881969262
+
+Affected harness checks PASS. Unchanged policy FAIL remains with190 total findings
+and2 workspace findings: B404/B603 subprocess import/call in browser_smoke.py.
+The30 B101 removable checks are now mandatory, proven RED then PASS under Python
+-O through actual SDK. B310 readiness now uses fixed-host HTTPConnection with no
+proxy/redirect handling. No nosec, excluded path, policy or severity change.
+Raw envelope SHA256265e6385d67bd58da8f3e7d67c24204a14e6c6a08bb7ebc6dfdb158de8f50348.
+Full independent security disposition remains pending; fewer findings is not
+production security qualification. New read-only mode is a separate source change.

@@ -33,3 +33,6 @@ One line per finished item: `YYYY-MM-DD | what | branch or PR | PASS, FAIL, or P
 2026-11-21 | Established docs/ARCHITECTURE.md and required MCP identity/read/disclosure boundary in Security Architecture section17; linked AGENTS startup, handover, reference and tickets. Explicit fixture/production separation; no deployment approval or security PASS.
 
 2026-11-21 | Eugene requires selected/configurable MCP access. Added versioned operator-managed grants, intersection of user/client/data policies, reload/revocation and scope tests to architecture and T-PROD-11; implementation remains unqualified.
+
+2026-11-21 | Expanded instrument-aware AI architecture: OpenRVDAS transport reuse, four access modes, port ownership, typed science-sensor operations and protected credentials; fourteen demo stories. No hardware/live access or compliance claim.
+2026-11-21 | Repaired optimized-Python acceptance checks (RED then PASS) and direct-loopback readiness. Relay and Linux44881969262 affected checks PASS at6cba5716; unchanged security policy FAIL remains with2 workspace findings, no suppression.

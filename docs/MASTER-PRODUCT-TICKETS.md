@@ -331,6 +331,26 @@ security qualification and real isolation remain pending.
 to be assigned. **Depends on:** T-PROD-02, 07–08, 11, 13.
 **Reuse:** IDEAS #65; approved narrow manager interface, not a generic command endpoint.
 
+Instrument extension (Eugene, 2026-11-21): reuse #130 and #152-155/#157; see
+[instrument architecture](SHIP-SYSTEMS.md#15-ai-assisted-instrument-access-and-capability-use).
+Track these bounded deliverables within this ticket, not a duplicate module:
+
+- T-PROD-12a: strict read-only mode and permitted device/status/configuration
+  inspection, with no hidden initialization or conflicting port owner.
+- T-PROD-12b: reviewed model/firmware profiles and typed diagnostics; simulated
+  serial/COM and network instruments, bounded framing/timeouts and honest unknowns.
+- T-PROD-12c: independently approved configuration via existing #130/#65, exact
+  device/base/profile bindings, verified replies/data, no replay after ambiguous
+  outcome or reconnect, and measured acquisition interference.
+- T-PROD-12d: evidence-backed instrument capability advisor with supported settings,
+  scientific/task tradeoffs and measured before/after outcomes, not guessed commands
+  or claims that successful configuration proves scientific improvement.
+
+T-PROD-11 owns credential references, restricted secret resolution, rotation,
+revocation and leakage tests via #192; it is prerequisite to credentialed access.
+Existing #130 source is an unqualified reuse candidate, not approved live control.
+Hardware/ship access and critical integration remain separately approved.
+
 Support only proven allowlisted configuration/mode/start-stop-reload operations.
 Bind approval to deployment/assets/base generation/dependencies/plan/actions/checks/
 window/expiry/operator and bounded recovery. Durable operation intent precedes mutation;
@@ -540,11 +560,13 @@ capabilities before claiming plugin support. G1 remains OPEN, real lab pending.
 
 ## Fake-cruise acceptance stories (Eugene, 2026-11-21)
 
-Ten concrete stories are recorded in product
-`contrib/deepsignal/workspace/DEMO-STORIES.md` at documentation commit1d601f39:
+Fourteen concrete stories are recorded in product
+`contrib/deepsignal/workspace/DEMO-STORIES.md` (initial ten at1d601f39, four instrument/credential stories added afterward):
 watch-start discovery, expected inactivity/staleness, parser investigation,
 draft/validate/replay, justified no-change, second-person handoff, outage recovery,
-Grafana draft, permission refusal and independently approved lab operation.
+Grafana draft, permission refusal, independently approved lab operation, strict
+read-only observation, instrument inspection, capability improvement and secret
+protection.
 Each has a prompt, expected evidence/outcome, current status and existing ticket
 mapping. T-PROD-01 owns fixture delivery, T-PROD-02 real pinned OpenRVDAS with fake
 cruise/sensors and real archive, T-PROD-10 actual SDK plus interactive MCP stories,
