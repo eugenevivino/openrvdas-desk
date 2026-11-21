@@ -511,3 +511,20 @@ verification. Preserve existing dashboards; show no invented sensors, bounded da
 load and measured acquisition interference. Replay the demonstration without a cloud
 model; portable import reports incompatible schemas/plugins/mappings rather than guessing.
 **Evidence:** complete lab demo, portability and operator acceptance pending.
+
+## Verified discovery note, 2026-11-21 (T-GRAF-01)
+
+No grafana or influx executable was found on the current PATH. Docker CLI is
+present, but its read-only `docker ps` failed because /var/run/docker.sock is
+absent; no daemon/container was started. This does not prove that no installation
+exists elsewhere and is not network discovery.
+
+The pinned upstream includes `logger/writers/influxdb_writer.py` using
+`influxdb_client`, bucket and organization configuration. Its constructor can
+create a missing bucket: do not instantiate it for visualization discovery or
+replay. This source does not establish an installed InfluxDB version or query
+language. Existing `contrib/niwa/grafana/cache-datasource/src/plugin.json` declares
+Grafana >=10.3.3; its compose defaults to10.3.3. Those are historical source
+metadata, not a tested target version or permission to launch that compose.
+No compass panel was found at the inspected local path. Discover actual target
+capabilities before claiming plugin support. G1 remains OPEN, real lab pending.

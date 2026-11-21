@@ -115,3 +115,12 @@ measurements always request QC. Raw updates preserve shared history. R8's sole
 remaining QC correction error reproduced twice atab1d6560;73d97e74 retains its
 original observation epoch. All272frontend/lint/type checks PASS; full qualification
 and fresh independent review still required. No target integration or gate change.
+
+
+2026-11-21 | M1 Relay R1 candidate invalidated after SDK child wrote __pycache__.
+Fixed child invocation with -B and explicit PYTHONDONTWRITEBYTECODE; R2/R3 audits
+clean. Original invalid receipt retained. No guard exclusions were loosened.
+2026-11-21 | Disposable M1 HTTP concurrency8 refused normal Console module/CSS
+bursts in actual Chromium. Raised bounded static concurrency to32 with a separate
+single application-service slot; R3 real browser journey passed. No shared guard,
+production service or foreign process changed.
